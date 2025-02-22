@@ -14,8 +14,33 @@
   }
 }
 
+
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter','Figtree', Arial, Helvetica, sans-serif;
 }
+
+/* font customization */
+
+@font-face {
+  font-family: 'Figtree';
+  src: url('/fonts/Figtree.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter-regular';
+  src: url('/fonts/Inter.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter-Bold';
+  src: url('/fonts/Inter-Bold.ttf') format('truetype');
+  font-weight: 400;
+  font-style: bold;
+}
+

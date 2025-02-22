@@ -13,6 +13,11 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily:{
+        figtree: ["Figtree", "sans-serif"],
+        'inter-regular': ["Inter", "sans-serif"],
+        'inter-bold': ["Inter-Bold", "sans-serif"],
+      }
     },
   },
   plugins: [],
