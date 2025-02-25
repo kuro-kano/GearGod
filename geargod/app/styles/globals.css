@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Remove or keep this if you want a fallback black body background */
+body {
+  background: #000;
+  font-family: "Inter", "Figtree", Arial, Helvetica, sans-serif;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  scroll-behavior: smooth;
+}
+
+/* font customization */
+@font-face {
+  font-family: "Figtree";
+  src: url("/fonts/Figtree.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter-regular";
+  src: url("/fonts/Inter.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter-Bold";
+  src: url("/fonts/Inter-Bold.ttf") format("truetype");
+  font-weight: 400;
+  font-style: bold;
+}
+
+@font-face {
+  font-family: "Urbanist-Bold";
+  src: url("/fonts/Urbanist-Bold.ttf") format("truetype");
+  font-weight: 400;
+  font-style: bold;
+}
+
+@font-face {
+  font-family: "Figtree-Bold";
+  src: url("/fonts/Figtree-Bold.ttf") format("truetype");
+  font-weight: 400;
+  font-style: bold;
+}
+
+/* ============================================= */
+/*    Ambient Background (Purple Glow + Grid)    */
+/* ============================================= */
+.ambient-bg {
+  position: relative;
+  background-color: #000; /* Keep the base black */
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.ambient-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Purple radial gradients with smaller circles */
+  background: radial-gradient(
+      circle at top left,
+      rgba(156, 39, 176, 0.25) 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(37, 99, 235, 0.15) 0%,
+      transparent 40%
+    );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.ambient-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Subtle grid overlay */
+  background: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.05) 0px,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px,
+      transparent 30px
+    ),
+    repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.05) 0px,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px,
+      transparent 30px
+    );
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+
