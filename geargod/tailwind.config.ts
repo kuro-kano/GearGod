@@ -14,9 +14,11 @@ export default {
         foreground: "var(--foreground)",
       },
       fontFamily:{
-        figtree: ["Figtree", "sans-serif"],
+        'figtree-regular': ["Figtree", "sans-serif"],
+        'figtree-bold':["Figtree-Bold", "sans-serif"],
         'inter-regular': ["Inter", "sans-serif"],
         'inter-bold': ["Inter-Bold", "sans-serif"],
+        'urbanist-bold': ["Urbanist-bold", "sans-serif"],
       }
     },
   },

@@ -5,11 +5,11 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-1/2 transform -translate-x-1/2 transition-all duration-300 z-50 
-        w-[90%] h-16 bg-white py-3 px-8 flex items-center justify-between rounded-full shadow-lg mx-auto mt-6 backdrop-filter backdrop-blur-lg bg-opacity-20 
+        w-[80%] h-16 bg-black py-3 px-8 flex items-center justify-between rounded-full shadow-lg mx-auto mt-6 backdrop-filter backdrop-blur-lg bg-opacity-25 
   `}
     >
       {/* Left Section: Logo */}
-      <div className="text-2xl font-bold">GearGod</div>
+      <div className="text-2xl font-bold text-white">GearGod</div>
 
       {/* Center Section: Menu Items */}
       <div className="flex space-x-10 text-white font-medium">
