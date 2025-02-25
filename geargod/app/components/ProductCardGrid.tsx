@@ -16,7 +16,7 @@ export default function ProductCardGrid() {
           removeWrapper
           alt="Card background"
           className="z-0 w-full h-full object-cover"
-          src="/images/headset/Beyerdynamic-DT1990-PRO-MKII.jpg"
+          src="images/headset/Beyerdynamic-DT1990-PRO-MKII.jpg"
         />
       </Card>
       <Card className="col-span-12 sm:col-span-4 h-[300px] rounded-lg overflow-hidden">
@@ -32,7 +32,7 @@ export default function ProductCardGrid() {
           removeWrapper
           alt="Card background"
           className="z-0 w-full h-full object-cover"
-          src="/images/mouse/helios_mouse.jpg"
+          src="images/mouse/helios_mouse.jpg"
         />
       </Card>
       <Card className="col-span-12 sm:col-span-4 h-[300px] rounded-lg overflow-hidden">
@@ -48,7 +48,7 @@ export default function ProductCardGrid() {
           removeWrapper
           alt="Card background"
           className="z-0 w-full h-full object-cover"
-          src="/images/keyboard/rainy-75-standard-blue.jpg"
+          src="images/keyboard/rainy-75-standard-blue.jpg"
         />
       </Card>
       <Card
@@ -67,7 +67,7 @@ export default function ProductCardGrid() {
           removeWrapper
           alt="Card example background"
           className="z-0 w-full h-full object-fit"
-          src="/images/pc-case/cherry-blossom-case.jpg"
+          src="images/pc-case/cherry-blossom-case.jpg"
         />
       </Card>
       <Card
@@ -86,7 +86,7 @@ export default function ProductCardGrid() {
           removeWrapper
           alt="Relaxing app background"
           className="z-0 w-full h-full object-cover"
-          src="/images/desk-setup/desk-setup.jpg"
+          src="images/desk-setup/desk-setup.jpg"
         />
       </Card>
     </div>

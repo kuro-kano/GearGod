@@ -47,7 +47,7 @@ export default function Home() {
           </div>
           <div className="flex justify-end">
             <img
-              src="/images/pc-case/white-pc-case.png"
+              src="images/pc-case/white-pc-case.png"
               className="w-80 h-auto"
               alt="PC case"
             />
@@ -59,12 +59,12 @@ export default function Home() {
           <div className="p-11 pr-10 h-auto w-4/6 bg-purple-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border border-gray-100 border-opacity-10">
             <h1 className="flex justify-center text-center text-xl font-figtree-bold pb-7">Official Partnership</h1>
             <div className="flex justify-evenly items-center">
-              <img src="/images/partnerships/hyperx.png" className="h-8 w-auto"></img>
-              <img src="/images/partnerships/Logitech-Logo.png" className="h-8 w-auto"></img>
-              <img src="/images/partnerships/Beyerdynamic_logo.png" className="h-8 w-auto"></img>
-              <img src="/images/partnerships/Logo_Razer_2017.png" className="h-8 w-auto"></img>
-              <img src="/images/partnerships/hyperx.png" className="h-8 w-auto"></img>
-              <img src="/images/partnerships/hyperx.png" className="h-8 w-auto"></img>
+              <img src="images/partnerships/hyperx.png" className="h-8 w-auto"></img>
+              <img src="images/partnerships/Logitech-Logo.png" className="h-8 w-auto"></img>
+              <img src="images/partnerships/Beyerdynamic_logo.png" className="h-8 w-auto"></img>
+              <img src="images/partnerships/Logo_Razer_2017.png" className="h-8 w-auto"></img>
+              <img src="images/partnerships/Cooler-Master-Logo.png" className="h-8 w-auto"></img>
+              <img src="images/partnerships/Steelseries-logo.png" className="h-8 w-auto"></img>
             </div>
           </div>
         </div>
@@ -137,7 +137,7 @@ export default function Home() {
         {/* Image Section */}
         <div className="w-1/2 flex pl-10">
           <img
-            src="/images/pc-case/anime-pc-case.png"
+            src="images/pc-case/anime-pc-case.png"
             className="h-auto rounded-lg"
             alt="PC case"
           />
