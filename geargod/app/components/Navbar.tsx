@@ -1,14 +1,16 @@
 "use client";
+
+import { useState } from "react";
 import { Search, User, ShoppingCart } from "lucide-react";
+import Login from "./Login";
 
 const Navbar = () => {
+
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
   return (
-    <nav
-      className={`fixed top-0 left-1/2 -translate-x-1/2 z-50 
-        w-[80%] h-16 bg-black py-3 px-8 flex items-center justify-between rounded-full shadow-lg mx-auto mt-6 backdrop-filter backdrop-blur-lg bg-opacity-25 
-        
-  `}
-    >
+    <nav className={`fixed top-0 left-1/2 -translate-x-1/2 z-50 
+        w-[80%] h-16 bg-black py-3 px-8 flex items-center justify-between rounded-full shadow-lg mx-auto mt-6 backdrop-filter backdrop-blur-lg bg-opacity-25 `}>
       {/* Left Section: Logo */}
       <div className="text-2xl font-bold text-white">GearGod</div>
 
@@ -29,9 +31,15 @@ const Navbar = () => {
           placeholder="Search..."
           className="bg-white rounded-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 w-48 md:w-64"
         />
-        <User className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors" />
+        <User
+          className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors"
+          onClick={() => setIsLoginOpen(true)}
+        />
         <ShoppingCart className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors" />
       </div>
+
+      {/* Pop-up Login Modal */}
+      <Login isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </nav>
   );
 };
