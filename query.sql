@@ -1,142 +1,140 @@
--- database: ./geargod.db
-
-create table users (
+CREATE TABLE users (
     user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    username varchar(30) not null unique,
-    email varchar(30) not null unique,
-    password_hash text not null,
-    first_name varchar(30),
-    last_name varchar(30),
-    phone varchar(20) not null,
-    address text,
-    create_at timestamp not null default current_timestamp
-); -- already
+    username VARCHAR(30) NOT NULL UNIQUE,
+    email VARCHAR(30) NOT NULL UNIQUE,
+    password_hash varchar(255) NOT NULL,
+    first_name VARCHAR(30),
+    last_name VARCHAR(30),
+    phone VARCHAR(20) NOT NULL,
+    address TEXT,
+    create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
-create table products (
+CREATE TABLE products (
     product_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    product_name varchar(100) not null,
-    description text,
-    price decimal(10, 2) not null,
-    stock_quantity int default 0,
-    is_customizable boolean default true
-); -- already
+    product_name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    stock_quantity INT DEFAULT 0,
+    is_customizable BOOLEAN DEFAULT TRUE
+);
 
-create table colors (
+CREATE TABLE colors (
     color_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    color_name varchar(50) not null,
-    color_code varchar(10) not null,
-    add_price decimal(10, 2) default 0
-); -- already
+    color_name VARCHAR(50) NOT NULL,
+    color_code VARCHAR(10) NOT NULL,
+    add_price DECIMAL(10, 2) DEFAULT 0
+);
 
-create table materials (
-    material_id integer not null PRIMARY KEY AUTOINCREMENT,
-    material_name varchar(50) not null,
-    description text,
-    add_price decimal(10, 2) default 0
-); -- already
+CREATE TABLE materials (
+    material_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    material_name VARCHAR(50) NOT NULL,
+    description TEXT,
+    add_price DECIMAL(10, 2) DEFAULT 0
+);
 
-create table products_image (
+CREATE TABLE products_image (
     image_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    product_id int references products(product_id),
-    image_url varchar(100) not null -- image path(?)
+    product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
+    image_url VARCHAR(100) NOT NULL
 );
 
-create table components (
+CREATE TABLE components (
     component_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    component_name varchar(50) not null,
-    description text
+    component_name VARCHAR(50) NOT NULL,
+    description TEXT
 );
 
-create table custom_designs (
+CREATE TABLE custom_designs (
     design_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    user_id int references users(user_id),
-    product_id int references products(product_id),
-    color_id int references colors(color_id),
-    material_id int references materials(material_id),
-    created_at timestamp not null default CURRENT_TIMESTAMP
+    user_id INT REFERENCES users(user_id),
+    product_id INT REFERENCES products(product_id),
+    color_id INT REFERENCES colors(color_id),
+    material_id INT REFERENCES materials(material_id),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-create table product_materials (
+CREATE TABLE product_materials (
     product_materials_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    product_id int references products(product_id),
-    material_id int references materials(material_id),
-    is_default boolean default false,
-    unique(product_id, material_id)
+    product_id INT REFERENCES products(product_id),
+    material_id INT REFERENCES materials(material_id),
+    is_default BOOLEAN DEFAULT FALSE,
+    UNIQUE(product_id, material_id)
 );
 
-create table product_colors (
+CREATE TABLE product_colors (
     product_color_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    product_id int references products(product_id),
-    color_id int references colors(color_id),
-    is_default boolean false,
-    unique(product_id, color_id)
+    product_id INT REFERENCES products(product_id),
+    color_id INT REFERENCES colors(color_id),
+    is_default BOOLEAN DEFAULT FALSE,
+    UNIQUE(product_id, color_id)
 );
 
-create table product_components (
+CREATE TABLE product_components (
     product_component_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    product_id int references products(product_id),
-    component_id int references components(component_id),
-    add_price decimal(10, 2) default 0,
-    is_default boolean default false,
-    unique(product_id, component_id)
+    product_id INT REFERENCES products(product_id),
+    component_id INT REFERENCES components(component_id),
+    add_price DECIMAL(10, 2) DEFAULT 0,
+    is_default BOOLEAN DEFAULT FALSE,
+    UNIQUE(product_id, component_id)
 );
 
-create table orders (
+CREATE TABLE orders (
     order_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    user_id int references users(user_id),
-    order_date timestamp not null default current_timestamp,
-    total_amount decimal(10, 2) not null,
-    shipping_address text not null,
-    shipping_cost decimal(10, 2),
-    payment_method varchar(30) not null,
-    order_status varchar(20) default 'pending',
-    notes text
+    user_id INT REFERENCES users(user_id),
+    order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    shipping_address TEXT NOT NULL,
+    shipping_cost DECIMAL(10, 2),
+    payment_method VARCHAR(30) NOT NULL,
+    order_status VARCHAR(20) DEFAULT 'pending',
+    notes TEXT
 );
 
-create table order_items (
+CREATE TABLE order_items (
     order_item_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    order_id int references orders(order_id),
-    product_id int references products(product_id),
-    design_id int references custom_designs(design_id),
-    quantity int default 1,
-    unit_price decimal(10, 2) not null,
-    subtotal decimal(10, 2) not null
+    order_id INT REFERENCES orders(order_id),
+    product_id INT REFERENCES products(product_id),
+    design_id INT REFERENCES custom_designs(design_id),
+    quantity INT DEFAULT 1,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    subtotal DECIMAL(10, 2) NOT NULL
 );
 
-create table receipts (
+CREATE TABLE receipts (
     receipt_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    order_id int references orders(order_id),
-    receipt_number varchar(50) not null unique,
-    total_amount decimal(10, 2) not null,
-    payment_status varchar(10) default 'unpaid'
+    order_id INT REFERENCES orders(order_id),
+    receipt_number VARCHAR(50) NOT NULL UNIQUE,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    payment_status VARCHAR(10) DEFAULT 'unpaid'
 );
 
-create table reviews (
+CREATE TABLE reviews (
     review_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    user_id int references users(user_id),
-    product_id int references products(product_id),
-    design_id int references custom_designs(design_id),
-    order_id int references orders(order_id),
-    rating int not null check (rating between 1 and 5),
-    created_at timestamp not null default CURRENT_TIMESTAMP,
-    helpful_votes int default 0
+    user_id INT REFERENCES users(user_id),
+    product_id INT REFERENCES products(product_id),
+    design_id INT REFERENCES custom_designs(design_id),
+    order_id INT REFERENCES orders(order_id),
+    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    helpful_votes INT DEFAULT 0
 );
 
-create table coupons (
+CREATE TABLE coupons (
     coupon_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    coupon_code varchar(20) not null unique,
-    discount_type varchar(10) not null, -- % or fixed
-    discount_value decimal(10, 2) not null,
-    valid_from timestamp not null,
-    valid_to timestamp not null,
-    is_active boolean default true
+    coupon_code VARCHAR(20) NOT NULL UNIQUE,
+    discount_type VARCHAR(10) NOT NULL,
+    discount_value DECIMAL(10, 2) NOT NULL,
+    valid_from TIMESTAMP NOT NULL,
+    valid_to TIMESTAMP NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE
 );
 
-create table coupon_usage (
+CREATE TABLE coupon_usage (
     usage_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    coupon_id int REFERENCES coupons(coupon_id),
-    user_id int references users(user_id),
-    order_id int references orders(order_id),
-    used_at timestamp not null default current_timestamp,
-    discount_amount decimal(10, 2) not null
+    coupon_id INT REFERENCES coupons(coupon_id),
+    user_id INT REFERENCES users(user_id),
+    order_id INT REFERENCES orders(order_id),
+    used_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    discount_amount DECIMAL(10, 2) NOT NULL
 );
