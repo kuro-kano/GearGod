@@ -10,10 +10,18 @@ CREATE TABLE users (
     create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE categories (
+    category_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    category_name VARCHAR(50) NOT NULL,
+    description TEXT,
+    parent_category INT REFERENCES categories(category_id)
+);
+
 CREATE TABLE products (
     product_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     product_name VARCHAR(100) NOT NULL,
     description TEXT,
+    category_id INT REFERENCES categories(category_id),
     price DECIMAL(10, 2) NOT NULL,
     stock_quantity INT DEFAULT 0,
     is_customizable BOOLEAN DEFAULT TRUE
