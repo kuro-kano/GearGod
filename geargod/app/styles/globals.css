@@ -14,33 +14,33 @@
   }
 }
 
-
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Inter','Figtree', Arial, Helvetica, sans-serif;
+  font-family: "Inter", "Figtree", Arial, Helvetica, sans-serif;
+  background: linear-gradient(to bottom right, #1e3a8a, #4c1d95, #000);
+  background-attachment: fixed;
 }
 
 /* font customization */
 
 @font-face {
-  font-family: 'Figtree';
-  src: url('/fonts/Figtree.ttf') format('truetype');
+  font-family: "Figtree";
+  src: url("/fonts/Figtree.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter-regular';
-  src: url('/fonts/Inter.ttf') format('truetype');
+  font-family: "Inter-regular";
+  src: url("/fonts/Inter.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter-Bold';
-  src: url('/fonts/Inter-Bold.ttf') format('truetype');
+  font-family: "Inter-Bold";
+  src: url("/fonts/Inter-Bold.ttf") format("truetype");
   font-weight: 400;
   font-style: bold;
 }
-
