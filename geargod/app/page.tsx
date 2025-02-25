@@ -13,7 +13,7 @@ export default function Home() {
           <div className="max-w-2xl">
             <p className="font-inter-bold text-5xl leading-normal text-left">
               "Worship the power,&nbsp;
-              <span className="bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent pr-0.5">
                 not the price.
               </span>
               "
@@ -100,8 +100,8 @@ export default function Home() {
         {/* Text Section */}
         <div className="max-w-3xl">
           <p className="font-inter-bold text-5xl leading-normal text-left">
-            "Your PC, &nbsp;
-            <span className="bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
+            "Your PC,&nbsp;
+            <span className="bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent pr-0.5">
               Your Style.
             </span>
             "
