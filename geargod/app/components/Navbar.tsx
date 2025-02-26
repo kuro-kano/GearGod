@@ -1,26 +1,30 @@
 "use client";
+import Link from "next/link";
 import { Search, User, ShoppingCart } from "lucide-react";
 import { Kbd } from "@heroui/kbd";
-import useSearchShortcut from "@/hooks/useSearchShortcut";
-import SearchOverlay from "@/components/SearchOverlay";
 
-const Navbar = () => {
-  const { isSearchVisible, setIsSearchVisible } = useSearchShortcut();
+interface NavbarProps {
+  setIsSearchVisible: (visible: boolean) => void;
+}
 
+const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
   return (
-    <>
-      <nav
-        className={`fixed top-0 left-1/2 -translate-x-1/2 z-50 
-          w-[80%] h-16 bg-black py-3 px-8 flex items-center justify-between rounded-full shadow-lg mx-auto mt-6 
-          backdrop-filter backdrop-blur-lg bg-opacity-25`}
-      >
-        {/* Left Section: Logo */}
-        <div className="text-2xl font-bold text-white">GearGod</div>
+    <nav
+      className={`fixed top-0 left-1/2 -translate-x-1/2 z-50 
+        w-[80%] h-16 bg-black py-3 px-8 flex items-center justify-between rounded-full shadow-lg mx-auto mt-6 
+        backdrop-filter backdrop-blur-lg bg-opacity-25`}
+    >
+      {/* Left Section: Logo */}
+      <div className="text-2xl font-bold text-white">
+        <Link href="/">GearGod</Link>
+      </div>
 
-        {/* Center Section: Menu Items */}
+      {/* Right Section: Menu Items, Search Bar & Icons */}
+      <div className="flex items-center space-x-10">
+        {/* Menu Items */}
         <div className="flex space-x-10 text-white font-medium">
           <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
-            Deals
+            <Link href="/shop/deals">Deals</Link>
           </div>
           <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
             Guides
@@ -36,7 +40,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Right Section: Search Bar & Icons */}
+        {/* Search Bar & Icons */}
         <div className="flex items-center space-x-5">
           <div className="relative flex items-center">
             {/* Clicking the icon or input triggers the overlay */}
@@ -47,7 +51,7 @@ const Navbar = () => {
             <input
               type="text"
               placeholder="Search"
-              className="bg-transparent rounded-2xl pl-11 pt-3 pb-3 border-2 border-zinc-600 focus:outline-none focus:ring-2 focus:ring-gray-400 w-16 md:w-40 cursor-pointer"
+              className="bg-transparent rounded-2xl pl-10 pt-2.5 pb-2.5 border-2 border-zinc-600 focus:outline-none focus:ring-2 focus:ring-gray-400 w-16 md:w-40 cursor-pointer"
               onClick={() => setIsSearchVisible(true)}
               readOnly
             />
@@ -58,14 +62,8 @@ const Navbar = () => {
           <User className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors" />
           <ShoppingCart className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors" />
         </div>
-      </nav>
-
-      {/* Render the Search Overlay */}
-      <SearchOverlay
-        isVisible={isSearchVisible}
-        onClose={() => setIsSearchVisible(false)}
-      />
-    </>
+      </div>
+    </nav>
   );
 };
 

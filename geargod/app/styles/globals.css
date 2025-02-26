@@ -65,52 +65,57 @@ body {
 /* ============================================= */
 .ambient-bg {
   position: relative;
-  background-color: #000; /* Keep the base black */
+  background-color: #000; /* If you keep a solid color, it might hide the pseudo-element */
   min-height: 100vh;
   overflow: hidden;
+  z-index: 0; /* Establishes a stacking context */
 }
 
 .ambient-bg::before {
   content: "";
   position: absolute;
   inset: 0;
-  /* Purple radial gradients with smaller circles */
+  z-index: -1; /* Places the gradient behind the parent's content */
   background: radial-gradient(
       circle at top left,
-      rgba(156, 39, 176, 0.25) 0%,
-      transparent 30%
+      rgba(156, 39, 176, 0.45) 5%,
+      transparent 40%
     ),
     radial-gradient(
       circle at bottom right,
-      rgba(37, 99, 235, 0.15) 0%,
+      rgba(48, 20, 175, 0.45) 5%,
       transparent 40%
     );
   mix-blend-mode: screen;
   pointer-events: none;
 }
 
+
 .ambient-bg::after {
   content: "";
   position: absolute;
-  inset: 0;
-  /* Subtle grid overlay */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 200px; /* Adjust as needed */
   background: repeating-linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.05) 0px,
-      rgba(255, 255, 255, 0.05) 1px,
-      transparent 1px,
-      transparent 30px
-    ),
-    repeating-linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.05) 0px,
-      rgba(255, 255, 255, 0.05) 1px,
-      transparent 1px,
-      transparent 30px
-    );
+    to bottom,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px,
+    transparent 30px
+  ),
+  repeating-linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px,
+    transparent 30px
+  );
   opacity: 0.06;
   pointer-events: none;
 }
+
 
 .material-symbols-outlined {
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;

@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardFooter, Image, Button } from "@heroui/react";
+import { Card, CardHeader, Image } from "@heroui/react";
 
 export default function ProductCardGrid() {
   return (

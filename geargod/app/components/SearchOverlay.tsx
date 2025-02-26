@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { Search } from "lucide-react";
 
 interface SearchOverlayProps {
   isVisible: boolean;
@@ -42,20 +43,22 @@ const SearchOverlay = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 ${containerClassName}`}
+      className={`fixed inset-0 z-50 bg-black bg-opacity-30 flex justify-center items-start pt-48 ${containerClassName} backdrop-filter backdrop-blur-sm bg-opacity-25`}
       onClick={onClose}
     >
-      {/* Prevent click events from bubbling up */}
       <div
-        className="bg-white p-6 transition ease-in duration-300 rounded-lg shadow-lg w-11/12 max-w-md"
+        className="bg-slate-950 border-2 border-stone-500 p-6 transition ease-in duration-300 rounded-lg shadow-lg w-11/12 max-w-md backdrop-filter backdrop-blur-sm bg-opacity-75"
         onClick={(e) => e.stopPropagation()}
       >
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder="Search..."
-          className={`w-full border border-gray-300 transition ease-in duration-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400 ${inputClassName}`}
-        />
+        <div className="relative w-full">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-zinc-600" />
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Search by brand or category..."
+            className={`w-full pl-12 border-2 border-gray-300 transition ease-in duration-300 rounded px-4 py-2 ${inputClassName}`}
+          />
+        </div>
       </div>
     </div>
   );
