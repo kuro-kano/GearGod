@@ -120,3 +120,9 @@ body {
 .material-symbols-outlined {
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }
+
+
+.heroui-tabs .heroui-tab.is-active {
+  background-color: #fff !important;
+  color: #000 !important;
+}

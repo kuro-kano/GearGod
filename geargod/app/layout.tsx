@@ -5,9 +5,13 @@ import SearchOverlay from "@/components/SearchOverlay";
 import "@/styles/globals.css";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
 
-  // Add global keyboard shortcut for Ctrl + K
+  useEffect(() => {
+    setIsMounted(true); // ensures the client-side rendering is complete
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key.toLowerCase() === "k") {
@@ -19,6 +23,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  if (!isMounted) return null; // Skip rendering the component until the client-side is mounted
 
   return (
     <html lang="en">

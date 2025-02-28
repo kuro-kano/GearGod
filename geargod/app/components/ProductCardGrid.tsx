@@ -3,7 +3,7 @@ import { Card, CardHeader, Image } from "@heroui/react";
 export default function ProductCardGrid() {
   return (
     <div className="max-w-[850px] max-h-[700px] gap-2 grid grid-cols-12 grid-rows-2 px-8 pt-14 pr-12">
-      <Card className="col-span-12 sm:col-span-4 h-[300px] rounded-lg overflow-hidden">
+      <Card className="col-span-12 sm:col-span-4 h-[300px] overflow-hidden">
         <CardHeader className="absolute z-10 top-1 flex-col !items-start p-3 inset-0 bg-gradient-to-b from-black/80 to-transparent">
           <p className="text-tiny text-white/60 uppercase font-bold">
             Pro Gaming Headset
@@ -19,7 +19,7 @@ export default function ProductCardGrid() {
           src="images/headset/Beyerdynamic-DT1990-PRO-MKII.jpg"
         />
       </Card>
-      <Card className="col-span-12 sm:col-span-4 h-[300px] rounded-lg overflow-hidden">
+      <Card className="col-span-12 sm:col-span-4 h-[300px] overflow-hidden">
         <CardHeader className="absolute z-10 top-1 flex-col !items-start p-3 inset-0 bg-gradient-to-b from-black/80 to-transparent">
           <p className="text-tiny text-white/60 uppercase font-bold">
             High-Precision Gaming Mouse
@@ -35,7 +35,7 @@ export default function ProductCardGrid() {
           src="images/mouse/helios_mouse.jpg"
         />
       </Card>
-      <Card className="col-span-12 sm:col-span-4 h-[300px] rounded-lg overflow-hidden">
+      <Card className="col-span-12 sm:col-span-4 h-[300px] overflow-hidden">
         <CardHeader className="absolute z-10 top-1 flex-col !items-start p-3 inset-0 bg-gradient-to-b from-black/80 to-transparent">
           <p className="text-tiny text-white/60 uppercase font-bold">
             Keyboard
@@ -53,7 +53,7 @@ export default function ProductCardGrid() {
       </Card>
       <Card
         isFooterBlurred
-        className="w-full h-[300px] col-span-12 sm:col-span-5 rounded-lg overflow-hidden"
+        className="w-full h-[300px] col-span-12 sm:col-span-5 overflow-hidden"
       >
         <CardHeader className="absolute z-10 top-1 flex-col items-start p-3 inset-0 bg-gradient-to-b from-black/80 to-transparent">
           <p className="text-tiny text-white/60 uppercase font-bold">
@@ -72,7 +72,7 @@ export default function ProductCardGrid() {
       </Card>
       <Card
         isFooterBlurred
-        className="w-full h-[300px] col-span-12 sm:col-span-7 rounded-lg overflow-hidden"
+        className="w-full h-[300px] col-span-12 sm:col-span-7 overflow-hidden"
       >
         <CardHeader className="absolute z-10 top-1 flex-col items-start p-3 inset-0 bg-gradient-to-b from-black/80 to-transparent">
           <p className="text-tiny text-white/60 uppercase font-bold">

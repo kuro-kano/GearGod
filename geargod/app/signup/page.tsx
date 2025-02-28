@@ -1,5 +1,5 @@
 "use client";
-import LoginForm from "@/components/LoginForm";
+import SignUpForm from "@/components/SignUpForm";
 import { useEffect, useState } from "react";
 
 const ImageBackground = () => {
@@ -24,7 +24,7 @@ const ImageBackground = () => {
         {/* Overlay Content */}
         <div className="absolute inset-0 flex items-center justify-center bg-transparent bg-opacity-50">
           {/* Ensure the text and LoginForm are centered */}
-          <LoginForm />
+          <SignUpForm />
         </div>
       </div>
     </main>
