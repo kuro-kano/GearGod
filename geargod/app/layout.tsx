@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import SearchOverlay from "@/components/SearchOverlay";
 import "@/styles/globals.css";
+import { AuthProvider } from "./providers";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
@@ -30,7 +31,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <body className="bg-gray-800">
         <Navbar setIsSearchVisible={setIsSearchVisible} />
-        <main>{children}</main>
+        <main>
+          <AuthProvider>{children}</AuthProvider>
+        </main>
 
         {/* Ensure search overlay is outside of the navbar and on top */}
         <SearchOverlay isVisible={isSearchVisible} onClose={() => setIsSearchVisible(false)} />
