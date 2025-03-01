@@ -18,6 +18,8 @@ export async function POST(req: Request) {
     const { username } = await req.json();
 
     const user = await db.get(query, [ username ]);
+    await db.close();
+
     console.log("User: ", user);
 
     return NextResponse.json({ user });

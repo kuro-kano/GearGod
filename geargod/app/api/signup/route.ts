@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import bcrypt from 'bcryptjs';
 
 async function connectSQLite() {
   return open({
@@ -12,43 +13,20 @@ async function connectSQLite() {
 
 export async function POST(req: Request) {
   try {
-    console.log("Connected to database!");
-    const db = await connectSQLite();
     const { username, email, password } = await req.json();
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (!username || !email || !password) {
-      return NextResponse.json(
-        { error: "All fields are required" },
-        { status: 400 }
-      );
-    }
+    const db = await connectSQLite();
+    const query = `INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?);`;
 
-    // Check if user already exists
-    const existingUser = await db.get(
-      "SELECT id FROM users WHERE email = ?",
-      [email]
-    );
-
-    if (existingUser) {
-      await db.close();
-      return NextResponse.json(
-        { error: "User already exists" },
-        { status: 409 }
-      );
-    }
-
-    // Insert user into database
-    await db.run(
-      "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-      [username, email, password]
-    );
-
+    await db.run(query, [ username, email, hashedPassword ]);
     await db.close();
-    return NextResponse.json({ message: "User registered successfully!" });
+
+    return NextResponse.json({ message: "User registration." }, { status: 201 });
   } catch (error) {
-    console.error("Database error:", error);
+    console.error("Registration error: ", error);
     return NextResponse.json(
-      { error: "An error occurred during registration" },
+      { message: "An error occurred while registering the user." },
       { status: 500 }
     );
   }
