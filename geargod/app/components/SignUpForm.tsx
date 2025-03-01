@@ -3,25 +3,27 @@
 import React from "react";
 import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
-  
   const [username, setUsername] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  
+
   const [isVisible, setIsVisible] = React.useState(false);
-  
   const toggleVisibility = () => setIsVisible(!isVisible);
-  
+
+  const router = useRouter();
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (password != confirmPassword) return;
 
     if (!username || !email || !password || !confirmPassword) return;
-    
+
     try {
       const resVerify = await fetch("http://localhost:3000/api/verify", {
         method: "POST",
@@ -40,7 +42,9 @@ export default function SignUpForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username, email, password
+          username,
+          email,
+          password,
         }),
       });
 
@@ -50,9 +54,11 @@ export default function SignUpForm() {
       } else {
         console.log("User registration failed..");
       }
+    } catch (error) {
+      console.error("Error during Registration: ", error);
+    }
 
-    } catch (error) { console.error("Error during Registration: ", error); }
-
+    router.replace("/login");
     console.log("handleSubmit");
   };
 
@@ -60,7 +66,7 @@ export default function SignUpForm() {
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 pb-10 pt-6 shadow-small">
         <div className="flex flex-col gap-1">
-          <h1 className="text-large font-medium">Let's create your account</h1>
+          <h1 className="text-large font-medium">Let&apos;s create your account</h1>
           <p className="text-small text-default-500">
             to continue shopping with GearGod
           </p>
