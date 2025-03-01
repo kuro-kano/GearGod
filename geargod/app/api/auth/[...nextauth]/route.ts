@@ -20,7 +20,7 @@ export const authOptions = {
                 username: { label: "Username", type: "text" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials, req) {
+            async authorize(credentials/*, req*/) {
                 console.log("✅ authorize() called with:", credentials);
 
                 if (!credentials?.username || !credentials?.password) {
