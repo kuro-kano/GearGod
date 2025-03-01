@@ -5,12 +5,54 @@ import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
 export default function SignUpForm() {
+  
+  const [username, setUsername] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  
   const [isVisible, setIsVisible] = React.useState(false);
-
+  
   const toggleVisibility = () => setIsVisible(!isVisible);
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    if (password != confirmPassword) return;
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    if (!username || !email || !password || !confirmPassword) return;
+    
+    try {
+      const resVerify = await fetch("http://localhost:3000/api/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const { user } = await resVerify.json();
+      if (user) return;
+
+      const res = await fetch("http://localhost:3000/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username, email, password
+        }),
+      });
+
+      if (res.ok) {
+        const form = e.target;
+        form.reset();
+      } else {
+        console.log("User registration failed..");
+      }
+
+    } catch (error) { console.error("Error during Registration: ", error); }
+
     console.log("handleSubmit");
   };
 
@@ -30,6 +72,7 @@ export default function SignUpForm() {
           onSubmit={handleSubmit}
         >
           <Input
+            onChange={(e) => setUsername(e.target.value)}
             isRequired
             label="Username"
             name="username"
@@ -38,6 +81,7 @@ export default function SignUpForm() {
             variant="bordered"
           />
           <Input
+            onChange={(e) => setEmail(e.target.value)}
             isRequired
             label="Email Address"
             name="email"
@@ -46,6 +90,7 @@ export default function SignUpForm() {
             variant="bordered"
           />
           <Input
+            onChange={(e) => setPassword(e.target.value)}
             isRequired
             endContent={
               <button type="button" onClick={toggleVisibility}>
@@ -69,6 +114,7 @@ export default function SignUpForm() {
             variant="bordered"
           />
           <Input
+            onChange={(e) => setConfirmPassword(e.target.value)}
             isRequired
             endContent={
               <button type="button" onClick={toggleVisibility}>
