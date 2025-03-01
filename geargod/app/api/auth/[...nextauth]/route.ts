@@ -1,4 +1,3 @@
-
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import sqlite3 from "sqlite3";
@@ -17,13 +16,13 @@ export const authOptions = {
         CredentialsProvider({
             name: "Credentials",
             credentials: {
-                username: { label: "Username", type: "text" },
+                email: { label: "Email", type: "text" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials/*, req*/) {
+            async authorize(credentials, req) {
                 console.log("✅ authorize() called with:", credentials);
 
-                if (!credentials?.username || !credentials?.password) {
+                if (!credentials?.email || !credentials?.password) {
                     console.log("❌ Missing credentials:", credentials);
                     return null;
                 }
@@ -31,9 +30,11 @@ export const authOptions = {
                 try {
                     console.log("🛠 Connecting to SQLite...");
                     const db = await connectSQLite();
+                    const query = `SELECT * FROM users WHERE email = ?`;
 
-                    console.log("🔎 Searching for user:", credentials.username);
-                    const user = await db.get("SELECT * FROM users WHERE username = ?", [credentials.username]);
+                    console.log("🔎 Searching for user from email:", credentials.email);
+                    const user = await db.get(query, [credentials.email]);
+                    await db.close();
 
                     if (!user) {
                         console.log("❌ User not found!");
