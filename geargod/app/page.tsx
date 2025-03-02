@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className="text-white ambient-bg">
       {/* Parent container occupies full viewport and centers its content */}
-      <div className="pt-32 h-screen flex flex-col justify-center items-center">
+      <div className="pt-32 min-h-screen flex flex-col justify-center items-center">
         {/* HERO SECTION */}
         <div className="w-full max-w-6xl flex items-center justify-between px-8">
           <div className="max-w-2xl">
@@ -164,7 +164,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="h-screen flex flex-col items-center justify-center w-full pl-72 pr-72">
+      <div className="min-h-screen flex flex-col items-center justify-center w-full pl-72 pr-72">
         {/* Text Section */}
         <div className="max-w-3xl">
           <p className="font-inter-bold text-5xl leading-normal text-center">
@@ -211,7 +211,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="h-screen flex flex-col items-center justify-center w-full pl-72 pr-72">
+      <div className="min-h-screen flex flex-col items-center justify-center w-full pl-72 pr-72">
         {/* Text Section */}
         <div className="max-w-3xl">
           <p className="font-inter-bold text-5xl leading-normal text-center">

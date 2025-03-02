@@ -1,8 +1,8 @@
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 import { Search, User, ShoppingCart } from "lucide-react";
 import { Kbd } from "@heroui/kbd";
-import LoginFormTabs from "./LoginForm";
 
 interface NavbarProps {
   setIsSearchVisible: (visible: boolean) => void;
@@ -12,8 +12,7 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
   const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
 
   const handleUserClick = () => {
-    // Toggle the user menu visibility
-    setIsUserMenuVisible(!isUserMenuVisible);
+    setIsUserMenuVisible(!isUserMenuVisible); // Toggle visibility on click
   };
 
   return (
@@ -64,7 +63,12 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
                 readOnly
               />
               <div className="absolute right-3 items-center text-gray-300 w-10 pb-1 text-center">
-              <Kbd className="bg-neutral-600 text-neutral-300" keys={["ctrl"]}>K</Kbd>
+                <Kbd
+                  className="bg-neutral-600 text-neutral-300"
+                  keys={["ctrl"]}
+                >
+                  K
+                </Kbd>
               </div>
             </div>
 
@@ -75,11 +79,7 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
                 onClick={handleUserClick}
               />
               {/* Conditionally render the dropdown */}
-              {isUserMenuVisible && (
-                <div className="absolute right-0 mt-2">
-                  <LoginFormTabs />
-                </div>
-              )}
+              <div className="absolute right-0 mt-2"></div>
             </div>
 
             {/* Shopping Cart Icon */}

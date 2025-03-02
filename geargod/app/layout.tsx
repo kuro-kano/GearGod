@@ -9,13 +9,30 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsMounted(true); // ensures the client-side rendering is complete
+    // Force a browser reflow by accessing offsetHeight
+    document.body.offsetHeight;
+
+    // Add viewport meta tag
+    if (!document.querySelector('meta[name="viewport"]')) {
+      const meta = document.createElement("meta");
+      meta.name = "viewport";
+      meta.content = "width=device-width, initial-scale=1, maximum-scale=1";
+      document.head.appendChild(meta);
+    }
+
+    // Apply essential styles directly
+    document.documentElement.style.overflow = "auto";
+    document.body.style.overflow = "auto";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+
+    setIsMounted(true);
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key.toLowerCase() === "k") {
-        event.preventDefault(); // Prevents browser's default search action
+        event.preventDefault();
         setIsSearchVisible(true);
       }
     };
@@ -24,16 +41,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  if (!isMounted) return null; // Skip rendering the component until the client-side is mounted
+  if (!isMounted) return null;
 
   return (
     <html lang="en">
-      <body className="bg-gray-800">
+      <body className="min-h-screen">
         <Navbar setIsSearchVisible={setIsSearchVisible} />
-        <main>{children}</main>
-
-        {/* Ensure search overlay is outside of the navbar and on top */}
-        <SearchOverlay isVisible={isSearchVisible} onClose={() => setIsSearchVisible(false)} />
+        <main className="w-full">{children}</main>
+        <SearchOverlay
+          isVisible={isSearchVisible}
+          onClose={() => setIsSearchVisible(false)}
+        />
       </body>
     </html>
   );

@@ -15,7 +15,7 @@ export default function SignUpForm() {
   };
 
   return (
-    <div className="flex h-full w-full items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center backdrop-filter backdrop-blur-sm bg-opacity-25">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 pb-10 pt-6 shadow-small">
         <div className="flex flex-col gap-1">
           <h1 className="text-large font-medium">Let's create your account</h1>
@@ -101,7 +101,7 @@ export default function SignUpForm() {
               >
                 Terms
               </Link>
-              &nbsp; and&nbsp;
+              &nbsp;and&nbsp;
               <Link
                 href="https://www.youtube.com/watch?v=Ap-gi3LrCoA"
                 size="sm"
