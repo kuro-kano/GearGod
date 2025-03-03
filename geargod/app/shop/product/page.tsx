@@ -5,19 +5,13 @@ import BreadCrumbs from "@/components/BreadCrumbs";
 import ProductFilters from "@/components/ProductFilters";
 import ShopProductCard from "@/components/ShopProductCard";
 
-export default function DealsPage() {  // Make sure it's a named function
+export default function DealsPage() {
+  // Make sure it's a named function
   return (
     <main className="ambient-bg">
-      <div className="pt-40 pl-48">
-        <BreadCrumbs />
-      </div>
-
       {/* Create a flex container to hold filters and products side by side */}
-      <div className="flex gap-8 px-48 py-8">
+      <div className="flex gap-8 px-48 py-8 pt-40 pl-48">
         {/* Left sidebar with filters */}
-        <div className="w-64 shrink-0">
-          <ProductFilters />
-        </div>
 
         {/* Main content area with products */}
         <div
@@ -27,10 +21,7 @@ export default function DealsPage() {  // Make sure it's a named function
               "0 10px 20px rgba(156, 39, 176, 0.2), 0 6px 6px rgba(32, 17, 126, 0.15)",
           }}
         >
-          <div className="grid grid-cols-3 gap-6">
-            <ShopProductCard/>
-            {/* Additional product cards would go here */}
-          </div>
+          <h1 className="font-figtree-bold text-[30px]">Loga Garuda Pro Wireless Gaming Mouse</h1>
         </div>
       </div>
     </main>

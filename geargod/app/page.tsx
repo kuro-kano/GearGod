@@ -26,6 +26,7 @@ export default function Home() {
               <Button
                 className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
                 radius="full"
+                href="/shop"
               >
                 Shop Now
                 <svg
@@ -227,6 +228,7 @@ export default function Home() {
             <Button
               className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
               radius="full"
+              href="/shop"
             >
               Shop Now
               <svg

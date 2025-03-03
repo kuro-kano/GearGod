@@ -60,12 +60,19 @@ body {
   font-style: bold;
 }
 
+@font-face {
+  font-family: "Kanit";
+  src: url("/fonts/Kanit.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
 /* ============================================= */
 /*    Ambient Background (Purple Glow + Grid)    */
 /* ============================================= */
 .ambient-bg {
   position: relative;
-  background-color: #000; /* If you keep a solid color, it might hide the pseudo-element */
+  background-color: #0A0A1A; /* Slightly blue-tinted black for base */
   min-height: 100vh;
   overflow: hidden;
   z-index: 0; /* Establishes a stacking context */
@@ -78,41 +85,45 @@ body {
   z-index: -1; /* Places the gradient behind the parent's content */
   background: radial-gradient(
       circle at top left,
-      rgba(156, 39, 176, 0.45) 5%,
-      transparent 40%
+      rgba(156, 39, 176, 0.55) 5%, /* More saturated purple */
+      transparent 50%
     ),
     radial-gradient(
       circle at bottom right,
-      rgba(48, 20, 175, 0.45) 5%,
-      transparent 40%
+      rgba(32, 17, 126, 0.55) 5%, /* Deeper blue */
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at center,
+      rgba(81, 24, 140, 0.3) 0%, /* Central purple accent */
+      transparent 60%
     );
   mix-blend-mode: screen;
   pointer-events: none;
 }
-
 
 .ambient-bg::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   bottom: 0;
-  height: 200px; /* Adjust as needed */
   background: repeating-linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.05) 0px,
-    rgba(255, 255, 255, 0.05) 1px,
+    rgba(180, 130, 255, 0.03) 0px, /* Subtle purple grid lines */
+    rgba(180, 130, 255, 0.03) 1px,
     transparent 1px,
     transparent 30px
   ),
   repeating-linear-gradient(
     to right,
-    rgba(255, 255, 255, 0.05) 0px,
-    rgba(255, 255, 255, 0.05) 1px,
+    rgba(180, 130, 255, 0.03) 0px,
+    rgba(180, 130, 255, 0.03) 1px,
     transparent 1px,
     transparent 30px
   );
-  opacity: 0.06;
+  opacity: 0.08;
   pointer-events: none;
 }
 
@@ -140,7 +151,7 @@ body {
 /* Update the ambient-bg class */
 .ambient-bg {
   position: relative;
-  background-color: #000;
+  background-color: #000319;
   width: 100%;
   overflow-x: hidden; /* Only restrict horizontal overflow */
   z-index: 0;
@@ -159,3 +170,4 @@ html, body {
   overflow-y: auto !important;
   overflow-x: hidden !important;
 }
+

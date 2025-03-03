@@ -30,21 +30,12 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
         {/* Right Section: Menu Items, Search Bar & Icons */}
         <div className="flex items-center space-x-10">
           {/* Menu Items */}
-          <div className="flex space-x-10 text-white font-medium">
+          <div className="flex space-x-10 text-white font-medium font-kanit-regular">
             <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
-              <Link href="/shop/deals">Deals</Link>
+              <Link href="/">หน้าแรก</Link>
             </div>
             <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
-              Guides
-            </div>
-            <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
-              Components
-            </div>
-            <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
-              Gaming Gear
-            </div>
-            <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
-              Monitors
+              เกี่ยวกับเรา
             </div>
           </div>
 

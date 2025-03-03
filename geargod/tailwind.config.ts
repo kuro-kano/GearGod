@@ -22,6 +22,7 @@ export default {
         "inter-regular": ["Inter", "sans-serif"],
         "inter-bold": ["Inter-Bold", "sans-serif"],
         "urbanist-bold": ["Urbanist-bold", "sans-serif"],
+        "kanit-regular": ["Kanit", "sans-serif"],
       },
     },
   },
