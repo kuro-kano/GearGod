@@ -3,14 +3,62 @@
 import React from "react";
 import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [username, setUsername] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
 
+  const [isVisible, setIsVisible] = React.useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const router = useRouter();
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (password != confirmPassword) return;
+
+    if (!username || !email || !password || !confirmPassword) return;
+
+    try {
+      const resVerify = await fetch("http://localhost:3000/api/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const { user } = await resVerify.json();
+      if (user) return;
+
+      const res = await fetch("http://localhost:3000/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
+
+      if (res.ok) {
+        const form = e.target;
+        form.reset();
+      } else {
+        console.log("User registration failed..");
+      }
+    } catch (error) {
+      console.error("Error during Registration: ", error);
+    }
+
+    router.replace("/login");
     console.log("handleSubmit");
   };
 
@@ -18,7 +66,7 @@ export default function SignUpForm() {
     <div className="flex h-full w-full items-center justify-center backdrop-filter backdrop-blur-sm bg-opacity-25">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 pb-10 pt-6 shadow-small">
         <div className="flex flex-col gap-1">
-          <h1 className="text-large font-medium">Let's create your account</h1>
+          <h1 className="text-large font-medium">Let&apos;s create your account</h1>
           <p className="text-small text-default-500">
             to continue shopping with GearGod
           </p>
@@ -30,6 +78,7 @@ export default function SignUpForm() {
           onSubmit={handleSubmit}
         >
           <Input
+            onChange={(e) => setUsername(e.target.value)}
             isRequired
             label="Username"
             name="username"
@@ -38,6 +87,7 @@ export default function SignUpForm() {
             variant="bordered"
           />
           <Input
+            onChange={(e) => setEmail(e.target.value)}
             isRequired
             label="Email Address"
             name="email"
@@ -46,6 +96,7 @@ export default function SignUpForm() {
             variant="bordered"
           />
           <Input
+            onChange={(e) => setPassword(e.target.value)}
             isRequired
             endContent={
               <button type="button" onClick={toggleVisibility}>
@@ -69,6 +120,7 @@ export default function SignUpForm() {
             variant="bordered"
           />
           <Input
+            onChange={(e) => setConfirmPassword(e.target.value)}
             isRequired
             endContent={
               <button type="button" onClick={toggleVisibility}>

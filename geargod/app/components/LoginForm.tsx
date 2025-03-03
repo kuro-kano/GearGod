@@ -3,14 +3,39 @@
 import React from "react";
 import {Button, Input, Checkbox, Link, Form, Divider} from "@heroui/react";
 import {Icon} from "@iconify/react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+
+  // * login
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  const router = useRouter();
+
+  // * visible
   const [isVisible, setIsVisible] = React.useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  // * handleSubmit
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const res = await signIn("credentials", {
+        email, password, redirect: false
+      });
+
+      console.log("Sign-in response: ", res);
+
+      if (res.error) return;
+
+      router.replace("/")
+
+    } catch (error) { console.error(error); }
+
     console.log("handleSubmit");
   };
 
@@ -24,6 +49,7 @@ export default function LoginForm() {
 
         <Form className="flex flex-col gap-3" validationBehavior="native" onSubmit={handleSubmit}>
           <Input
+            onChange={(e) => setEmail(e.target.value)}
             isRequired
             label="Email Address"
             name="email"
@@ -32,6 +58,7 @@ export default function LoginForm() {
             variant="bordered"
           />
           <Input
+            onChange={(e) => setPassword(e.target.value)}
             isRequired
             endContent={
               <button type="button" onClick={toggleVisibility}>

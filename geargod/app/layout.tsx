@@ -3,36 +3,20 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import SearchOverlay from "@/components/SearchOverlay";
 import "@/styles/globals.css";
+import { AuthProvider } from "./providers";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    // Force a browser reflow by accessing offsetHeight
-    document.body.offsetHeight;
-
-    // Add viewport meta tag
-    if (!document.querySelector('meta[name="viewport"]')) {
-      const meta = document.createElement("meta");
-      meta.name = "viewport";
-      meta.content = "width=device-width, initial-scale=1, maximum-scale=1";
-      document.head.appendChild(meta);
-    }
-
-    // Apply essential styles directly
-    document.documentElement.style.overflow = "auto";
-    document.body.style.overflow = "auto";
-    document.body.style.margin = "0";
-    document.body.style.padding = "0";
-
-    setIsMounted(true);
+    setIsMounted(true); // ensures the client-side rendering is complete
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key.toLowerCase() === "k") {
-        event.preventDefault();
+        event.preventDefault(); // Prevents browser's default search action
         setIsSearchVisible(true);
       }
     };
@@ -41,17 +25,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  if (!isMounted) return null;
+  if (!isMounted) return null; // Skip rendering the component until the client-side is mounted
 
   return (
     <html lang="en">
-      <body className="min-h-screen">
+      <body className="bg-gray-800">
         <Navbar setIsSearchVisible={setIsSearchVisible} />
-        <main className="w-full">{children}</main>
-        <SearchOverlay
-          isVisible={isSearchVisible}
-          onClose={() => setIsSearchVisible(false)}
-        />
+        <main>
+          <AuthProvider>{children}</AuthProvider>
+        </main>
+
+        {/* Ensure search overlay is outside of the navbar and on top */}
+        <SearchOverlay isVisible={isSearchVisible} onClose={() => setIsSearchVisible(false)} />
       </body>
     </html>
   );
