@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import {Button, Input, Checkbox, Link, Form, Divider} from "@heroui/react";
-import {Icon} from "@iconify/react";
+import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
+import { Icon } from "@iconify/react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-
   // * login
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -20,23 +19,27 @@ export default function LoginForm() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   // * handleSubmit
+  // Modified handleSubmit in LoginForm.tsx
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       const res = await signIn("credentials", {
-        email, password, redirect: false
+        email,
+        password,
+        redirect: false,
       });
 
-      console.log("Sign-in response: ", res);
+      if (res?.error) {
+        // Handle login error
+        return;
+      }
 
-      if (res?.error) return;
-
-      router.replace("/")
-
-    } catch (error) { console.error(error); }
-
-    console.log("handleSubmit");
+      // For a complete refresh that ensures proper component mounting
+      window.location.href = "/";
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -47,7 +50,11 @@ export default function LoginForm() {
           <p className="text-small text-default-500">to continue to GearGod</p>
         </div>
 
-        <Form className="flex flex-col gap-3" validationBehavior="native" onSubmit={handleSubmit}>
+        <Form
+          className="flex flex-col gap-3"
+          validationBehavior="native"
+          onSubmit={handleSubmit}
+        >
           <Input
             onChange={(e) => setEmail(e.target.value)}
             isRequired

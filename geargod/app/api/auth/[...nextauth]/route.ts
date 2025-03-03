@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { SessionStrategy } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
@@ -61,7 +61,7 @@ export const authOptions = {
         }),
     ],
     session: {
-        strategy: "jwt"
+        strategy: "jwt" as SessionStrategy
     },
     secret: process.env.NEXTAUTH_SECRET,
     pages: {
