@@ -3,8 +3,14 @@ import { Button } from "@heroui/react";
 import ProductCardGrid from "@/components/ProductCardGrid";
 import "@/styles/globals.css";
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+  
+  const handleButtonPress = (path: string) => {
+    router.push(path);
+  };
   return (
     <main className="text-white ambient-bg">
       {/* Parent container occupies full viewport and centers its content */}
@@ -23,12 +29,12 @@ export default function Home() {
               performance and style.
             </p>
             <div className="mt-9 flex gap-4 pb-10">
-              <Button
-                className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
-                radius="full"
-                href="/shop"
-              >
-                Shop Now
+            <Button
+        className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
+        radius="full"
+        onPress={() => handleButtonPress('/shop')}
+      >
+        Shop Now
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

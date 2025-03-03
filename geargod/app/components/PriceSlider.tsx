@@ -1,5 +1,5 @@
 import { Slider } from "@heroui/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface PriceSliderProps {
   onPriceChange?: (min: number, max: number) => void;
@@ -8,12 +8,16 @@ interface PriceSliderProps {
 export default function PriceSlider({ onPriceChange }: PriceSliderProps) {
   const [range, setRange] = useState<[number, number]>([0, 5000]);
 
-  // Update parent component when range changes
-  useEffect(() => {
-    if (onPriceChange) {
-      onPriceChange(range[0], range[1]);
+  // Handle range changes directly without useEffect
+  const handleRangeChange = (value: number | number[]) => {
+    if (Array.isArray(value) && value.length === 2) {
+      setRange([value[0], value[1]]);
+      // Call onPriceChange only when the range actually changes
+      if (onPriceChange) {
+        onPriceChange(value[0], value[1]);
+      }
     }
-  }, [range, onPriceChange]);
+  };
 
   return (
     <div>
