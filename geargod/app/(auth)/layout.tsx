@@ -1,12 +1,16 @@
 // app/(auth)/layout.tsx
+
+import { Providers } from "@/providers";
+
+
 export default function AuthLayout({
-    children,
-  }: {
-    children: React.ReactNode;
-  }) {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        <div className="auth-layout">{children}</div>
-      </div>
-    );
-  }
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Providers>
+      <main>{children}</main>
+    </Providers>
+  );
+}

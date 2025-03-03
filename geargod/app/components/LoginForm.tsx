@@ -5,6 +5,7 @@ import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { showToast } from "@/components/ToastAlert";
 
 export default function LoginForm() {
   // * login
@@ -31,10 +32,13 @@ export default function LoginForm() {
       });
 
       if (res?.error) {
-        // Handle login error
+        showToast({
+          title: "Login Failed",
+          description: "Invalid email or password. Please try again.",
+          color: "danger",
+        });
         return;
       }
-
       // For a complete refresh that ensures proper component mounting
       window.location.href = "/";
     } catch (error) {

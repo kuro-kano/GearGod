@@ -1,3 +1,4 @@
+"use client";
 import { Divider } from "@heroui/divider";
 import { CheckboxGroup, Checkbox, Chip } from "@heroui/react";
 import { useState } from "react";

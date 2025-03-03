@@ -1,3 +1,4 @@
+//app/(main)/page.tsx
 "use client";
 import { Button } from "@heroui/react";
 import ProductCardGrid from "@/components/ProductCardGrid";

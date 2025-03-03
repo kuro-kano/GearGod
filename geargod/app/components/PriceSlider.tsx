@@ -1,3 +1,4 @@
+"use client";
 import { Slider } from "@heroui/react";
 import { useState } from "react";
 
