@@ -30,7 +30,7 @@ export default function LoginForm() {
 
       console.log("Sign-in response: ", res);
 
-      if (res.error) return;
+      if (res?.error) return;
 
       router.replace("/")
 
