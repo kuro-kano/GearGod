@@ -60,11 +60,12 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
           </div>
 
           {/* User Icon */}
-          <div className="relative">
-            <User
+            <div className="relative">
+            <Link href="/login">
+              <User
               className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors"
-              onClick={handleUserClick}
-            />
+              />
+            </Link>
             {/* Conditionally render the dropdown */}
             <div className="absolute right-0 mt-2"></div>
           </div>

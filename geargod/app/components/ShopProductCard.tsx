@@ -1,13 +1,43 @@
 "use client";
-import { Spacer, Card } from "@heroui/react";
+import { Card } from "@heroui/react";
 import { useState } from "react";
 import { Link } from "@heroui/link";
+import Image from "next/image";
+import CategoryTags from "./CategoryTags";
 
-export default function ShopProductCard({ onClick = () => {} }) {
+interface Product {
+  product_id: string;
+  product_name: string;
+  category_name?: string;
+  price: number;
+  tags: string | null;
+  image_url?: string;
+}
+
+interface ShopProductCardProps {
+  product: Product;
+  onClick?: () => void;
+}
+
+export default function ShopProductCard({
+  product,
+  onClick = () => {},
+}: ShopProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  // Handle the image URL properly
+  const imageUrl =
+    imageError || !product.image_url
+      ? "/images/products/placeholder.jpg"
+      : product.image_url.startsWith("http")
+      ? product.image_url
+      : product.image_url.startsWith("/")
+      ? product.image_url
+      : `/images/products/${product.product_id}/${product.image_url}`;
 
   return (
-    <Link href={`/shop/product/`}>
+    <Link href={`/shop/product/${product.product_id}`}>
       <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -25,13 +55,34 @@ export default function ShopProductCard({ onClick = () => {} }) {
             transition: "all 0.3s cubic-bezier(.25,.8,.25,1)",
           }}
         >
-          <img
-            src="images/products/mouse/loga-garuda-pro-wireless-gaming-mouse-matte-neon-pink-top.jpg"
-            className="rounded-xl"
-          />
-          <div className="h-3 w-2/5 rounded-lg bg-default-300"></div>
-          <div className="font-bold">Loga Garuda Pro Wireless Gaming Mouse</div>
-          <div className="text-sm">2,990.00 ฿</div>
+          {/* Replace img with Next.js Image component */}
+          <div className="relative w-full h-48">
+            <Image
+              src={imageUrl}
+              alt={product.product_name}
+              fill
+              sizes="(max-width: 768px) 100vw, 250px"
+              className="rounded-xl object-cover"
+              onError={() => setImageError(true)}
+              priority={false}
+            />
+          </div>
+
+          {/* Product tags */}
+          <div className="my-2">
+            <CategoryTags
+              tags={product.tags}
+              categoryName={product.category_name}
+            />
+          </div>
+
+          {/* Product name */}
+          <div className="font-bold line-clamp-2">{product.product_name}</div>
+
+          {/* Product price */}
+          <div className="text-sm font-medium">
+            ฿{product.price.toLocaleString()}
+          </div>
         </Card>
       </div>
     </Link>

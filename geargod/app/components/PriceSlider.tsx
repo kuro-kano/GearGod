@@ -1,43 +1,54 @@
 "use client";
+import { useState, useEffect } from "react";
 import { Slider } from "@heroui/react";
-import { useState } from "react";
 
 interface PriceSliderProps {
-  onPriceChange?: (min: number, max: number) => void;
+  onPriceChange: (min: number, max: number) => void;
+  initialMin?: number;
+  initialMax?: number;
 }
 
-export default function PriceSlider({ onPriceChange }: PriceSliderProps) {
-  const [range, setRange] = useState<[number, number]>([0, 5000]);
+export default function PriceSlider({
+  onPriceChange,
+  initialMin = 0,
+  initialMax = 50000,
+}: PriceSliderProps) {
+  const [value, setValue] = useState([initialMin, initialMax]);
 
-  // Handle range changes directly without useEffect
-  const handleRangeChange = (value: number | number[]) => {
-    if (Array.isArray(value) && value.length === 2) {
-      setRange([value[0], value[1]]);
-      // Call onPriceChange only when the range actually changes
-      if (onPriceChange) {
-        onPriceChange(value[0], value[1]);
-      }
+  // Update local state when props change
+  useEffect(() => {
+    setValue([initialMin, initialMax]);
+  }, [initialMin, initialMax]);
+
+  const handleChange = (newValue: any) => {
+    // Simplified handler
+    let min, max;
+
+    if (Array.isArray(newValue)) {
+      [min, max] = newValue;
+    } else {
+      min = initialMin;
+      max = initialMax;
     }
+
+    setValue([min, max]);
+    onPriceChange(min, max);
   };
 
   return (
     <div>
       <Slider
-        step={100}
+        // Only use props that are known to work with @heroui/react
+        defaultValue={value}
+        value={value}
+        onChange={handleChange}
+        maxValue={50000}
         minValue={0}
-        maxValue={5000}
-        defaultValue={[0, 5000]}
-        formatOptions={{ style: "currency", currency: "THB" }}
-        className="max-w-md"
-        onChange={(value: number | number[]) => {
-          if (Array.isArray(value) && value.length === 2) {
-            setRange([value[0], value[1]]);
-          }
-        }}
+        className="mb-2"
       />
-      <div className="flex justify-between mt-2">
-        <span className="text-white">฿{range[0]}</span>
-        <span className="text-white">฿{range[1]}</span>
+      <div className="flex justify-between text-sm text-white">
+        <div>฿{value[0]}</div>
+        <div>฿{value[1]}</div>
       </div>
     </div>
   );

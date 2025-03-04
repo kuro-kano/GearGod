@@ -6,10 +6,10 @@ const LoginPage = () => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // Ensure this runs only on the client
+    setIsClient(true); 
   }, []);
 
-  if (!isClient) return null; // Prevent rendering on the server
+  if (!isClient) return null;
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
@@ -21,6 +21,7 @@ const LoginPage = () => {
       {/* Overlay Content */}
       <div className="absolute inset-0 flex items-center justify-center bg-transparent bg-opacity-50">
         {/* Ensure the text and LoginForm are centered */}
+        
         <LoginForm />
       </div>
     </section>

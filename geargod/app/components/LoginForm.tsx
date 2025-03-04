@@ -50,6 +50,29 @@ export default function LoginForm() {
     <div className="flex h-full w-full items-center justify-center backdrop-filter backdrop-blur-sm bg-opacity-25">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 pb-10 pt-6 shadow-small">
         <div className="flex flex-col gap-1">
+          <Link href="/">
+          <Button color="default" variant="ghost" className="w-[147px] mb-5">
+            <svg
+              className="w-6 h-6 text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 12h14M5 12l4-4m-4 4 4 4"
+              />
+            </svg>
+            Back to home
+          </Button>
+          </Link>
+          
           <h1 className="text-large font-medium">Sign in to your account</h1>
           <p className="text-small text-default-500">to continue to GearGod</p>
         </div>
