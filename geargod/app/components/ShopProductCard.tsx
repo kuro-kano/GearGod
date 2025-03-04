@@ -17,11 +17,13 @@ interface Product {
 interface ShopProductCardProps {
   product: Product;
   onClick?: () => void;
+  isPriority?: boolean; // Add priority flag prop
 }
 
 export default function ShopProductCard({
   product,
   onClick = () => {},
+  isPriority = false, // Default to false unless explicitly provided
 }: ShopProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -64,7 +66,7 @@ export default function ShopProductCard({
               sizes="(max-width: 768px) 100vw, 250px"
               className="rounded-xl object-cover"
               onError={() => setImageError(true)}
-              priority={false}
+              priority={isPriority} // Use the priority prop
             />
           </div>
 

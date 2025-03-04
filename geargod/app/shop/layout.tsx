@@ -4,9 +4,13 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import SearchOverlay from "@/components/SearchOverlay";
 
-export default function ShopLayout({ children }: { children: React.ReactNode }) {
+export default function ShopLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
-  
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key.toLowerCase() === "k") {
@@ -14,19 +18,19 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
         setIsSearchVisible(true);
       }
     };
-    
+
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
-  
+
   return (
-    <body>
+    <>
       <Navbar setIsSearchVisible={setIsSearchVisible} />
       {children}
       <SearchOverlay
         isVisible={isSearchVisible}
         onClose={() => setIsSearchVisible(false)}
       />
-    </body>
+    </>
   );
 }

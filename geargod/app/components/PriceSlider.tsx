@@ -37,6 +37,9 @@ export default function PriceSlider({
 
   return (
     <div>
+      <label id="price-range-label" className="block mb-2 text-sm text-white">
+        Price Range
+      </label>
       <Slider
         // Only use props that are known to work with @heroui/react
         defaultValue={value}
@@ -45,6 +48,7 @@ export default function PriceSlider({
         maxValue={50000}
         minValue={0}
         className="mb-2"
+        aria-labelledby="price-range-label"
       />
       <div className="flex justify-between text-sm text-white">
         <div>฿{value[0]}</div>
