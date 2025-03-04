@@ -182,14 +182,18 @@ export default function Shop() {
               <div className="text-lg text-red-500">{error}</div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProducts.length === 0 ? (
                 <div className="col-span-3 text-center py-10">
                   No products found matching the selected filters
                 </div>
               ) : (
-                filteredProducts.map((product) => (
-                  <ShopProductCard key={product.product_id} product={product} />
+                filteredProducts.map((product, index) => (
+                  <ShopProductCard
+                    key={product.product_id}
+                    product={product}
+                    isPriority={index < 4} // Set priority for first 4 products that will be above the fold
+                  />
                 ))
               )}
             </div>

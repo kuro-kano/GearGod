@@ -74,6 +74,7 @@ export default function ProductFilters({
     razer: "Razer",
     logitech: "Logitech",
     nzxt: "NZXT",
+    loga: "Loga",
   };
 
   return (
@@ -162,6 +163,7 @@ export default function ProductFilters({
         <Checkbox value="razer">Razer</Checkbox>
         <Checkbox value="logitech">Logitech</Checkbox>
         <Checkbox value="nzxt">NZXT</Checkbox>
+        <Checkbox value="loga">Loga</Checkbox>
       </CheckboxGroup>
 
       <Divider className="my-4" />
