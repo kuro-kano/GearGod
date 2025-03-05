@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import ProductFilters from "@/components/ProductFilters";
 import ShopProductCard from "@/components/ShopProductCard";
+import { useSession } from 'next-auth/react';
 
 // Define the Product interface to match your API response
 interface Product {

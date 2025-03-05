@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart, CircleUserRound, LogOut, User } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import {
   Dropdown,
   DropdownTrigger,
@@ -16,35 +18,34 @@ interface NavbarProps {
 }
 
 const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
-  // For demonstration, let's use localStorage to persist login state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
+  const { data: session } = useSession();
 
-  // Check if user is logged in on component mount
+  // Monitor session changes
   useEffect(() => {
-    // Check if we're in the browser environment
-    if (typeof window !== 'undefined') {
-      const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-      const storedUsername = localStorage.getItem("username") || "";
-      setIsLoggedIn(loggedIn);
-      setUsername(storedUsername);
+    if (session?.user) {
+      console.log('Session data:', session);
+      setIsLoggedIn(true);
+      setUsername(session.user.name || session.user.email || "");
+    } else {
+      setIsLoggedIn(false);
+      setUsername("");
     }
-  }, []);
+  }, [session]);
 
-  // Handle login (for demo purposes)
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-    setUsername("DemoUser");
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("username", "DemoUser");
-  };
+  // Monitor username changes
+  useEffect(() => {
+    if (username) {
+      console.log('Username updated:', username);
+      console.log('Login status:', isLoggedIn);
+    }
+  }, [username, isLoggedIn]);
 
-  // Handle logout
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUsername("");
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("username");
+    signOut();
   };
 
   return (
@@ -80,9 +81,9 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
             <Dropdown>
               <DropdownTrigger>
                 {isLoggedIn ? (
-                  <Avatar 
-                    name={username.charAt(0).toUpperCase()} 
-                    className="w-8 h-8 bg-purple-600 text-white cursor-pointer hover:bg-purple-700 transition-colors" 
+                  <Avatar
+                    name={username.charAt(0).toUpperCase()}
+                    className="w-8 h-8 bg-purple-600 text-white cursor-pointer hover:bg-purple-700 transition-colors"
                   />
                 ) : (
                   <CircleUserRound className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors" />
@@ -97,10 +98,14 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
                         <span>{username}</span>
                       </div>
                     </DropdownItem>
-                    <DropdownItem href="/profile" key="profile">My Profile</DropdownItem>
-                    <DropdownItem href="/orders" key="orders">My Orders</DropdownItem>
-                    <DropdownItem 
-                      key="logout" 
+                    <DropdownItem href="/profile" key="profile">
+                      My Profile
+                    </DropdownItem>
+                    <DropdownItem href="/orders" key="orders">
+                      My Orders
+                    </DropdownItem>
+                    <DropdownItem
+                      key="logout"
                       onPress={handleLogout}
                       className="text-red-500 hover:text-red-700"
                     >
@@ -112,16 +117,18 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
                   </>
                 ) : (
                   <>
-                    <DropdownItem href="/login" key="login">Log In</DropdownItem>
-                    <DropdownItem href="/signup" key="register">Register</DropdownItem>
-                    {/* For demo purposes, add a direct login button */}
-                    <DropdownItem onPress={handleLogin} key="demo-login">Demo Login</DropdownItem>
+                    <DropdownItem href="/login" key="login">
+                      Log In
+                    </DropdownItem>
+                    <DropdownItem href="/signup" key="register">
+                      Register
+                    </DropdownItem>
                   </>
                 )}
               </DropdownMenu>
             </Dropdown>
           </div>
-          
+
           {/* Shopping Cart Icon */}
           <Link href="/cart">
             <ShoppingCart className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors" />
