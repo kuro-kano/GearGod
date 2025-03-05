@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { connectSQLite } from '@/lib/db';
+import { NextRequest, NextResponse } from "next/server";
+import { connectSQLite } from "@/lib/db";
 
 // Mock data for development
 const getMockProductColors = (productId: string) => {
@@ -16,10 +16,10 @@ const getMockProductColors = (productId: string) => {
 };
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: { id: string } }
 ) {
-  const productId = params.id;
+  const productId = context.params.id;
 
   try {
     const db = await connectSQLite();
@@ -93,10 +93,10 @@ export async function GET(
 }
 
 export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: { id: string } }
 ) {
-  const productId = params.id;
+  const productId = context.params.id;
   
   try {
     const data = await request.json();
