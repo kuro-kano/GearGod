@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@heroui/button";
+import { Link } from "@heroui/react";
 
 // Define the Product interface
 interface Product {
@@ -137,7 +138,9 @@ export default function ProductPage() {
   return (
     <main className="ambient-bg">
       <div className="container mx-auto px-4 py-8 pt-40">
-        <Button>Back to Shop</Button>
+        <Link href="/shop">
+          <Button>Back to Shop</Button>
+        </Link>
         <div
           className="flex flex-col md:flex-row bg-[#1D1C21] rounded-md border-[#1D1C21] p-6 md:p-12 shadow-foreground-700 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-60 mt-8"
           style={{
@@ -255,12 +258,21 @@ export default function ProductPage() {
               </div>
 
               {/* Add to cart button */}
-              <button
-                className="mt-auto py-3 px-6 bg-purple-600 hover:bg-purple-700 rounded-md transition duration-300"
-                disabled={product.stock_quantity <= 0}
-              >
-                Add to Cart
-              </button>
+              <div className="flex flex-row md:flex-row-2 gap-4 justify-evenly">
+                <Button
+                  className="w-full mt-auto py-3 px-6 border-2 border-purple-600 rounded-md transition duration-300 font-kanit-regular"
+                  variant="bordered"
+                  disabled={product.stock_quantity <= 0}
+                >
+                  เพิ่มลงตะกร้า
+                </Button>
+                <Button
+                  className="w-full mt-auto py-3 px-6 bg-purple-600 hover:bg-purple-700 rounded-md transition duration-300 font-kanit-regular"
+                  disabled={product.stock_quantity <= 0}
+                >
+                  ซื้อเลย
+                </Button>
+              </div>
             </div>
           </section>
         </div>

@@ -63,16 +63,16 @@ const AdminSidebar = ({
 
   // Navigation items for admin
   const navItems = [
-    { name: "Dashboard", icon: <Home className="w-5 h-5" />, href: "/admin" },
+    { name: "หน้าหลัก", icon: <Home className="w-5 h-5" />, href: "/admin" },
     {
-      name: "Orders",
+      name: "รายการสั่งซื้อ",
       icon: <Package className="w-5 h-5" />,
       href: "/admin/orders",
     },
     {
-      name: "Customers",
+      name: "สินค้าทั้งหมด",
       icon: <Users className="w-5 h-5" />,
-      href: "/admin/customers",
+      href: "/admin/products",
     },
     {
       name: "Analytics",
@@ -80,7 +80,7 @@ const AdminSidebar = ({
       href: "/admin/analytics",
     },
     {
-      name: "Settings",
+      name: "ตั้งค่า",
       icon: <Settings className="w-5 h-5" />,
       href: "/admin/settings",
     },
@@ -177,7 +177,7 @@ const AdminSidebar = ({
               <li key={index}>
                 <Link
                   href={item.href}
-                  className="flex items-center py-2 px-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-200 hover:text-white"
+                  className="font-kanit-regular flex items-center py-2 px-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-200 hover:text-white"
                 >
                   <div className="mr-3">{item.icon}</div>
                   {isExpanded && <span>{item.name}</span>}

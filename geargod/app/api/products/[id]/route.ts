@@ -138,6 +138,74 @@ export async function PUT(
 
     // Execute the update
     const result = await db.run(sql, values);
+
+    // Handle color associations if product is customizable
+    if (productData.is_customizable === 1 && productData.colors && Array.isArray(productData.colors)) {
+      console.log("Processing color variants for customizable product");
+      
+      try {
+        // Check if product_colors table exists
+        const tableCheck = await db.get(`SELECT name FROM sqlite_master WHERE type='table' AND name='product_colors'`);
+        
+        if (!tableCheck) {
+          console.log("Creating product_colors table");
+          // Create product_colors junction table
+          await db.exec(`
+            CREATE TABLE product_colors (
+              product_id TEXT NOT NULL,
+              color_id INTEGER NOT NULL,
+              PRIMARY KEY (product_id, color_id)
+            )
+          `);
+        }
+        
+        // Delete existing color associations
+        await db.run(`DELETE FROM product_colors WHERE product_id = ?`, [id]);
+        
+        // Add new color associations
+        if (productData.colors.length > 0) {
+          console.log(`Adding ${productData.colors.length} colors for product ${id}`);
+          
+          for (const color of productData.colors) {
+            if (color && color.color_id) {
+              await db.run(
+                `INSERT OR REPLACE INTO product_colors (product_id, color_id) VALUES (?, ?)`, 
+                [id, color.color_id]
+              );
+            }
+          }
+        }
+      } catch (colorError) {
+        console.error("Error handling color associations:", colorError);
+        // Continue with the response, but log the error
+      }
+    }
+
+    // Handle product images with color associations (for future implementation)
+    if (productData.images && Array.isArray(productData.images)) {
+      console.log(`Processing ${productData.images.length} images`);
+      
+      try {
+        // Check if color_id column exists in products_image table
+        try {
+          await db.get(`PRAGMA table_info(products_image)`);
+          
+          // Add color_id column if it doesn't exist
+          try {
+            await db.run(`ALTER TABLE products_image ADD COLUMN color_id INTEGER NULL`);
+            console.log("Added color_id column to products_image table");
+          } catch (alterError) {
+            // Column might already exist, continue
+          }
+        } catch (tableError) {
+          console.log("products_image table might not exist yet");
+        }
+      } catch (imageError) {
+        console.error("Error handling image updates:", imageError);
+        // Continue with the response, but log the error
+      }
+    }
+
     await db.close();
 
     return NextResponse.json({

@@ -17,6 +17,12 @@ export async function POST(
     console.log("Parsing form data...");
     const formData = await request.formData();
     const file = formData.get("file") as File;
+    const colorId = formData.get("colorId") as string | null;
+
+    console.log("Form data received:", {
+      productId: id,
+      colorId: colorId || "none (main product image)",
+    });
 
     if (!file) {
       console.error("No file found in request");
@@ -39,7 +45,7 @@ export async function POST(
 
     // Generate filename - simplified to be more user-friendly
     const fileExt = path.extname(file.name) || ".jpg";
-    const filename = `${Date.now()}${fileExt}`;
+    const filename = `${Date.now()}${colorId ? `_color${colorId}` : ""}${fileExt}`;
 
     // Define paths with product-specific folder
     const publicDir = path.join(process.cwd(), "public");
@@ -105,10 +111,32 @@ export async function POST(
         );
       }
 
-      // Insert into products_image table with relative path
+      // Check if products_image table has color_id column
+      try {
+        const tableInfo = await db.all("PRAGMA table_info(products_image)");
+        if (!tableInfo.some(col => col.name === 'color_id')) {
+          console.log("Adding color_id column to products_image table");
+          await db.run("ALTER TABLE products_image ADD COLUMN color_id INTEGER NULL");
+        }
+      } catch (alterError) {
+        console.error("Error checking/altering table:", alterError);
+      }
+
+      // Determine if this is a primary image
+      let isPrimary = 0;
+      if (!colorId) {
+        // If it's not a color variant image, check if this is the first image
+        const existingImages = await db.get(
+          "SELECT COUNT(*) as count FROM products_image WHERE product_id = ?",
+          [id]
+        );
+        isPrimary = existingImages.count === 0 ? 1 : 0;
+      }
+
+      // Insert into products_image table with relative path and color info
       await db.run(
-        "INSERT INTO products_image (product_id, image_url, image_id) VALUES (?, ?, ?)",
-        [id, relativePath, 1]
+        "INSERT INTO products_image (product_id, image_url, is_primary, color_id) VALUES (?, ?, ?, ?)",
+        [id, relativePath, isPrimary, colorId ? parseInt(colorId) : null]
       );
 
       await db.close();
@@ -134,6 +162,7 @@ export async function POST(
     return NextResponse.json({
       message: "Image uploaded successfully",
       imageUrl: publicImageUrl,
+      colorId: colorId ? parseInt(colorId) : null
     });
   } catch (error) {
     console.error("CRITICAL ERROR in image upload:", error);
