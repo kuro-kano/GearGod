@@ -1,8 +1,14 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Search, User, ShoppingCart } from "lucide-react";
-import { Kbd } from "@heroui/kbd";
+import { User, ShoppingCart, CircleUserRound } from "lucide-react";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@heroui/react";
 
 interface NavbarProps {
   setIsSearchVisible: (visible: boolean) => void;
@@ -40,38 +46,21 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
 
         {/* Search Bar & Icons */}
         <div className="flex items-center space-x-5">
-          <div className="relative flex items-center">
-            <Search
-              className="w-5 h-5 text-zinc-600 cursor-pointer transition-colors absolute left-3"
-              onClick={() => setIsSearchVisible(true)}
-            />
-            <input
-              type="text"
-              placeholder="Search"
-              className="bg-transparent rounded-2xl pl-10 pt-2.5 pb-2.5 border-2 border-zinc-600 focus:outline-none focus:ring-2 focus:ring-gray-400 w-16 md:w-40 cursor-pointer"
-              onClick={() => setIsSearchVisible(true)}
-              readOnly
-            />
-            <div className="absolute right-3 items-center text-gray-300 w-10 pb-1 text-center">
-              <Kbd className="bg-neutral-600 text-neutral-300" keys={["ctrl"]}>
-                K
-              </Kbd>
-            </div>
-          </div>
-
           {/* User Icon */}
-            <div className="relative">
-            <Link href="/login">
-              <User
-              className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors"
-              />
-            </Link>
+          <div className="relative">
+            <Dropdown>
+              <DropdownTrigger>
+                <CircleUserRound className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors" />
+              </DropdownTrigger>
+              <DropdownMenu>
+                <DropdownItem href="/login" key="login">Log In</DropdownItem>
+                <DropdownItem href="/signup" key="register">Register</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+
             {/* Conditionally render the dropdown */}
             <div className="absolute right-0 mt-2"></div>
-          </div>
-
-          {/* Shopping Cart Icon */}
-          <ShoppingCart className="w-6 h-6 text-white cursor-pointer hover:text-gray-300 transition-colors" />
+          </div>         
         </div>
       </div>
     </nav>

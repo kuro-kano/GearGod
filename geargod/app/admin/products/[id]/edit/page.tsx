@@ -311,7 +311,7 @@ export default function EditProductPage() {
 
   if (!product)
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen ambient-bg">
         <div className="text-xl">Loading product data...</div>
       </div>
     );
@@ -321,232 +321,238 @@ export default function EditProductPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">
-        Edit Product: {product.product_name}
-      </h1>
+    <main className="ambient-bg">
+      <div className="p-6 max-w-4xl mx-auto  ">
+        <h1 className="text-2xl font-bold mb-6">
+          Edit Product: {product.product_name}
+        </h1>
 
-      {formError && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {formError}
-        </div>
-      )}
+        {formError && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {formError}
+          </div>
+        )}
 
-      {successMessage && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-          {successMessage}
-        </div>
-      )}
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {successMessage}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Product image section */}
-        <div className="mb-6 p-6 bg-gray-800 rounded-lg">
-          <h2 className="text-xl font-semibold mb-3">Product Image</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Product image section */}
+          <div className="mb-6 p-6 bg-gray-800 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">Product Image</h2>
 
-          {/* Display current image */}
-          <div className="mb-4">
-            <div className="relative w-64 h-64 border border-gray-600 rounded-lg overflow-hidden">
-              {imageLoading ? (
-                <div className="flex items-center justify-center h-full w-full bg-gray-700">
-                  <p className="text-gray-400">Loading image...</p>
-                </div>
-              ) : product && imageUrl ? (
-                <Image
-                  src={imageUrl}
-                  alt={product.product_name || "Product image"}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 300px" // Add sizes prop
-                  priority // Add priority as this is above the fold
-                  className="object-cover"
-                  onError={(e) => {
-                    console.error("Image failed to load:", imageUrl);
-                    e.currentTarget.src = "/images/products/placeholder.jpg";
-                  }}
-                />
-              ) : (
-                <Image
-                  src="/images/products/placeholder.jpg"
-                  alt="Product placeholder"
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 100vw, 300px"
-                  className="object-cover"
-                />
-              )}
+            {/* Display current image */}
+            <div className="mb-4">
+              <div className="relative w-64 h-64 border border-gray-600 rounded-lg overflow-hidden">
+                {imageLoading ? (
+                  <div className="flex items-center justify-center h-full w-full bg-gray-700">
+                    <p className="text-gray-400">Loading image...</p>
+                  </div>
+                ) : product && imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={product.product_name || "Product image"}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 300px" // Add sizes prop
+                    priority // Add priority as this is above the fold
+                    className="object-cover"
+                    onError={(e) => {
+                      console.error("Image failed to load:", imageUrl);
+                      e.currentTarget.src = "/images/products/placeholder.jpg";
+                    }}
+                  />
+                ) : (
+                  <Image
+                    src="/images/products/placeholder.jpg"
+                    alt="Product placeholder"
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, 300px"
+                    className="object-cover"
+                  />
+                )}
+              </div>
+              <div className="mt-2 text-xs text-gray-400">
+                {/* Debug info */}
+                {imageLoading
+                  ? "Loading..."
+                  : imageUrl
+                  ? `Current image path: ${imageUrl}`
+                  : "No image available"}
+              </div>
             </div>
-            <div className="mt-2 text-xs text-gray-400">
-              {/* Debug info */}
-              {imageLoading
-                ? "Loading..."
-                : imageUrl
-                ? `Current image path: ${imageUrl}`
-                : "No image available"}
+
+            {/* Upload new image */}
+            <ProductImageUpload
+              productId={product.product_id.toString()}
+              onSuccess={handleImageSuccess}
+            />
+          </div>
+
+          {/* Basic product information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Product Name *
+              </label>
+              <Input
+                type="text"
+                name="product_name"
+                value={product.product_name}
+                onChange={handleChange}
+                required
+                placeholder="Enter product name"
+                className="w-full"
+              />
             </div>
-          </div>
 
-          {/* Upload new image */}
-          <ProductImageUpload
-            productId={product.product_id.toString()}
-            onSuccess={handleImageSuccess}
-          />
-        </div>
-
-        {/* Basic product information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Product Name *
-            </label>
-            <Input
-              type="text"
-              name="product_name"
-              value={product.product_name}
-              onChange={handleChange}
-              required
-              placeholder="Enter product name"
-              className="w-full"
-            />
-          </div>
-
-          <div>
-            <label
-              className="block text-sm font-medium mb-2"
-              id="category-label"
-            >
-              Category
-            </label>
-            <Select
-              name="category_id"
-              selectedKeys={
-                product.category_id ? [product.category_id.toString()] : []
-              }
-              onChange={(e) => {
-                const selectedValue = e.target.value;
-                if (product) {
-                  setProduct({
-                    ...product,
-                    category_id: selectedValue ? parseInt(selectedValue) : null,
-                  });
-                }
-              }}
-              className="w-full"
-              placeholder="-- Select Category --"
-              aria-labelledby="category-label" // Add this line
-            >
-              {categories.map((category) => (
-                <SelectItem key={category.category_id.toString()}>
-                  {category.category_name}
-                </SelectItem>
-              ))}
-            </Select>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Description</label>
-          <Textarea
-            name="description"
-            value={product.description || ""}
-            onChange={handleChange}
-            rows={5}
-            placeholder="Enter product description"
-            className="w-full"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Price (THB) *
-            </label>
-            <Input
-              type="number"
-              name="price"
-              value={product.price.toString()}
-              onChange={handleChange}
-              required
-              min="0"
-              step="0.01"
-              className="w-full"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Stock Quantity
-            </label>
-            <Input
-              type="number"
-              name="stock_quantity"
-              value={product.stock_quantity.toString()}
-              onChange={handleChange}
-              min="0"
-              step="1"
-              className="w-full"
-            />
-          </div>
-
-          <div className="flex items-center pt-8">
-            <Checkbox
-              id="is_customizable"
-              name="is_customizable"
-              checked={product.is_customizable === 1}
-              onChange={handleCheckboxChange}
-            />
-            <label htmlFor="is_customizable" className="ml-2">
-              Customizable Product
-            </label>
-          </div>
-        </div>
-
-        {/* Tags section */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Tags</label>
-          <div className="flex flex-wrap gap-2 mb-2">
-            {tagsList.map((tag, index) => (
-              <Chip
-                key={index}
-                color="secondary"
-                onClose={() => handleRemoveTag(tag)}
+            <div>
+              <label
+                className="block text-sm font-medium mb-2"
+                id="category-label"
               >
-                {tag}
-              </Chip>
-            ))}
+                Category
+              </label>
+              <Select
+                name="category_id"
+                selectedKeys={
+                  product.category_id ? [product.category_id.toString()] : []
+                }
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  if (product) {
+                    setProduct({
+                      ...product,
+                      category_id: selectedValue
+                        ? parseInt(selectedValue)
+                        : null,
+                    });
+                  }
+                }}
+                className="w-full"
+                placeholder="-- Select Category --"
+                aria-labelledby="category-label" // Add this line
+              >
+                {categories.map((category) => (
+                  <SelectItem key={category.category_id.toString()}>
+                    {category.category_name}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
           </div>
 
-          <div className="flex gap-2">
-            <Input
-              type="text"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              placeholder="Add a tag"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleAddTag();
-                }
-              }}
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Description
+            </label>
+            <Textarea
+              name="description"
+              value={product.description || ""}
+              onChange={handleChange}
+              rows={5}
+              placeholder="Enter product description"
+              className="w-full"
             />
-            <Button type="button" onPress={handleAddTag}>
-              Add
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Price (THB) *
+              </label>
+              <Input
+                type="number"
+                name="price"
+                value={product.price.toString()}
+                onChange={handleChange}
+                required
+                min="0"
+                step="0.01"
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Stock Quantity
+              </label>
+              <Input
+                type="number"
+                name="stock_quantity"
+                value={product.stock_quantity.toString()}
+                onChange={handleChange}
+                min="0"
+                step="1"
+                className="w-full"
+              />
+            </div>
+
+            <div className="flex items-center pt-8">
+              <Checkbox
+                id="is_customizable"
+                name="is_customizable"
+                checked={product.is_customizable === 1}
+                onChange={handleCheckboxChange}
+              />
+              <label htmlFor="is_customizable" className="ml-2">
+                Customizable Product
+              </label>
+            </div>
+          </div>
+
+          {/* Tags section */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Tags</label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {tagsList.map((tag, index) => (
+                <Chip
+                  key={index}
+                  color="secondary"
+                  onClose={() => handleRemoveTag(tag)}
+                >
+                  {tag}
+                </Chip>
+              ))}
+            </div>
+
+            <div className="flex gap-2">
+              <Input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                placeholder="Add a tag"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAddTag();
+                  }
+                }}
+              />
+              <Button type="button" onPress={handleAddTag}>
+                Add
+              </Button>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end space-x-4 pt-4">
+            <Button
+              type="button"
+              color="secondary"
+              onPress={() => router.push("/admin/products")}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" color="primary" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </Button>
           </div>
-        </div>
-
-        {/* Buttons */}
-        <div className="flex justify-end space-x-4 pt-4">
-          <Button
-            type="button"
-            color="secondary"
-            onPress={() => router.push("/admin/products")}
-          >
-            Cancel
-          </Button>
-          <Button type="submit" color="primary" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : "Save Changes"}
-          </Button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </main>
   );
 }

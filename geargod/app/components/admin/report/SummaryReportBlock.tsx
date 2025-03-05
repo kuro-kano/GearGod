@@ -39,7 +39,7 @@ export default function OrderReportBlock({
 
   return (
     <div
-      className={`w-auto h-auto ${gradientClass} rounded-xl p-4 pr-32 text-white shadow-md transition-transform hover:scale-[1.02] ${
+      className={`w-auto h-auto ${gradientClass} rounded-xl p-4 text-white shadow-md transition-transform hover:scale-[1.02] ${
         onClick ? "cursor-pointer" : ""
       }`}
       onClick={onClick}

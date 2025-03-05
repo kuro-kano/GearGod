@@ -108,14 +108,13 @@ const AdminSidebar = ({
       {/* Sidebar - desktop version */}
       <aside
         className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 ease-in-out 
-          bg-black text-white shadow-xl backdrop-filter backdrop-blur-lg bg-opacity-75
-          hidden lg:flex flex-col 
+          bg-black text-white shadow-xl hidden lg:flex flex-col 
           ${isExpanded ? "w-64" : "w-20"}`}
       >
         {/* Toggle button */}
         <button
           onClick={toggleSidebar}
-          className="absolute -right-3 top-10 bg-white text-black rounded-full p-1 shadow-md"
+          className="absolute -right-3 top-10 bg-black text-white rounded-full p-1 shadow-lg border border-gray-800"
         >
           {isExpanded ? (
             <ChevronLeft className="w-4 h-4" />

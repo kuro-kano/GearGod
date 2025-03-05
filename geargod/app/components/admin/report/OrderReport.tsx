@@ -24,7 +24,7 @@ interface OrderItem {
     return (
       <div className="w-full">
         {orders.length === 0 ? (
-          <div className="w-auto h-20 bg-gradient-to-r from-gray-200 to-gray-400 shadow-lg rounded-lg p-4 flex items-center justify-center">
+          <div className="max-w-94 h-20 bg-gradient-to-r from-gray-200 to-gray-400 shadow-lg rounded-lg p-4 flex items-center justify-center">
             <p className="text-black opacity-60">No recent orders</p>
           </div>
         ) : (
