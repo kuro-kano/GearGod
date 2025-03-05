@@ -10,6 +10,10 @@ import TopProductReport from "@/components/admin/report/RecentOrderReport";
 import CouponReport from "@/components/admin/report/CouponReport";
 import RecentOrderReport from "@/components/admin/report/RecentOrderReport";
 
+interface Orders {
+  
+}
+
 export default function Home() {
   const router = useRouter();
   
