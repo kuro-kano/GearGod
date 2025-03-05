@@ -1,5 +1,5 @@
 // app/api/products/route.ts
-import { connectSQLite } from "@/lib/db"; // Fix import path
+import { connectSQLite } from "@/lib/db"; 
 import { NextResponse } from "next/server";
 
 // GET all products
@@ -35,9 +35,31 @@ export async function GET(req: Request) {
     }
 
     const products = await db.all(query, params);
+    
+    // Fetch product images for each product
+    const enhancedProducts = await Promise.all(
+      products.map(async (product) => {
+        // Get product images from products_image table
+        const images = await db.all(
+          `SELECT * FROM products_image WHERE product_id = ? ORDER BY is_primary DESC`,
+          [product.product_id]
+        );
+        
+        console.log(`Product ${product.product_id} has ${images.length} images`);
+        
+        return {
+          ...product,
+          images: images.length > 0 ? images : [],
+          // Keep existing image_url for backward compatibility
+          image_url: product.image_url || (images.length > 0 ? images[0].image_url : null)
+        };
+      })
+    );
+
     await db.close();
 
-    return NextResponse.json(products);
+    console.log(`Enhanced ${enhancedProducts.length} products with image data`);
+    return NextResponse.json(enhancedProducts);
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(
@@ -47,7 +69,7 @@ export async function GET(req: Request) {
   }
 }
 
-// POST new product
+// POST new product - keep existing implementation
 export async function POST(req: Request) {
   try {
     const {

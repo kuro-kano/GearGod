@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import ProductImageUpload from "@/components/ProductImageUpload";
@@ -49,14 +49,21 @@ export default function EditProductPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Image states
+  const [imageLoading, setImageLoading] = useState<boolean>(true);
+  const [productImages, setProductImages] = useState<any[]>([]);
+
   // Tags state management
   const [tagInput, setTagInput] = useState("");
   const [tagsList, setTagsList] = useState<string[]>([]);
 
   // Fetch product data
   useEffect(() => {
+    // Replace the entire fetchProduct function in your useEffect
+
     const fetchProduct = async () => {
       try {
+        setImageLoading(true);
         const response = await fetch(`/api/products/${id}`);
 
         if (!response.ok) {
@@ -64,25 +71,59 @@ export default function EditProductPage() {
         }
 
         const data = await response.json();
+        console.log("Product data from API:", data);
+
         setProduct(data);
 
-        // Set image URL if it exists - UPDATED to match ShopProductCard logic
-        if (data.image_url) {
-          const url = data.image_url.startsWith("http")
-            ? data.image_url
-            : data.image_url.startsWith("/")
-            ? data.image_url
-            : `/images/products/${data.product_id}/${data.image_url}`;
-          setImageUrl(url);
+        // Handle multiple images if available
+        if (data.images && data.images.length > 0) {
+          console.log("Product has multiple images:", data.images.length);
+
+          // Process the first (primary) image for display
+          const mainImage = data.images[0];
+          let finalImageUrl;
+
+          if (mainImage.image_url.startsWith("/images/")) {
+            finalImageUrl = mainImage.image_url;
+          } else if (mainImage.image_url.includes("/")) {
+            finalImageUrl = `/images/${mainImage.image_url}`;
+          } else {
+            finalImageUrl = `/images/products/${id}/${mainImage.image_url}`;
+          }
+
+          console.log("Setting primary image URL to:", finalImageUrl);
+          setImageUrl(finalImageUrl);
+
+          // Store all images for potential gallery/carousel
+          setProductImages(data.images);
+        }
+        // Fallback to single image_url (for backward compatibility)
+        else if (data.image_url) {
+          // Process the image URL
+          let finalImageUrl;
+
+          if (data.image_url.startsWith("/images/")) {
+            finalImageUrl = data.image_url;
+          } else if (data.image_url.includes("/")) {
+            // Already contains path information
+            finalImageUrl = `/images/${data.image_url}`;
+          } else {
+            // Just filename, use legacy format
+            finalImageUrl = `/images/products/${data.product_id}/${data.image_url}`;
+          }
+
+          console.log("Setting image URL to:", finalImageUrl);
+          setImageUrl(finalImageUrl);
+        } else {
+          console.log("No image URL found in product data");
+          setImageUrl("");
         }
 
-        // Set tags list from comma-separated string
-        if (data.tags) {
-          setTagsList(data.tags.split(",").map((tag: string) => tag.trim()));
-        }
+        setImageLoading(false);
       } catch (error) {
         console.error("Error fetching product:", error);
         setFormError("Failed to load product data");
+        setImageLoading(false);
       }
     };
 
@@ -110,45 +151,42 @@ export default function EditProductPage() {
     }
   }, [id]);
 
-  // Handle image upload success - UPDATED to extract filename for database
+  // Replace your handleImageSuccess function
+
   const handleImageSuccess = (newImageUrl: string) => {
+    console.log("Image uploaded successfully:", newImageUrl);
+
+    // Set the image URL immediately for display
     setImageUrl(newImageUrl);
 
-    // Extract appropriate image URL format for database storage
-    let dbImageUrl = newImageUrl;
-    if (newImageUrl.startsWith("/images/products/") && product) {
-      // Format: /images/products/{product_id}/{filename}
-      // Extract just the filename part for database storage
-      const pathParts = newImageUrl.split("/");
-      dbImageUrl = pathParts[pathParts.length - 1];
-    }
+    // Create a new image object
+    const newImage = {
+      image_url: newImageUrl,
+      product_id: product?.product_id,
+      is_primary: 1,
+    };
 
-    // Update product state with the appropriate URL format
+    // Update productImages state - new image becomes primary
+    setProductImages((prev) => {
+      if (prev.length === 0) {
+        return [newImage];
+      }
+
+      // Make the new image primary and demote others
+      return [newImage, ...prev.map((img) => ({ ...img, is_primary: 0 }))];
+    });
+
+    // Update product state
     if (product) {
       setProduct({
         ...product,
-        image_url: dbImageUrl,
+        image_url: newImageUrl, // Keep the full URL
       });
     }
 
-    setSuccessMessage("Image uploaded successfully!");
+    // Show success message
+    setSuccessMessage("Product image updated successfully!");
     setTimeout(() => setSuccessMessage(null), 3000);
-  };
-
-  // Handle form field changes
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-
-    if (product) {
-      setProduct({
-        ...product,
-        [name]: value,
-      });
-    }
   };
 
   // Handle checkbox change
@@ -278,6 +316,10 @@ export default function EditProductPage() {
       </div>
     );
 
+  function handleChange(event: ChangeEvent<HTMLInputElement>): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">
@@ -304,12 +346,41 @@ export default function EditProductPage() {
           {/* Display current image */}
           <div className="mb-4">
             <div className="relative w-64 h-64 border border-gray-600 rounded-lg overflow-hidden">
-              <Image
-                src={imageUrl || "/images/products/placeholder.jpg"}
-                alt={product.product_name}
-                fill
-                className="object-cover"
-              />
+              {imageLoading ? (
+                <div className="flex items-center justify-center h-full w-full bg-gray-700">
+                  <p className="text-gray-400">Loading image...</p>
+                </div>
+              ) : product && imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={product.product_name || "Product image"}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 300px" // Add sizes prop
+                  priority // Add priority as this is above the fold
+                  className="object-cover"
+                  onError={(e) => {
+                    console.error("Image failed to load:", imageUrl);
+                    e.currentTarget.src = "/images/products/placeholder.jpg";
+                  }}
+                />
+              ) : (
+                <Image
+                  src="/images/products/placeholder.jpg"
+                  alt="Product placeholder"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 300px"
+                  className="object-cover"
+                />
+              )}
+            </div>
+            <div className="mt-2 text-xs text-gray-400">
+              {/* Debug info */}
+              {imageLoading
+                ? "Loading..."
+                : imageUrl
+                ? `Current image path: ${imageUrl}`
+                : "No image available"}
             </div>
           </div>
 
@@ -338,7 +409,12 @@ export default function EditProductPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Category</label>
+            <label
+              className="block text-sm font-medium mb-2"
+              id="category-label"
+            >
+              Category
+            </label>
             <Select
               name="category_id"
               selectedKeys={
@@ -355,6 +431,7 @@ export default function EditProductPage() {
               }}
               className="w-full"
               placeholder="-- Select Category --"
+              aria-labelledby="category-label" // Add this line
             >
               {categories.map((category) => (
                 <SelectItem key={category.category_id.toString()}>
@@ -450,7 +527,7 @@ export default function EditProductPage() {
                 }
               }}
             />
-            <Button type="button" onClick={handleAddTag}>
+            <Button type="button" onPress={handleAddTag}>
               Add
             </Button>
           </div>
@@ -461,7 +538,7 @@ export default function EditProductPage() {
           <Button
             type="button"
             color="secondary"
-            onClick={() => router.push("/admin/products")}
+            onPress={() => router.push("/admin/products")}
           >
             Cancel
           </Button>

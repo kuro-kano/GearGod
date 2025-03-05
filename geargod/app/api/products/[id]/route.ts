@@ -5,33 +5,44 @@ import { connectSQLite } from "@/lib/db"; // Use shared DB connection
 // GET product by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  // For Next.js 13+ dynamic API routes, we don't need to await params.id
-  // The warning is incorrect in this context - params object is already resolved
-  const id = params.id;
+  // Fix: Use context directly and await the params
+  const { id } = await context.params;
 
   try {
     const db = await connectSQLite();
 
-    // Query product by ID
+    // Modified query to join with categories table to get the category name
     const product = await db.get(
-      `
-      SELECT p.*, c.category_name 
-      FROM products p
-      LEFT JOIN categories c ON p.category_id = c.category_id
-      WHERE p.product_id = ?
-    `,
+      `SELECT p.*, c.category_name 
+       FROM products p
+       LEFT JOIN categories c ON p.category_id = c.category_id
+       WHERE p.product_id = ?`,
       [id]
     );
-
-    await db.close();
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json(product);
+    // Also get product images from products_image table
+    const productImages = await db.all(
+      `SELECT * FROM products_image WHERE product_id = ? ORDER BY is_primary DESC`,
+      [id]
+    );
+
+    // Enhance product with images data
+    const enhancedProduct = {
+      ...product,
+      images: productImages,
+      // Still keep the main image_url for backward compatibility
+      image_url: productImages.length > 0 ? productImages[0].image_url : null,
+    };
+
+    await db.close();
+
+    return NextResponse.json(enhancedProduct);
   } catch (error) {
     console.error("Error fetching product:", error);
     return NextResponse.json(
@@ -44,10 +55,10 @@ export async function GET(
 // UPDATE product
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  // Same here, params.id is already available
-  const id = params.id;
+  // Fix: Use context directly and await the params
+  const { id } = await context.params;
 
   try {
     const productData = await request.json();
@@ -147,11 +158,11 @@ export async function PUT(
 
 // DELETE product
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: { id: string } }
 ) {
-  // Remove the await from params.id - it's not a Promise
-  const productId = params.id;
+  // Fix: Use context directly and await the params
+  const { id } = await context.params;
 
   try {
     const db = await connectSQLite();
@@ -159,7 +170,7 @@ export async function DELETE(
     // Check if product exists
     const existingProduct = await db.get(
       "SELECT * FROM products WHERE product_id = ?",
-      [productId]
+      [id]
     );
 
     if (!existingProduct) {
@@ -173,13 +184,13 @@ export async function DELETE(
     // Check if this product is referenced in other tables (like orders)
     // If you have order tables that reference products, add that check here
 
-    await db.run("DELETE FROM products WHERE product_id = ?", [productId]);
+    await db.run("DELETE FROM products WHERE product_id = ?", [id]);
 
     await db.close();
 
     return NextResponse.json({
       message: "Product deleted successfully",
-      deleted_product_id: productId,
+      deleted_product_id: id,
     });
   } catch (error) {
     console.error("Error deleting product:", error);
