@@ -10,7 +10,6 @@ import OrderReportBlock from "@/components/admin/report/SummaryReportBlock";
 import TopProductReport from "@/components/admin/report/RecentOrderReport";
 import CouponReport from "@/components/admin/report/CouponReport";
 import RecentOrderReport from "@/components/admin/report/RecentOrderReport";
-import { log } from "console";
 
 interface Orders {
   order_id: number;
