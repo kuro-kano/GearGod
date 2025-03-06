@@ -6,7 +6,7 @@ import path from 'path';
 export async function connectSQLite() {
   try {
     const dbPath = path.join(process.cwd(), 'geargod.db');
-    console.log('Attempting to connect to database at:', dbPath);
+    // console.log('Attempting to connect to database at:', dbPath);
     
     const db = await open({
       filename: dbPath,
@@ -14,8 +14,8 @@ export async function connectSQLite() {
     });
     
     // Test the connection
-    await db.get('SELECT 1');
-    console.log('Database connection successful');
+    // await db.get('SELECT 1');
+    // console.log('Database connection successful');
     return db;
   } catch (error) {
     console.error('Database connection failed:', error);

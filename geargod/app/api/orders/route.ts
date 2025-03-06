@@ -22,7 +22,11 @@ export async function GET() {
                 order_items.order_id,
                 orders.order_date,
                 orders.order_status as orderStatus,
-                concat(users.first_name, " ", users.last_name) as customerName,
+                CASE 
+                  WHEN CONCAT(COALESCE(users.first_name, ''), ' ', COALESCE(users.last_name, '')) = ' ' 
+                    THEN 'Unknown Customer' 
+                  ELSE CONCAT(COALESCE(users.first_name, ''), ' ', COALESCE(users.last_name, '')) 
+                END AS customerName,
                 product_colors.color_id,
                 products.product_name as productName
             FROM
@@ -35,13 +39,13 @@ export async function GET() {
             LIMIT 5
         `);
 
-    console.log("Successfully fetched orders:", orders);
+    // console.log("Successfully fetched orders:", orders);
 
     const formattedOrders = orders.map((order) => ({
       ...order,
       orderDate: new Date(order.order_date).toLocaleDateString(),
       productName: order.productName || "Unknown Product",
-      customerName: order.customerName || "Unknown Customer",
+      customerName: order.customerName,
     }));
 
     return NextResponse.json(formattedOrders);
