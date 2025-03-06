@@ -1,10 +1,13 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { signOut, getSession } from "next-auth/react";
+import { Kbd } from "@heroui/kbd";
 import {
   Search,
   User,
-  ShoppingCart,
+  // ShoppingCart,
   Menu,
   X,
   Home,
@@ -16,12 +19,17 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
-import { Kbd } from "@heroui/kbd";
-
 interface SidebarProps {
   setIsSearchVisible: (visible: boolean) => void;
   isExpanded: boolean;
   setIsExpanded: (expanded: boolean) => void;
+}
+
+const session = await getSession();
+// console.log("Session data:", session);
+
+if (!session || session.user.roles !== "staff") {
+  window.location.href = '/';
 }
 
 const AdminSidebar = ({
@@ -51,6 +59,7 @@ const AdminSidebar = ({
 
   const handleUserClick = () => {
     setIsUserMenuVisible(!isUserMenuVisible);
+    signOut({ callbackUrl: "/" });
   };
 
   const toggleSidebar = () => {

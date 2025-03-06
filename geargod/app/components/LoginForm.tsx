@@ -3,7 +3,7 @@
 import React from "react";
 import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/components/ToastAlert";
 
@@ -19,30 +19,71 @@ export default function LoginForm() {
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
+  // * loading
+  const [isLoading, setIsLoading] = React.useState(false);
+
   // * handleSubmit
-  // Modified handleSubmit in LoginForm.tsx
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (res?.error) {
-        showToast({
-          title: "Login Failed",
-          description: "Invalid email or password. Please try again.",
-          color: "danger",
+        const res = await signIn("credentials", {
+            email,
+            password,
+            redirect: false,
         });
-        return;
-      }
-      // For a complete refresh that ensures proper component mounting
-      window.location.href = "/";
+
+        if (res?.error) {
+            showToast({
+                title: "Login Failed",
+                description: "Invalid email or password. Please try again.",
+                color: "danger",
+            });
+            return;
+        }
+
+        // Get fresh session after login
+        const session = await getSession();
+
+        // Type guard to ensure roles exists
+        if (!session?.user?.roles) {
+            showToast({
+                title: "Error",
+                description: "User role not found",
+                color: "danger",
+            });
+            return;
+        }
+
+        // Role-based routing
+        switch (session.user.roles.toLowerCase()) {
+            case "staff":
+                router.push("/admin");
+                break;
+            case "customer":
+                router.push("/");
+                break;
+            default:
+                console.warn("Unknown role:", session.user.roles);
+                router.push("/");
+        }
+
+        showToast({
+            title: "Success",
+            description: "Login successful!",
+            color: "success",
+        });
+
     } catch (error) {
-      console.error(error);
+        console.error("Login error:", error);
+        showToast({
+            title: "Error",
+            description: "An error occurred during login.",
+            color: "danger",
+        });
+    } finally {
+        setIsLoading(false);
     }
   };
 
@@ -123,8 +164,14 @@ export default function LoginForm() {
               Forgot password?
             </Link>
           </div>
-          <Button className="w-full" color="primary" type="submit">
-            Sign In
+          <Button 
+            className="w-full" 
+            color="primary" 
+            type="submit" 
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
+            {isLoading ? "Signing in..." : "Sign In"}
           </Button>
         </Form>
         <div className="flex items-center gap-4 py-2">
