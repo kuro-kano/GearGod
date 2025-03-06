@@ -3,58 +3,52 @@
 
 import "@/styles/globals.css";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import AdminNavbar from "@/components/admin/Navbar";
 import React from "react";
 import OrderReportBlock from "@/components/admin/report/SummaryReportBlock";
 import TopProductReport from "@/components/admin/report/RecentOrderReport";
 import CouponReport from "@/components/admin/report/CouponReport";
 import RecentOrderReport from "@/components/admin/report/RecentOrderReport";
+import { log } from "console";
 
 interface Orders {
-  
+  order_id: number;
+  user_id: number;
+  order_date: EpochTimeStamp;
+  order_status: string;
 }
 
 export default function Home() {
   const router = useRouter();
-  
-  //Data example เฉยๆ ไม่ได้ใช้จริว
-  const recentOrders = [
-    {
-      productName: "Mechanical Keyboard RGB",
-      customerName: "John Doe",
-      orderDate: "2023-05-01",
-      orderStatus: "Completed",
-      amount: 2500
-    },
-    {
-      productName: "Gaming Mouse",
-      customerName: "Jane Smith",
-      orderDate: "2023-04-28",
-      orderStatus: "Processing",
-      amount: 1200
-    },
-    {
-      productName: "27\" Gaming Monitor",
-      customerName: "Alex Johnson",
-      orderDate: "2023-04-25",
-      orderStatus: "Shipped",
-      amount: 9500
-    },
-    {
-      productName: "Wireless Headset",
-      customerName: "Emily Brown",
-      orderDate: "2023-04-22",
-      orderStatus: "Completed",
-      amount: 3200
-    },
-    {
-      productName: "Gaming Chair",
-      customerName: "Michael Wilson",
-      orderDate: "2023-04-20",
-      orderStatus: "Processing",
-      amount: 7500
-    }
-  ];
+  const [recentOrders, setOrders] = useState<Orders[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/orders');
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to fetch orders');
+        }
+        
+        console.log('Frontend received orders:', data);
+        setOrders(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        setError(err.message || 'Failed to load orders');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const handleButtonPress = (path: string) => {
     router.push(path);
@@ -98,14 +92,23 @@ export default function Home() {
                 <h2 className="mb-4 text-xl font-kanit-regular">
                   คำสั่งซื้อล่าสุด 5 รายการ
                 </h2>
-                <RecentOrderReport
-                //Data example อยู่ข้างบน
-                  orders={recentOrders}
-                  showCustomer={true}
-                  showDate={true}
-                  showStatus={true}
-                  showAmount={false}
-                />
+                {isLoading ? (
+                  <div className="w-auto h-20 bg-gradient-to-r from-gray-200 to-gray-400 shadow-lg rounded-lg p-4 flex items-center justify-center">
+                    <p className="text-black opacity-60">Loading orders...</p>
+                  </div>
+                ) : error ? (
+                  <div className="w-auto h-20 bg-gradient-to-r from-red-200 to-red-400 shadow-lg rounded-lg p-4 flex items-center justify-center">
+                    <p className="text-black opacity-60">{error}</p>
+                  </div>
+                ) : (
+                  <RecentOrderReport
+                    orders={recentOrders}
+                    showCustomer={true}
+                    showDate={true}
+                    showStatus={true}
+                    showAmount={false}
+                  />
+                )}
               </div>
               <div className="w-auto">
                 <h2 className="mb-4 text-xl font-kanit-regular">
