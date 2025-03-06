@@ -85,8 +85,6 @@ export default function Home() {
   const total_order = total[0].all_order;
   const all_sales = total[0].all_sales;
   const all_shipped = total[0].all_shipped;
-
-  console.log(all_shipped);
   
 
   const handleButtonPress = (path: string) => {

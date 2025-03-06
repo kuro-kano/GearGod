@@ -7,11 +7,20 @@ export async function GET() {
     db = await connectSQLite();
     const total_sell = await db.all(`
         SELECT
-            COUNT(order_items.order_item_id) AS all_order,
-            SUM(order_items.subtotal) AS total_sales,
-            (SELECT COUNT(order_id) FROM orders WHERE order_status = 'sending') AS shipped_orders
+        COUNT(order_items.order_item_id) AS all_order,
+        SUM(order_items.subtotal) AS total_sales,
+            (
+                SELECT
+                    COUNT(order_items.order_item_id)
+                FROM
+                    order_items
+                JOIN orders ON order_items.order_id = orders.order_id
+                WHERE
+                    order_status != 'Completed' and order_status != 'Processing'
+            ) AS shipped_orders
         FROM
-            orders, product_colors
+            orders,
+            product_colors
             LEFT JOIN order_items ON orders.order_id = order_items.order_id
             LEFT JOIN users ON order_items.order_id = users.user_id
             LEFT JOIN products ON product_colors.product_id = products.product_id
