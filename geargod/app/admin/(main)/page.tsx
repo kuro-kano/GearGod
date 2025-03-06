@@ -18,9 +18,16 @@ interface Orders {
   order_status: string;
 }
 
+interface Total {
+  all_order: number;
+  all_sales: number;
+  all_shipped: number;
+}
+
 export default function Home() {
   const router = useRouter();
   const [recentOrders, setOrders] = useState<Orders[]>([]);
+  const [total, setTotal] = useState<Total[]>([{all_order: 0, all_sales: 0, all_shipped: 0}]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,11 +37,11 @@ export default function Home() {
         setIsLoading(true);
         const response = await fetch('/api/orders');
         const data = await response.json();
-        
+
         if (!response.ok) {
           throw new Error(data.error || 'Failed to fetch orders');
         }
-        
+
         console.log('Frontend received orders:', data);
         setOrders(data);
         setError(null);
@@ -49,9 +56,43 @@ export default function Home() {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    const fetchTotal = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/total_sell');
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to fetch orders');
+        }
+
+        console.log('Frontend received total:', data);
+
+        setTotal(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching total:", err);
+        setError(err.message || 'Failed to load total');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTotal();
+  }, []);
+  
+  const total_order = total[0].all_order;
+  const all_sales = total[0].all_sales;
+  const all_shipped = total[0].all_shipped;
+
+  console.log(all_shipped);
+  
+
   const handleButtonPress = (path: string) => {
     router.push(path);
   };
+
   return (
     <main className="text-white ambient-bg">
       {/* Simplified container structure */}
@@ -63,22 +104,22 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
               <OrderReportBlock
                 title="ยอดขายทั้งหมด"
-                value={52489}
+                value={all_sales}
                 valueSuffix="THB."
                 subtitle="10.2% increase"
                 gradient="cyan-blue"
               />
               <OrderReportBlock
                 title="จำนวนออเดอร์ทั้งหมด"
-                value={52489}
+                value={total_order}
                 valueSuffix=""
                 subtitle="10.2% increase"
                 gradient="green-teal"
               />
               <OrderReportBlock
                 title="ออเดอร์ที่ต้องจัดส่ง"
-                value={52489}
-                valuePrefix="THB."
+                value={all_shipped}
+                // valuePrefix="THB."
                 subtitle="10.2% increase"
                 gradient="yellow-orange"
               />
