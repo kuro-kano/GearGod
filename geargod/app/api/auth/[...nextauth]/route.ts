@@ -6,10 +6,12 @@ declare module "next-auth" {
     interface Session {
         user: User & {
             roles: string;
+            username: string;
         };
     }
     interface User {
         roles: string;
+        username: string;
     }
 }
 import sqlite3 from "sqlite3";
@@ -68,6 +70,7 @@ export const authOptions = {
                     // * console.log("🎉🎉🎉", user.roles);
                     return {
                         id: user.id,
+                        username: user.username,
                         email: user.email,
                         roles: user.roles
                     };
@@ -89,12 +92,14 @@ export const authOptions = {
         async jwt({ token, user }: { token: JWT, user: User | undefined }) {
             if (user) {
                 token.roles = user.roles;
+                token.username = user.username;
             }
             return token;
         },
         async session({ session, token }: { session: Session; token: JWT }) {
             if (session?.user) {
                 session.user.roles = token.roles as string;
+                session.user.username = token.username as string;
             }
             return session;
         }

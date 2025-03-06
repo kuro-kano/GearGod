@@ -26,11 +26,13 @@ interface SidebarProps {
 }
 
 const session = await getSession();
-// console.log("Session data:", session);
+console.log("Session data:", session);
 
 if (!session || session.user.roles !== "staff") {
   window.location.href = '/';
 }
+
+const user = session?.user?.username;
 
 const AdminSidebar = ({
   setIsSearchVisible,
@@ -208,7 +210,7 @@ const AdminSidebar = ({
             </div>
             {isExpanded && (
               <div className="ml-3">
-                <p className="text-sm font-medium">Admin User</p>
+                <p className="text-sm font-medium">{user}</p>
                 <button
                   onClick={handleUserClick}
                   className="text-xs text-gray-400 flex items-center hover:text-gray-200"
@@ -290,7 +292,7 @@ const AdminSidebar = ({
               <User className="w-5 h-5" />
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium">Admin User</p>
+              <p className="text-sm font-medium">{user}</p>
               <button
                 onClick={handleUserClick}
                 className="text-xs text-gray-400 flex items-center hover:text-gray-200"

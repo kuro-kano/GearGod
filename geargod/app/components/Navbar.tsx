@@ -27,7 +27,7 @@ const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
     if (session?.user) {
       console.log('Session data:', session);
       setIsLoggedIn(true);
-      setUsername(session.user.name || session.user.email || "");
+      setUsername(session.user.username || session.user.email || "");
     } else {
       setIsLoggedIn(false);
       setUsername("");
