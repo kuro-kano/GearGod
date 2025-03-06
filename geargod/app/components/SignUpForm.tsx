@@ -4,6 +4,7 @@ import React from "react";
 import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
+import { showToast } from "./ToastAlert";
 
 export default function SignUpForm() {
   const [username, setUsername] = React.useState("");
@@ -49,9 +50,19 @@ export default function SignUpForm() {
 
       if (res.ok) {
         const form = e.target as HTMLFormElement;
+        showToast({
+          title: "Registration Successful",
+          description: "You have successfully registered.",
+          color: "success",
+        })
         form.reset();
       } else {
         console.log("User registration failed..");
+        showToast({
+          title: "Registration Failed",
+          description: "User registration failed. Please try again.",
+          color: "danger",
+        });
       }
     } catch (error) {
       console.error("Error during Registration: ", error);
