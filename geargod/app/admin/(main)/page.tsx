@@ -27,7 +27,7 @@ interface Total {
 export default function Home() {
   const router = useRouter();
   const [recentOrders, setOrders] = useState<Orders[]>([]);
-  const [total, setTotal] = useState<Total[]>([{all_order: 0, all_sales: 0, all_shipped: 0}]);
+  const [total, setTotal] = useState<Total[]>([{ all_order: 0, all_sales: 0, all_shipped: 0 }]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -81,11 +81,10 @@ export default function Home() {
 
     fetchTotal();
   }, []);
-  
+
   const total_order = total[0].all_order;
   const all_sales = total[0].all_sales;
   const all_shipped = total[0].all_shipped;
-  
 
   const handleButtonPress = (path: string) => {
     router.push(path);
