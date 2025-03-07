@@ -46,36 +46,17 @@ export default function Cart() {
   useEffect(() => {
     async function fetchCartItems() {
       try {
-        // Dummy data แทนการเรียก API
-        const dummyData: CartItem[] = [
-          {
-            product_id: "1",
-            product_name: "Mechanical Keyboard RGB",
-            price: 2990,
-            quantity: 1,
-            image_url: "/images/keyboard.jpg" // ใส่path รูปจริงของคุณ
-          },
-          {
-            product_id: "2",
-            product_name: "Gaming Mouse 16000DPI",
-            price: 1590,
-            quantity: 2,
-            image_url: "/images/mouse.jpg" // ใส่path รูปจริงของคุณ
-          },
-          {
-            product_id: "3",
-            product_name: "Gaming Headset 7.1",
-            price: 3290,
-            quantity: 1,
-            image_url: "/images/headset.jpg" // ใส่path รูปจริงของคุณ
-          }
-        ];
-
-        setCartItems(dummyData);
+        const response = await fetch('/api/cart');
+        if (!response.ok) {
+          throw new Error('Failed to fetch cart items');
+        }
+        const data = await response.json();
+        setCartItems(data);
         setLoading(false);
       } catch (err) {
         setError("Error loading cart items");
         console.error("Error fetching cart:", err);
+        setLoading(false);
       }
     }
 
