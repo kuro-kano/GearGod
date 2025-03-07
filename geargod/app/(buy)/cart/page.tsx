@@ -7,6 +7,7 @@ import { Minus, Plus, Trash2, CheckCircle } from "lucide-react";
 import { Button } from "@heroui/react";
 import ProgressCheckout from "@/components/ProgressCheckout";
 import Link from "next/link";
+import { showToast } from "@/components/ToastAlert";
 
 // Define Cart Item interface
 interface CartItem {
@@ -51,11 +52,12 @@ export default function Cart() {
           throw new Error('Failed to fetch cart items');
         }
         const data = await response.json();
+        // console.log('Fetched cart items:', data);
         setCartItems(data);
         setLoading(false);
       } catch (err) {
         setError("Error loading cart items");
-        console.error("Error fetching cart:", err);
+        // console.error("Error fetching cart:", err);
         setLoading(false);
       }
     }
@@ -70,7 +72,7 @@ export default function Cart() {
       const response = await fetch("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId, quantity: newQuantity }),
+        body: JSON.stringify({ product_id: productId, quantity: newQuantity }), // Changed from productId to product_id
       });
 
       if (!response.ok) throw new Error("Failed to update quantity");
@@ -83,24 +85,55 @@ export default function Cart() {
         )
       );
     } catch (error) {
-      console.error("Error updating quantity:", error);
+      // console.error("Error updating quantity:", error);
     }
   };
 
   // Handle item removal
   const removeItem = async (productId: string) => {
     try {
-      const response = await fetch(`/api/cart/${productId}`, {
+      // console.log('Removing item:', {
+      //   productId,
+      //   productIdType: typeof productId,
+      //   currentItems: cartItems
+      // });
+      
+      const response = await fetch(`/api/cart?productId=${productId}`, {
         method: "DELETE",
       });
 
-      if (!response.ok) throw new Error("Failed to remove item");
+      const data = await response.json();
+      // console.log('Remove response:', { 
+      //   status: response.status, 
+      //   data,
+      //   productId 
+      // });
+      
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to remove item");
+      }
 
-      setCartItems((prev) =>
-        prev.filter((item) => item.product_id !== productId)
-      );
+      setCartItems(prev => {
+        const newItems = prev.filter(item => String(item.product_id) !== String(productId));
+        // console.log('Updated cart items:', {
+        //   newItems,
+        //   removedId: productId
+        // });
+        return newItems;
+      });
+
+      showToast({ 
+        title: "Success",
+        description: "Item removed from cart",
+        color: "success"
+      });
     } catch (error) {
-      console.error("Error removing item:", error);
+      // console.error('Remove error:', error);
+      showToast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to remove item",
+        color: "danger"
+      });
     }
   };
 

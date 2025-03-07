@@ -2,8 +2,16 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { cookies } from 'next/headers';
 
+interface CartItem {
+  product_id: string;
+  product_name: string;  // Added to match frontend
+  price: number;         // Added to match frontend
+  quantity: number;
+  image_url?: string;    // Added to match frontend
+}
+
 // In-memory cart storage
-const carts = new Map();
+const carts = new Map<string, CartItem[]>();
 
 // Helper function to get user ID
 async function getUserId() {
@@ -16,16 +24,21 @@ async function getUserId() {
 export async function GET() {
   const userId = await getUserId();
   const cart = carts.get(userId) || [];
+  // console.log('GET cart:', { userId, cart });
   return NextResponse.json(cart);
 }
 
 export async function POST(req: Request) {
   const userId = await getUserId();
-  const data = await req.json();
-  const cart = carts.get(userId) || [];
+  const data = await req.json() as CartItem;
+  
+  if (!data.product_id || typeof data.quantity !== 'number') {
+    return NextResponse.json({ error: "Invalid request data" }, { status: 400 });
+  }
 
+  const cart = carts.get(userId) || [];
   const existingItemIndex = cart.findIndex(
-    (item: any) => item.product_id === data.product_id
+    (item) => item.product_id === data.product_id
   );
 
   if (existingItemIndex > -1) {
@@ -40,10 +53,15 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
   const userId = await getUserId();
-  const data = await req.json();
-  const cart = carts.get(userId) || [];
+  const data = await req.json() as CartItem;
+  
+  if (!data.product_id || typeof data.quantity !== 'number') {
+    return NextResponse.json({ error: "Invalid request data" }, { status: 400 });
+  }
 
-  const itemIndex = cart.findIndex((item: any) => item.product_id === data.productId);
+  const cart = carts.get(userId) || [];
+  const itemIndex = cart.findIndex((item) => item.product_id === data.product_id);
+  
   if (itemIndex > -1) {
     cart[itemIndex].quantity = data.quantity;
     carts.set(userId, cart);
@@ -54,12 +72,47 @@ export async function PUT(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const userId = await getUserId();
-  const url = new URL(req.url);
-  const productId = url.searchParams.get('productId');
-  const cart = carts.get(userId) || [];
+  try {
+    const userId = await getUserId();
+    const url = new URL(req.url);
+    const productId = url.searchParams.get('productId');
 
-  const updatedCart = cart.filter((item: any) => item.product_id !== productId);
-  carts.set(userId, updatedCart);
-  return NextResponse.json(updatedCart);
+    // console.log('DELETE request details:', { 
+    //   userId, 
+    //   productId,
+    //   productIdType: typeof productId,
+    //   currentCart: carts.get(userId),
+    //   allCarts: Object.fromEntries(carts)
+    // });
+
+    if (!productId) {
+      return NextResponse.json(
+        { error: "Product ID is required" }, 
+        { status: 400 }
+      );
+    }
+
+    const cart = carts.get(userId) || [];
+    
+    // Convert IDs to strings for comparison
+    const itemToRemove = cart.find(item => String(item.product_id) === String(productId));
+    if (!itemToRemove) {
+      return NextResponse.json(
+        { error: `Item not found in cart. ID: ${productId}` },
+        { status: 404 }
+      );
+    }
+
+    const updatedCart = cart.filter(item => String(item.product_id) !== String(productId));
+    carts.set(userId, updatedCart);
+    
+    // console.log('Updated cart:', updatedCart);
+    return NextResponse.json(updatedCart);
+  } catch (error) {
+    // console.error('Delete error:', error);
+    return NextResponse.json(
+      { error: "Failed to remove item" },
+      { status: 500 }
+    );
+  }
 }

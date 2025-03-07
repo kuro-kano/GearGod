@@ -33,7 +33,6 @@ const Navbar = () => {
   // Monitor session changes
   useEffect(() => {
     if (session?.user) {
-      console.log("Session data:", session);
       setIsLoggedIn(true);
       setUsername(session.user.username || session.user.email || "");
     } else {
