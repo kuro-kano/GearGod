@@ -26,10 +26,9 @@ interface SidebarProps {
 }
 
 const session = await getSession();
-console.log("Session data:", session);
 
 if (!session || session.user.roles !== "staff") {
-  window.location.href = '/';
+  window.location.href = "/";
 }
 
 const user = session?.user?.username;
