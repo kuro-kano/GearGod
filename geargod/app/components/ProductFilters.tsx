@@ -37,6 +37,7 @@ export default function ProductFilters({
   // Handle brand selection
   const handleBrandChange = (values: string[]) => {
     onBrandChange(values);
+    console.log(values);
   };
 
   // Handle price range change from PriceSlider
@@ -70,7 +71,7 @@ export default function ProductFilters({
     steelseries: "Steelseries",
     hyperx: "HyperX",
     beyerdynamics: "BeyerDynamics",
-    "cooler-master": "Cooler Master",
+    "Cooler Master": "Cooler Master",
     razer: "Razer",
     logitech: "Logitech",
     nzxt: "NZXT",
@@ -159,7 +160,7 @@ export default function ProductFilters({
         <Checkbox value="steelseries">Steelseries</Checkbox>
         <Checkbox value="hyperx">HyperX</Checkbox>
         <Checkbox value="beyerdynamics">BeyerDynamics</Checkbox>
-        <Checkbox value="cooler-master">Cooler Master</Checkbox>
+        <Checkbox value="Cooler Master">Cooler Master</Checkbox>
         <Checkbox value="razer">Razer</Checkbox>
         <Checkbox value="logitech">Logitech</Checkbox>
         <Checkbox value="nzxt">NZXT</Checkbox>
