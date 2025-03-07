@@ -109,7 +109,7 @@ export async function DELETE(req: Request) {
     // console.log('Updated cart:', updatedCart);
     return NextResponse.json(updatedCart);
   } catch (error) {
-    // console.error('Delete error:', error);
+    console.error('Delete error:', error);
     return NextResponse.json(
       { error: "Failed to remove item" },
       { status: 500 }

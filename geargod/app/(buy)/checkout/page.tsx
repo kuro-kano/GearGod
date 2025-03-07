@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import SearchOverlay from "@/components/SearchOverlay";
 import BreadCrumbs from "@/components/BreadCrumbs";
@@ -27,7 +28,7 @@ const PaymentPage = () => {
 
   return (
     <main className="ambient-bg min-h-screen">
-      <Navbar setIsSearchVisible={setIsSearchVisible} />
+      <Navbar/>
       <div className="pt-40 pl-48">
         <BreadCrumbs />
       </div>
@@ -41,7 +42,9 @@ const PaymentPage = () => {
           {/* Order Summary Section */}
           <div className="space-y-6 mb-8">
             <div className="flex items-center gap-4 p-4 bg-black/20 rounded-lg">
-              <img 
+              <Image
+                width={96}
+                height={96}
                 src="/path-to-your-image.jpg" 
                 alt="Product" 
                 className="w-24 h-24 object-cover rounded-md"

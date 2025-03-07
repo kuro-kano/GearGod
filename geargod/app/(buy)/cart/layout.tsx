@@ -25,7 +25,7 @@ export default function ShopLayout({
 
   return (
     <>
-      <Navbar setIsSearchVisible={setIsSearchVisible} />
+      <Navbar />
       {children}
       <SearchOverlay
         isVisible={isSearchVisible}
