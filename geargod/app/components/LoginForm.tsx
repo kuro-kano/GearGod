@@ -156,14 +156,7 @@ export default function LoginForm() {
             type={isVisible ? "text" : "password"}
             variant="bordered"
           />
-          <div className="flex w-full items-center justify-between px-1 py-2">
-            <Checkbox name="remember" size="sm">
-              Remember me
-            </Checkbox>
-            <Link className="text-default-500" href="#" size="sm">
-              Forgot password?
-            </Link>
-          </div>
+
           <Button 
             className="w-full" 
             color="primary" 
