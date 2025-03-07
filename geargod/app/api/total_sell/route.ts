@@ -27,7 +27,8 @@ export async function GET() {
         ORDER BY
             order_items.order_item_id DESC
     `);
-    console.log("Successfully fetched totall:", total_sell);
+
+    // console.log("Successfully fetched totall:", total_sell);
 
     const total = total_sell.map((totals) => ({
       all_order: totals.all_order || 0,

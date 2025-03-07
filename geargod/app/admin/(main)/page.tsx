@@ -10,6 +10,7 @@ import OrderReportBlock from "@/components/admin/report/SummaryReportBlock";
 import TopProductReport from "@/components/admin/report/RecentOrderReport";
 import CouponReport from "@/components/admin/report/CouponReport";
 import RecentOrderReport from "@/components/admin/report/RecentOrderReport";
+import { count } from "console";
 
 interface Orders {
   order_id: number;
@@ -24,10 +25,16 @@ interface Total {
   all_shipped: number;
 }
 
+interface Using_Coupon {
+  coupon_id: number;
+  coupon_count_using: number;
+}
+
 export default function Home() {
   const router = useRouter();
   const [recentOrders, setOrders] = useState<Orders[]>([]);
   const [total, setTotal] = useState<Total[]>([{ all_order: 0, all_sales: 0, all_shipped: 0 }]);
+  const [using_Coupons, setUsing_Coupon] = useState<Using_Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,6 +87,32 @@ export default function Home() {
     };
 
     fetchTotal();
+  }, []);
+
+  useEffect(() => {
+    const fetchUsing_Coupon = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/coupons');
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to fetch orders');
+        }
+
+        console.log('Frontend received coupons:', data);
+
+        setUsing_Coupon(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching total:", err);
+        setError(err.message || 'Failed to load total');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsing_Coupon();
   }, []);
 
   const total_order = total[0].all_order;
@@ -151,7 +184,9 @@ export default function Home() {
                 <h2 className="mb-4 text-xl font-kanit-regular">
                   อัตราการใช้คูปอง
                 </h2>
-                <CouponReport />
+                <CouponReport 
+                  coupons = {using_Coupons}
+                />
               </div>
             </div>
           </div>
