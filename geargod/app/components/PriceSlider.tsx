@@ -15,11 +15,10 @@ export default function PriceSlider({
 }: PriceSliderProps) {
   const [value, setValue] = useState([initialMin, initialMax]);
 
-  // Add a console.log to debug the initial values
   useEffect(() => {
-    console.log('Initial values:', initialMin, initialMax);
-    console.log('Current value:', value);
-  }, []);
+    // console.log('Initial values:', initialMin, initialMax);
+    // console.log('Current value:', value);
+  }, [initialMin, initialMax, value]);
 
   // Update local state when props change
   useEffect(() => {
