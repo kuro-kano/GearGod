@@ -34,7 +34,7 @@ const CheckoutStepper: React.FC<CheckoutStepperProps> = ({ steps }) => {
                       <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-green-600 rounded-full">
                         <CheckCircle className="w-6 h-6 text-white" />
                       </span>
-                      <span className="ml-4 text-sm font-medium text-gray-900">{step.name}</span>
+                      <span className="ml-4 text-lg font-medium text-green-600">{step.name}</span>
                     </span>
                   </Link>
                 ) : step.status === "current" ? (
@@ -57,7 +57,7 @@ const CheckoutStepper: React.FC<CheckoutStepperProps> = ({ steps }) => {
                   >
                     <span className="flex items-center px-6 py-4 text-sm font-medium">
                       <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-full">
-                        <span className="text-gray-500">{stepIdx + 1}</span>
+                        <span className="text-gray-500 text-lg">{stepIdx + 1}</span>
                       </span>
                       <span className="ml-4 text-medium font-bold text-gray-500">{step.name}</span>
                     </span>
