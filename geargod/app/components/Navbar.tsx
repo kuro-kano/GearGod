@@ -91,7 +91,7 @@ const Navbar = () => {
               <Link href="/">หน้าแรก</Link>
             </div>
             <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
-              เกี่ยวกับเรา
+              <Link href="/about">เกี่ยวกับเรา</Link>
             </div>
             <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
               <Link href="/shop">ร้านค้า</Link>
