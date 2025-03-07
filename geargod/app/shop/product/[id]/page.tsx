@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/react";
+import { showToast } from "@/components/ToastAlert";
 
 // Define the Product interface
 interface Product {
@@ -61,7 +62,7 @@ export default function ProductPage() {
         // Handle image URL
         if (data.images && data.images.length > 0) {
           // Find the primary image or use the first one
-          let mainImage = data.images[0];
+          const mainImage = data.images[0];
           setImageUrl(processImageUrl(mainImage.image_url, data.product_id));
         } else if (data.image_url) {
           setImageUrl(processImageUrl(data.image_url, data.product_id));
@@ -110,6 +111,42 @@ export default function ProductPage() {
       setImageUrl(
         processImageUrl(product.images[index].image_url, product.product_id)
       );
+    }
+  };
+
+  const addToCart = async () => {
+    try {
+      const response = await fetch('/api/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          product_id: product?.product_id,
+          product_name: product?.product_name,
+          price: product?.price,
+          quantity: 1,
+          image_url: imageUrl,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add to cart');
+      }
+
+      showToast({
+        title: "Added to Cart",
+        description: `${product?.product_name} has been added to your cart.`,
+        color: "success"
+      });
+      
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      showToast({
+        title: "Error",
+        description: "Failed to add item to cart",
+        color: "danger"
+      });
     }
   };
 
@@ -263,12 +300,14 @@ export default function ProductPage() {
                   className="w-full mt-auto py-3 px-6 border-2 border-purple-600 rounded-md transition duration-300 font-kanit-regular"
                   variant="bordered"
                   disabled={product.stock_quantity <= 0}
+                  onClick={addToCart}
                 >
                   เพิ่มลงตะกร้า
                 </Button>
                 <Button
                   className="w-full mt-auto py-3 px-6 bg-purple-600 hover:bg-purple-700 rounded-md transition duration-300 font-kanit-regular"
                   disabled={product.stock_quantity <= 0}
+                  onClick={addToCart}
                 >
                   ซื้อเลย
                 </Button>
