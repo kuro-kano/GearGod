@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Image from "next/image";
-import { Minus, Plus, Trash2, CheckCircle } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@heroui/react";
 import ProgressCheckout from "@/components/ProgressCheckout";
-import Link from "next/link";
-import { showToast } from "@/components/ToastAlert";
 
 // Define Cart Item interface
 interface CartItem {
@@ -52,12 +50,11 @@ export default function Cart() {
           throw new Error('Failed to fetch cart items');
         }
         const data = await response.json();
-        // console.log('Fetched cart items:', data);
         setCartItems(data);
         setLoading(false);
       } catch (err) {
         setError("Error loading cart items");
-        // console.error("Error fetching cart:", err);
+        console.error("Error fetching cart:", err);
         setLoading(false);
       }
     }
@@ -72,7 +69,7 @@ export default function Cart() {
       const response = await fetch("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product_id: productId, quantity: newQuantity }), // Changed from productId to product_id
+        body: JSON.stringify({ productId, quantity: newQuantity }),
       });
 
       if (!response.ok) throw new Error("Failed to update quantity");
@@ -85,70 +82,39 @@ export default function Cart() {
         )
       );
     } catch (error) {
-      // console.error("Error updating quantity:", error);
+      console.error("Error updating quantity:", error);
     }
   };
 
   // Handle item removal
   const removeItem = async (productId: string) => {
     try {
-      // console.log('Removing item:', {
-      //   productId,
-      //   productIdType: typeof productId,
-      //   currentItems: cartItems
-      // });
-      
-      const response = await fetch(`/api/cart?productId=${productId}`, {
+      const response = await fetch(`/api/cart/${productId}`, {
         method: "DELETE",
       });
 
-      const data = await response.json();
-      // console.log('Remove response:', { 
-      //   status: response.status, 
-      //   data,
-      //   productId 
-      // });
-      
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to remove item");
-      }
+      if (!response.ok) throw new Error("Failed to remove item");
 
-      setCartItems(prev => {
-        const newItems = prev.filter(item => String(item.product_id) !== String(productId));
-        // console.log('Updated cart items:', {
-        //   newItems,
-        //   removedId: productId
-        // });
-        return newItems;
-      });
-
-      showToast({ 
-        title: "Success",
-        description: "Item removed from cart",
-        color: "success"
-      });
+      setCartItems((prev) =>
+        prev.filter((item) => item.product_id !== productId)
+      );
     } catch (error) {
-      // console.error('Remove error:', error);
-      showToast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to remove item",
-        color: "danger"
-      });
+      console.error("Error removing item:", error);
     }
   };
 
   return (
     <main className="ambient-bg min-h-screen">
-      <div className="pt-40 pl-48">
+      <div className="pt-20 md:pt-28 lg:pt-40 px-4 sm:px-6 md:px-8 lg:px-48">
         <BreadCrumbs />
       </div>
 
-      <div className="px-48 py-8">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-48 py-4 md:py-8">
         {/* Use the CheckoutStepper component */}
         <ProgressCheckout steps={steps} />
 
-        <div className="bg-[#1D1C21] rounded-md p-6 shadow-foreground-700 backdrop-filter backdrop-blur-sm bg-opacity-60">
-          <h1 className="text-2xl font-bold mb-6">Shopping Cart</h1>
+        <div className="bg-[#1D1C21] rounded-md p-4 md:p-6 shadow-foreground-700 backdrop-filter backdrop-blur-sm bg-opacity-60">
+          <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Shopping Cart</h1>
 
           {loading ? (
             <div className="text-center py-8">Loading cart...</div>
@@ -160,7 +126,7 @@ export default function Cart() {
               <Button
                 color="primary"
                 className="mt-4"
-                onClick={() => window.location.href = '/shop'}
+                onPress={() => window.location.href = '/shop'}
               >
                 Continue Shopping
               </Button>
@@ -168,10 +134,10 @@ export default function Cart() {
           ) : (
             <>
               {/* Cart Items */}
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 {cartItems.map((item) => (
-                  <div key={item.product_id} className="flex items-center gap-4 p-4 bg-black/20 rounded-lg">
-                    <div className="w-24 h-24 relative">
+                  <div key={item.product_id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-3 md:p-4 bg-black/20 rounded-lg">
+                    <div className="w-20 h-20 md:w-24 md:h-24 relative mx-auto sm:mx-0">
                       <Image
                         src={item.image_url || '/placeholder.png'}
                         alt={item.product_name}
@@ -179,35 +145,36 @@ export default function Cart() {
                         className="object-cover rounded-md"
                       />
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 text-center sm:text-left">
                       <h3 className="font-medium">{item.product_name}</h3>
                       <p className="text-gray-400">${item.price.toFixed(2)}</p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 mx-auto sm:mx-0">
                       <Button
                         isIconOnly
                         variant="ghost"
-                        onClick={() => updateQuantity(item.product_id, item.quantity - 1)}
+                        onPress={() => updateQuantity(item.product_id, item.quantity - 1)}
                       >
                         <Minus className="w-4 h-4" />
                       </Button>
-                      <span className="w-12 text-center">{item.quantity}</span>
+                      <span className="w-8 md:w-12 text-center">{item.quantity}</span>
                       <Button
                         isIconOnly
                         variant="ghost"
-                        onClick={() => updateQuantity(item.product_id, item.quantity + 1)}
+                        onPress={() => updateQuantity(item.product_id, item.quantity + 1)}
                       >
                         <Plus className="w-4 h-4" />
                       </Button>
                     </div>
-                    <div className="w-24 text-right">
+                    <div className="w-full sm:w-24 text-center sm:text-right">
                       ${(item.price * item.quantity).toFixed(2)}
                     </div>
                     <Button
                       isIconOnly
                       color="danger"
                       variant="ghost"
-                      onClick={() => removeItem(item.product_id)}
+                      className="mx-auto sm:mx-0"
+                      onPress={() => removeItem(item.product_id)}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -216,21 +183,23 @@ export default function Cart() {
               </div>
 
               {/* Cart Summary */}
-              <div className="mt-8 border-t border-gray-700 pt-6">
+              <div className="mt-6 md:mt-8 border-t border-gray-700 pt-4 md:pt-6">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-lg">Total</span>
-                  <span className="text-2xl font-bold">${total.toFixed(2)}</span>
+                  <span className="text-xl md:text-2xl font-bold">${total.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-end gap-4">
+                <div className="flex flex-col sm:flex-row justify-center sm:justify-end gap-2 sm:gap-4">
                   <Button
                     variant="ghost"
-                    onClick={() => window.location.href = '/shop'}
+                    className="w-full sm:w-auto"
+                    onPress={() => window.location.href = '/shop'}
                   >
                     Continue Shopping
                   </Button>
                   <Button
                     color="primary"
-                    onClick={() => window.location.href = '/checkout'}
+                    className="w-full sm:w-auto"
+                    onPress={() => window.location.href = '/checkout'}
                   >
                     Proceed to Checkout
                   </Button>
