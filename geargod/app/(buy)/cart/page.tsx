@@ -114,7 +114,7 @@ export default function Cart() {
         <ProgressCheckout steps={steps} />
 
         <div className="bg-[#1D1C21] rounded-md p-4 md:p-6 shadow-foreground-700 backdrop-filter backdrop-blur-sm bg-opacity-60">
-          <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Shopping Cart</h1>
+          <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center sm:text-left">Shopping Cart</h1>
 
           {loading ? (
             <div className="text-center py-8">Loading cart...</div>
@@ -136,8 +136,8 @@ export default function Cart() {
               {/* Cart Items */}
               <div className="space-y-4 md:space-y-6">
                 {cartItems.map((item) => (
-                  <div key={item.product_id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-3 md:p-4 bg-black/20 rounded-lg">
-                    <div className="w-20 h-20 md:w-24 md:h-24 relative mx-auto sm:mx-0">
+                  <div key={item.product_id} className="flex flex-col sm:flex-row items-center p-3 md:p-4 bg-black/20 rounded-lg">
+                    <div className="w-20 h-20 md:w-24 md:h-24 relative mb-3 sm:mb-0 sm:mr-4">
                       <Image
                         src={item.image_url || '/placeholder.png'}
                         alt={item.product_name}
@@ -145,39 +145,47 @@ export default function Cart() {
                         className="object-cover rounded-md"
                       />
                     </div>
-                    <div className="flex-1 text-center sm:text-left">
+                    
+                    <div className="flex-1 text-center sm:text-left mb-3 sm:mb-0">
                       <h3 className="font-medium">{item.product_name}</h3>
                       <p className="text-gray-400">${item.price.toFixed(2)}</p>
                     </div>
-                    <div className="flex items-center gap-2 mx-auto sm:mx-0">
+                    
+                    <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 w-full sm:w-auto">
+                      {/* Quantity controls */}
+                      <div className="flex items-center gap-2 mb-3 sm:mb-0">
+                        <Button
+                          isIconOnly
+                          variant="ghost"
+                          onPress={() => updateQuantity(item.product_id, item.quantity - 1)}
+                        >
+                          <Minus className="w-4 h-4" />
+                        </Button>
+                        <span className="w-8 md:w-12 text-center">{item.quantity}</span>
+                        <Button
+                          isIconOnly
+                          variant="ghost"
+                          onPress={() => updateQuantity(item.product_id, item.quantity + 1)}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      
+                      {/* Item total price */}
+                      <div className="text-center sm:text-right mb-3 sm:mb-0 sm:w-24">
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </div>
+                      
+                      {/* Remove button */}
                       <Button
                         isIconOnly
+                        color="danger"
                         variant="ghost"
-                        onPress={() => updateQuantity(item.product_id, item.quantity - 1)}
+                        onPress={() => removeItem(item.product_id)}
                       >
-                        <Minus className="w-4 h-4" />
-                      </Button>
-                      <span className="w-8 md:w-12 text-center">{item.quantity}</span>
-                      <Button
-                        isIconOnly
-                        variant="ghost"
-                        onPress={() => updateQuantity(item.product_id, item.quantity + 1)}
-                      >
-                        <Plus className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
-                    <div className="w-full sm:w-24 text-center sm:text-right">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </div>
-                    <Button
-                      isIconOnly
-                      color="danger"
-                      variant="ghost"
-                      className="mx-auto sm:mx-0"
-                      onPress={() => removeItem(item.product_id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
                   </div>
                 ))}
               </div>
@@ -188,17 +196,17 @@ export default function Cart() {
                   <span className="text-lg">Total</span>
                   <span className="text-xl md:text-2xl font-bold">${total.toFixed(2)}</span>
                 </div>
-                <div className="flex flex-col sm:flex-row justify-center sm:justify-end gap-2 sm:gap-4">
+                <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
                   <Button
                     variant="ghost"
-                    className="w-full sm:w-auto"
+                    className="w-full"
                     onPress={() => window.location.href = '/shop'}
                   >
                     Continue Shopping
                   </Button>
                   <Button
                     color="primary"
-                    className="w-full sm:w-auto"
+                    className="w-full"
                     onPress={() => window.location.href = '/checkout'}
                   >
                     Proceed to Checkout
