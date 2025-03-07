@@ -60,7 +60,7 @@ export default function ProductFilters({
 
   // Map of values to display names
   const typeDisplayNames: Record<string, string> = {
-    "pc-case": "เคสคอมพิวเตอร์",
+    "Computer-Cases": "เคสคอมพิวเตอร์",
     headset: "หูฟัง",
     mouse: "เมาส์",
     keyboard: "คีย์บอร์ด",
@@ -72,6 +72,7 @@ export default function ProductFilters({
     hyperx: "HyperX",
     beyerdynamics: "BeyerDynamics",
     "Cooler Master": "Cooler Master",
+    aerocool: "Aerocool",
     razer: "Razer",
     logitech: "Logitech",
     nzxt: "NZXT",
@@ -141,7 +142,7 @@ export default function ProductFilters({
         value={selectedTypes}
         onChange={handleTypeChange}
       >
-        <Checkbox value="pc-case">เคสคอมพิวเตอร์</Checkbox>
+        <Checkbox value="Computer-Cases">เคสคอมพิวเตอร์</Checkbox>
         <Checkbox value="headset">หูฟัง</Checkbox>
         <Checkbox value="mouse">เมาส์</Checkbox>
         <Checkbox value="keyboard">คีย์บอร์ด</Checkbox>
@@ -161,6 +162,7 @@ export default function ProductFilters({
         <Checkbox value="hyperx">HyperX</Checkbox>
         <Checkbox value="beyerdynamics">BeyerDynamics</Checkbox>
         <Checkbox value="Cooler Master">Cooler Master</Checkbox>
+        <Checkbox value="aerocool">Aerocool</Checkbox>
         <Checkbox value="razer">Razer</Checkbox>
         <Checkbox value="logitech">Logitech</Checkbox>
         <Checkbox value="nzxt">NZXT</Checkbox>
@@ -172,8 +174,8 @@ export default function ProductFilters({
       <br />
       <PriceSlider
         onPriceChange={handlePriceChange}
-        initialMin={priceRange.min}
-        initialMax={priceRange.max}
+        initialMin={0}
+        initialMax={5000}
       />
     </div>
   );
