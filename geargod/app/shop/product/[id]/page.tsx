@@ -7,12 +7,6 @@ import { Button } from "@heroui/button";
 import { Link } from "@heroui/react";
 import { showToast } from "@/components/ToastAlert";
 
-// Add this interface above the Product interface
-interface ProductColor {
-  color_name: string;
-  color_code: string;
-}
-
 // Define the Product interface
 interface Product {
   product_id: string;
@@ -26,7 +20,6 @@ interface Product {
   tags: string | null;
   image_url?: string;
   images?: Array<{ image_url: string; is_primary?: number }>;
-  colors?: ProductColor[]; // Add this line
 }
 
 export default function ProductPage() {
@@ -37,17 +30,8 @@ export default function ProductPage() {
   const [imageUrl, setImageUrl] = useState<string>("");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [categoryName, setCategoryName] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<ProductColor | null>(null); // Add this line
   // Add a ref to track if we've already initiated the fetch
   const fetchInitiated = useRef(false);
-
-  console.log("Color: ", product?.colors);
-
-  // Add console log after state declarations
-  useEffect(() => {
-    console.log("Current product state:", product);
-    console.log("Current colors:", product?.colors);
-  }, [product]); // This will run whenever product changes
 
   // Fetch product data
   useEffect(() => {
@@ -60,7 +44,6 @@ export default function ProductPage() {
     async function fetchProduct() {
       try {
         setLoading(true);
-        console.log("Fetching product with ID:", id);
         const response = await fetch(`/api/products/${id}`);
 
         if (!response.ok) {
@@ -68,15 +51,7 @@ export default function ProductPage() {
         }
 
         const data = await response.json();
-        console.log("API Response data:", data);
-        console.log("Colors from API:", data.colors);
-
-        // Ensure colors data is properly structured if it exists
-        if (data.colors && !Array.isArray(data.colors)) {
-          console.warn("Colors data is not an array, initializing empty array");
-          data.colors = [];
-        }
-
+        console.log("Product data:", data);
         setProduct(data);
 
         // Fetch category name if we have category_id but no name
@@ -141,16 +116,6 @@ export default function ProductPage() {
 
   const addToCart = async () => {
     try {
-      if (!product) return;
-      if (product.colors && product.colors.length > 0 && !selectedColor) {
-        showToast({
-          title: "Error",
-          description: "Please select a color",
-          color: "danger"
-        });
-        return;
-      }
-  
       const response = await fetch('/api/cart', {
         method: 'POST',
         headers: {
@@ -162,20 +127,19 @@ export default function ProductPage() {
           price: product?.price,
           quantity: 1,
           image_url: imageUrl,
-          color: selectedColor ? selectedColor.color_name : null,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to add to cart');
       }
-  
+
       showToast({
         title: "Added to Cart",
         description: `${product?.product_name} has been added to your cart.`,
         color: "success"
       });
-  
+      
     } catch (error) {
       console.error('Error adding to cart:', error);
       showToast({
@@ -329,42 +293,6 @@ export default function ProductPage() {
                     ))}
                 </div>
               </div>
-
-              {/* Color Selector */}
-              {product.colors && product.colors.length > 0 && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold mb-2">Select Color</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {product.colors.map((color, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedColor(color)}
-                        className={`
-                          w-12 h-12 rounded-full border-2 transition-all duration-200
-                          ${selectedColor?.color_name === color.color_name 
-                            ? 'border-purple-500 scale-110' 
-                            : 'border-gray-600 hover:border-purple-400'
-                          }
-                        `}
-                        style={{
-                          backgroundColor: color.color_code,
-                          boxShadow: selectedColor?.color_name === color.color_name 
-                            ? '0 0 10px rgba(168, 85, 247, 0.5)' 
-                            : 'none'
-                        }}
-                        title={color.color_name}
-                      >
-                        <span className="sr-only">{color.color_name}</span>
-                      </button>
-                    ))}
-                  </div>
-                  {selectedColor && (
-                    <p className="mt-2 text-sm text-gray-300">
-                      Selected: {selectedColor.color_name}
-                    </p>
-                  )}
-                </div>
-              )}
 
               {/* Add to cart button */}
               <div className="flex flex-row md:flex-row-2 gap-4 justify-evenly">
