@@ -53,17 +53,17 @@ export async function POST(req: Request) {
 
 export async function PUT(req: Request) {
   const userId = await getUserId();
-  const data = await req.json() as CartItem;
+  const { product_id, quantity } = await req.json();
   
-  if (!data.product_id || typeof data.quantity !== 'number') {
+  if (!product_id || typeof quantity !== 'number') {
     return NextResponse.json({ error: "Invalid request data" }, { status: 400 });
   }
 
   const cart = carts.get(userId) || [];
-  const itemIndex = cart.findIndex((item) => item.product_id === data.product_id);
+  const itemIndex = cart.findIndex((item) => item.product_id === product_id);
   
   if (itemIndex > -1) {
-    cart[itemIndex].quantity = data.quantity;
+    cart[itemIndex].quantity = quantity;
     carts.set(userId, cart);
     return NextResponse.json(cart);
   }

@@ -68,11 +68,19 @@ export default function Cart() {
     try {
       const response = await fetch("/api/cart", {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId, quantity: newQuantity }),
+        headers: { 
+          "Content-Type": "application/json" 
+        },
+        body: JSON.stringify({ 
+          product_id: productId,  // Changed from productId to product_id to match API
+          quantity: newQuantity 
+        })
       });
 
-      if (!response.ok) throw new Error("Failed to update quantity");
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to update quantity");
+      }
 
       setCartItems((prev) =>
         prev.map((item) =>
