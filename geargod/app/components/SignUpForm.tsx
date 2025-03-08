@@ -218,7 +218,7 @@ export default function SignUpForm() {
         <p className="text-center text-small">
           Already have an account? &nbsp;
           <Link href="/login" size="sm">
-            Sign In
+            Sign up
           </Link>
         </p>
       </div>
