@@ -27,7 +27,7 @@ export async function GET() {
             coupon_usage.coupon_id,
             coupons.coupon_code;`);
 
-    console.log("Successfully fetched using_coupon:", count_using);
+    // console.log("Successfully fetched using_coupon:", count_using);
 
     const formattedCoupon = count_using.map((coupon) => ({
       coupon_id: coupon.coupon_id || 0,
