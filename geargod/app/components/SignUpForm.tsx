@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
+import { Button, Input, Checkbox, Link, Form } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 import { showToast } from "./ToastAlert";
@@ -25,7 +25,7 @@ export default function SignUpForm() {
     if (!username || !email || !password || !confirmPassword) return;
 
     try {
-      const resVerify = await fetch("http://localhost:3000/api/verify", {
+      const resVerify = await fetch("http://localhost:3000/api/verify" , {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -202,23 +202,11 @@ export default function SignUpForm() {
             Sign In
           </Button>
         </Form>
-        <div className="flex items-center gap-4 py-2">
-          <Divider className="flex-1" />
-          <p className="shrink-0 text-tiny text-default-500">OR</p>
-          <Divider className="flex-1" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Button
-            startContent={<Icon icon="flat-color-icons:google" width={24} />}
-            variant="bordered"
-          >
-            Continue with Google
-          </Button>
-        </div>
+
         <p className="text-center text-small">
           Already have an account? &nbsp;
           <Link href="/login" size="sm">
-            Sign up
+            Sign In
           </Link>
         </p>
       </div>
