@@ -88,6 +88,11 @@ export async function POST(req: Request) {
         { message: "Product name and price are required" },
         { status: 400 }
       );
+    } else if (!tags) {
+      return NextResponse.json(
+        { message: "Please input tags for the product" },
+        { status: 400 }
+      );
     }
 
     const db = await connectSQLite();

@@ -16,9 +16,9 @@ export async function GET(
     // Modified query to join with categories table to get the category name
     const product = await db.get(
       `SELECT p.*, c.category_name 
-       FROM products p
-       LEFT JOIN categories c ON p.category_id = c.category_id
-       WHERE p.product_id = ?`,
+        FROM products p
+        LEFT JOIN categories c ON p.category_id = c.category_id
+        WHERE p.product_id = ?`,
       [id]
     );
 
@@ -137,7 +137,7 @@ export async function PUT(
     console.log("Values:", values);
 
     // Execute the update
-    const result = await db.run(sql, values);
+    // const result = await db.run(sql, values);
 
     // Handle color associations if product is customizable
     if (productData.is_customizable === 1 && productData.colors && Array.isArray(productData.colors)) {
@@ -194,10 +194,10 @@ export async function PUT(
           try {
             await db.run(`ALTER TABLE products_image ADD COLUMN color_id INTEGER NULL`);
             console.log("Added color_id column to products_image table");
-          } catch (alterError) {
+          } catch {
             // Column might already exist, continue
           }
-        } catch (tableError) {
+        } catch {
           console.log("products_image table might not exist yet");
         }
       } catch (imageError) {
