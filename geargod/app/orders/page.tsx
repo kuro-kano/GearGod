@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import OrderReportBlock from "@/components/admin/report/SummaryReportBlock";
 import RecentOrderReport from "@/components/admin/report/OrderReport";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Navbar from '@/components/Navbar'
-import { Link } from "@heroui/react";
 
 interface Orders {
   order_id: number;

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import StatusChanging from './StatusChanging';
 
 interface OrderItem {
   id: string;
@@ -8,7 +9,6 @@ interface OrderItem {
   orderStatus?: string;
   amount?: number;
 }
-
 interface RecentOrderReportProps {
   orders: OrderItem[];
   isAdmin: boolean;
@@ -102,35 +102,13 @@ export default function RecentOrderReport({
         ))
       )}
 
-      {/* Popup Modal */}
-      {selectedOrder && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-bold mb-4 text-black">เปลี่ยนสถานะคำสั่งซื้อ</h2>
-            <p className="mb-2 text-black">สินค้า: {selectedOrder.productName}</p>
-            <label htmlFor="orderStatus" className="text-black">สถานะ:</label>
-            <select
-              id="orderStatus"
-              className="w-full p-2 border rounded"
-              value={newStatus}
-              onChange={(e) => setNewStatus(e.target.value)}
-            >
-              <option value="Pending">Pending</option>
-              <option value="Processing">Processing</option>
-              <option value="Completed">Completed</option>
-              <option value="Cancelled">Cancelled</option>
-            </select>
-            <div className="flex justify-end mt-4">
-              <button className="bg-gray-500 text-white px-4 py-2 rounded mr-2" onClick={closeModal}>
-                ยกเลิก
-              </button>
-              <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={updateStatus}>
-                บันทึก
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <StatusChanging
+        selectedOrder={selectedOrder}
+        newStatus={newStatus}
+        onStatusChange={(e) => setNewStatus(e.target.value)}
+        onClose={closeModal}
+        onUpdate={updateStatus}
+      />
     </div>
   );
 }
