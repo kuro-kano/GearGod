@@ -2,17 +2,18 @@
 "use client";
 
 import "@/styles/globals.css";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import AdminNavbar from "@/components/admin/Navbar";
+// import AdminNavbar from "@/components/admin/Navbar";
 import React from "react";
 import OrderReportBlock from "@/components/admin/report/SummaryReportBlock";
-import TopProductReport from "@/components/admin/report/OrderReport";
+// import TopProductReport from "@/components/admin/report/OrderReport";
 import CouponReport from "@/components/admin/report/CouponReport";
 import RecentOrderReport from "@/components/admin/report/OrderReport";
-import { count } from "console";
 
 interface Orders {
+  id: string;
+  productName: string;
   order_id: number;
   user_id: number;
   order_date: EpochTimeStamp;
@@ -32,7 +33,7 @@ interface Using_Coupon {
 }
 
 export default function Home() {
-  const router = useRouter();
+  // const router = useRouter();
   const [recentOrders, setOrders] = useState<Orders[]>([]);
   const [total, setTotal] = useState<Total[]>([{ all_order: 0, all_sales: 0, all_shipped: 0 }]);
   const [using_Coupons, setUsing_Coupon] = useState<Using_Coupon[]>([]);
@@ -53,9 +54,10 @@ export default function Home() {
         console.log('Frontend received orders:', data);
         setOrders(data);
         setError(null);
-      } catch (err) {
-        console.error("Error fetching orders:", err);
-        setError(err.message || 'Failed to load orders');
+      } catch (err: Error | unknown) {
+        const error = err instanceof Error ? err : new Error('Unknown error');
+        console.error("Error fetching orders:", error);
+        setError(error.message || 'Failed to load orders');
       } finally {
         setIsLoading(false);
       }
@@ -79,9 +81,10 @@ export default function Home() {
 
         setTotal(data);
         setError(null);
-      } catch (err) {
-        console.error("Error fetching total:", err);
-        setError(err.message || 'Failed to load total');
+      } catch (err: Error | unknown) {
+        const error = err instanceof Error ? err : new Error('Unknown error');
+        console.error("Error fetching total:", error);
+        setError(error.message || 'Failed to load total');
       } finally {
         setIsLoading(false);
       }
@@ -105,9 +108,10 @@ export default function Home() {
 
         setUsing_Coupon(data);
         setError(null);
-      } catch (err) {
+      } catch (err: Error | unknown) {
+        const error = err instanceof Error ? err : new Error('Unknown error');
         console.error("Error fetching total:", err);
-        setError(err.message || 'Failed to load total');
+        setError(error.message || 'Failed to load total');
       } finally {
         setIsLoading(false);
       }
@@ -120,9 +124,9 @@ export default function Home() {
   const all_sales = total[0].all_sales;
   const all_shipped = total[0].all_shipped;
 
-  const handleButtonPress = (path: string) => {
-    router.push(path);
-  };
+  // const handleButtonPress = (path: string) => {
+  //   router.push(path);
+  // };
 
   return (
     <main className="text-white ambient-bg">
@@ -174,6 +178,7 @@ export default function Home() {
                 ) : (
                   <RecentOrderReport
                     orders={recentOrders}
+                    isAdmin={true}
                     showCustomer={true}
                     showDate={true}
                     showStatus={true}

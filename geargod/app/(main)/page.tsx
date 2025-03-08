@@ -5,14 +5,14 @@ import ProductCardGrid from "@/components/ProductCardGrid";
 import "@/styles/globals.css";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+// import { useSession } from 'next-auth/react';
 
 export default function Home() {
   const router = useRouter();
 
-  const { data: session } = useSession();
-  // ! console.log(session);
-  
+  // const { data: session } = useSession();
+  // Remove the unused session variable completely
+
   const handleButtonPress = (path: string) => {
     router.push(path);
   };
@@ -34,12 +34,12 @@ export default function Home() {
               performance and style.
             </p>
             <div className="mt-9 flex gap-4 pb-10">
-            <Button
-        className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
-        radius="full"
-        onPress={() => handleButtonPress('/shop')}
-      >
-        Shop Now
+              <Button
+                className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
+                radius="full"
+                onPress={() => handleButtonPress('/shop')}
+              >
+                Shop Now
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -74,30 +74,48 @@ export default function Home() {
               Official Partnership
             </h1>
             <div className="flex justify-evenly items-center">
-              <img
-                src="images/partnerships/hyperx.png"
+              <Image
+                src="/images/partnerships/hyperx.png"
+                alt="HyperX Logo"
+                width={100}
+                height={32}
                 className="h-8 w-auto"
-              ></img>
-              <img
-                src="images/partnerships/Logitech-Logo.png"
+              />
+              <Image
+                src="/images/partnerships/Logitech-Logo.png"
+                alt="Logitech Logo"
+                width={100}
+                height={32}
                 className="h-8 w-auto"
-              ></img>
-              <img
-                src="images/partnerships/Beyerdynamic_logo.png"
+              />
+              <Image
+                src="/images/partnerships/Beyerdynamic_logo.png"
+                alt="Beyerdynamic Logo"
+                width={100}
+                height={32}
                 className="h-8 w-auto"
-              ></img>
-              <img
-                src="images/partnerships/Logo_Razer_2017.png"
+              />
+              <Image
+                src="/images/partnerships/Logo_Razer_2017.png"
+                alt="Razer Logo"
+                width={100}
+                height={32}
                 className="h-8 w-auto"
-              ></img>
-              <img
-                src="images/partnerships/Cooler-Master-Logo.png"
+              />
+              <Image
+                src="/images/partnerships/Cooler-Master-Logo.png"
+                alt="Cooler Master Logo"
+                width={100}
+                height={32}
                 className="h-8 w-auto"
-              ></img>
-              <img
-                src="images/partnerships/Steelseries-logo.png"
+              />
+              <Image
+                src="/images/partnerships/Steelseries-logo.png"
+                alt="SteelSeries Logo"
+                width={100}
+                height={32}
                 className="h-8 w-auto"
-              ></img>
+              />
             </div>
           </div>
         </div>
@@ -168,8 +186,10 @@ export default function Home() {
 
         {/* Image Section */}
         <div className="w-1/2 flex pl-10">
-          <img
-            src="images/pc-case/anime-pc-case.png"
+          <Image
+            src="/images/pc-case/anime-pc-case.png"
+            width={500}
+            height={300}
             className="h-auto rounded-lg"
             alt="PC case"
           />
@@ -215,8 +235,11 @@ export default function Home() {
 
         <div className="z-0 flex justify-center items-center mt-2 w-full">
           <div className="p-11 pr-10 h-auto w-4/6 ">
-            <img
-              src="images/Play_Your_Way_Multicolor_Collection.jpg"
+            <Image
+              src="/images/Play_Your_Way_Multicolor_Collection.jpg"
+              alt="Play Your Way Multicolor Collection"
+              width={1200}
+              height={675}
               className="rounded-2xl"
             />
           </div>

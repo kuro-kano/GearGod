@@ -11,6 +11,7 @@ interface OrderItem {
 
 interface RecentOrderReportProps {
   orders: OrderItem[];
+  isAdmin: boolean;
   showCustomer?: boolean;
   showDate?: boolean;
   showStatus?: boolean;
@@ -19,6 +20,7 @@ interface RecentOrderReportProps {
 
 export default function RecentOrderReport({
   orders = [],
+  isAdmin = false,
   showCustomer = true,
   showDate = true,
   showStatus = false,
@@ -44,20 +46,18 @@ export default function RecentOrderReport({
     if (!selectedOrder) return;
 
     try {
-      const response = await fetch("http://localhost:5000/update-order-status", {
+      const response = await fetch("/api/update-order-status", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: selectedOrder.id, orderStatus: newStatus }),
+        headers: { "Content-Type": "application/json" }, // ✅ กำหนด Header
+        body: JSON.stringify({ id: Number(selectedOrder.id), orderStatus: newStatus }) // ✅ แปลง id เป็น number
       });
 
       if (response.ok) {
-        alert("อัปเดตสถานะสำเร็จ!");
+        // alert("อัปเดตสถานะสำเร็จ!");
         closeModal();
-        window.location.reload(); // รีเฟรชเพื่อโหลดข้อมูลใหม่
+        window.location.reload();
       } else {
-        alert("เกิดข้อผิดพลาด!");
+        // alert("เกิดข้อผิดพลาด!");
       }
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -83,7 +83,7 @@ export default function RecentOrderReport({
               )}
               {showStatus && order.orderStatus && (
                 <button
-                  onClick={() => openModal(order)}
+                  onClick={() => isAdmin && openModal(order)}
                   className={`text-xs px-2 py-1 rounded cursor-pointer ${order.orderStatus === "Completed"
                     ? "bg-green-500"
                     : order.orderStatus === "Processing"

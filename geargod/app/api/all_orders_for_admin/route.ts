@@ -18,6 +18,7 @@ export async function GET() {
 
     const orders = await db.all(`
           SELECT
+              order_id AS id,
               order_date,
               CASE
                   WHEN concat (
@@ -32,7 +33,7 @@ export async function GET() {
                   )
               END AS customerName,
               orders.order_status AS orderStatus,
-              products.product_name
+              products.product_name AS productName
           FROM
               order_items
               JOIN orders USING (order_id)
@@ -47,7 +48,6 @@ export async function GET() {
     const formattedOrders = orders.map((order) => ({
       ...order,
       orderDate: new Date(order.order_date).toLocaleDateString(),
-      productName: order.product_name,
       customerName: order.customerName,
     }));
 

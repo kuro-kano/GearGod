@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import OrderReportBlock from "@/components/admin/report/SummaryReportBlock";
 import RecentOrderReport from "@/components/admin/report/OrderReport";
-import { Link } from "@heroui/react";
 
 interface Orders {
+  id: string;
+  productName: string;
   order_id: number;
   user_id: number;
   order_date: EpochTimeStamp;
@@ -31,9 +31,9 @@ export default function OrderPage() {
         console.log('Frontend received orders:', data);
         setOrders(data);
         setError(null);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Error fetching orders:", err);
-        setError(err.message || 'Failed to load orders');
+        setError(err instanceof Error ? err.message : 'Failed to load orders');
       } finally {
         setIsLoading(false);
       }
@@ -47,16 +47,23 @@ export default function OrderPage() {
       <div className="p-4 sm:p-6 md:p-10 lg:p-16 min-h-screen flex flex-col items-center">
         <div className="p-6 backdrop-filter backdrop-blur-lg bg-black bg-opacity-50 w-full max-w-7xl rounded-lg overflow-hidden ">
           <h1 className="font-kanit-regular text-2xl pb-8">รายการคำสั่งซื้อทั้งหมด</h1>
-          <RecentOrderReport
-            orders={recentOrders}
-            showCustomer={true}
-            showDate={true}
-            showStatus={true}
-            showAmount={false}
-          />
-          <Link href="/admin/orders/1">
+          {isLoading ? (
+            <div>กำลังโหลด...</div>
+          ) : error ? (
+            <div className="text-red-500">{error}</div>
+          ) : (
+            <RecentOrderReport
+              orders={recentOrders}
+              isAdmin={true}
+              showCustomer={true}
+              showDate={true}
+              showStatus={true}
+              showAmount={false}
+            />
+          )}
+          {/* <Link href="/admin/orders/1">
             <OrderReportBlock title={""} />
-          </Link>
+          </Link> */}
         </div>
       </div>
     </main>

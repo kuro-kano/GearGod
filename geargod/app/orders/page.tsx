@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import OrderReportBlock from "@/components/admin/report/SummaryReportBlock";
 import RecentOrderReport from "@/components/admin/report/OrderReport";
+import BreadCrumbs from "@/components/BreadCrumbs";
+import Navbar from '@/components/Navbar'
 import { Link } from "@heroui/react";
 
 interface Orders {
@@ -44,6 +46,10 @@ export default function OrderPage() {
 
   return (
     <main className="ambient-bg">
+      <Navbar />
+      <div className="pt-40 pl-48">
+        <BreadCrumbs />
+      </div>
       <div className="p-4 sm:p-6 md:p-10 lg:p-16 min-h-screen flex flex-col items-center">
         <div className="p-6 backdrop-filter backdrop-blur-lg bg-black bg-opacity-50 w-full max-w-7xl rounded-lg overflow-hidden ">
           <h1 className="font-kanit-regular text-2xl pb-8">รายการคำสั่งซื้อทั้งหมด</h1>
@@ -64,9 +70,9 @@ export default function OrderPage() {
               showAmount={false}
             />
           )}
-          <Link href="/admin/orders/1">
+          {/* <Link href="/admin/orders/1">
             <OrderReportBlock title={""} />
-          </Link>
+          </Link> */}
         </div>
       </div>
     </main >

@@ -103,6 +103,7 @@ const AdminSidebar = ({
         <button
           onClick={toggleMobileMenu}
           className="p-2 bg-black bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-lg text-white"
+          aria-label="Toggle mobile menu"
         >
           <Menu className="w-6 h-6" />
         </button>
@@ -135,9 +136,8 @@ const AdminSidebar = ({
 
         {/* Logo section */}
         <div
-          className={`p-5 flex items-center ${
-            isExpanded ? "justify-between" : "justify-center"
-          }`}
+          className={`p-5 flex items-center ${isExpanded ? "justify-between" : "justify-center"
+            }`}
         >
           {isExpanded ? (
             <Link href="/admin" className="text-2xl font-bold">
@@ -199,9 +199,8 @@ const AdminSidebar = ({
 
         {/* User section at bottom */}
         <div
-          className={`p-4 border-t border-gray-700 mt-auto ${
-            isExpanded ? "" : "flex flex-col items-center"
-          }`}
+          className={`p-4 border-t border-gray-700 mt-auto ${isExpanded ? "" : "flex flex-col items-center"
+            }`}
         >
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
@@ -235,8 +234,7 @@ const AdminSidebar = ({
       <aside
         className={`fixed top-0 left-0 h-full z-50 transition-all duration-300 ease-in-out 
           bg-black text-white shadow-xl w-64 backdrop-filter backdrop-blur-lg bg-opacity-90
-          transform lg:hidden ${
-            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          transform lg:hidden ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
         {/* Mobile close button */}
@@ -244,7 +242,7 @@ const AdminSidebar = ({
           <Link href="/admin" className="text-2xl font-bold">
             GearGod
           </Link>
-          <button onClick={toggleMobileMenu}>
+          <button onClick={toggleMobileMenu} aria-label="Close mobile menu">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -306,9 +304,8 @@ const AdminSidebar = ({
 
       {/* Main content padding to account for sidebar */}
       <div
-        className={`lg:pl-${
-          isExpanded ? "64" : "20"
-        } transition-all duration-300`}
+        className={`lg:pl-${isExpanded ? "64" : "20"
+          } transition-all duration-300`}
       ></div>
     </>
   );
