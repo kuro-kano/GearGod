@@ -4,20 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { signOut, getSession } from "next-auth/react";
 // import { Kbd } from "@heroui/kbd";
-import {
-  Search,
-  User,
-  // ShoppingCart,
-  Menu,
-  X,
-  Home,
-  // Settings,
-  Package,
-  Users,
-  // BarChart3,
-  LogOut,
-  ChevronRight,
-  ChevronLeft,
+import { Search, User, Menu, X, Home, Package, Users, 
+  LogOut, ChevronRight, ChevronLeft,
 } from "lucide-react";
 interface SidebarProps {
   setIsSearchVisible: (visible: boolean) => void;
