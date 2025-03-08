@@ -28,6 +28,7 @@ interface Total {
 interface Using_Coupon {
   coupon_id: number;
   coupon_count_using: number;
+  coupon_name: string;
 }
 
 export default function Home() {
@@ -185,7 +186,7 @@ export default function Home() {
                   อัตราการใช้คูปอง
                 </h2>
                 <CouponReport 
-                  coupons = {using_Coupons}
+                  coupon={using_Coupons}
                 />
               </div>
             </div>

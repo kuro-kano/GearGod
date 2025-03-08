@@ -17,19 +17,23 @@ export async function GET() {
 
     const count_using = await db.all(`
         SELECT
-            coupon_id,
-            COUNT(*) as Count_Using
+            coupon_usage.coupon_id,
+            coupons.coupon_code,
+            COUNT(*) AS Count_Using
         FROM
             coupon_usage
+            LEFT JOIN coupons ON coupon_usage.coupon_id = coupons.coupon_id
         GROUP BY
-            coupon_id;`);
+            coupon_usage.coupon_id,
+            coupons.coupon_code;`);
 
     console.log("Successfully fetched using_coupon:", count_using);
 
     const formattedCoupon = count_using.map((coupon) => ({
-        coupon_id: coupon.coupon_id || 0,
-        coupon_count_using: coupon.Count_Using || 0,
-      }));
+      coupon_id: coupon.coupon_id || 0,
+      coupon_count_using: coupon.Count_Using || 0,
+      coupon_name: coupon.coupon_code || "No Have Coupon",
+    }));
 
     return NextResponse.json(formattedCoupon);
   } catch (error) {
