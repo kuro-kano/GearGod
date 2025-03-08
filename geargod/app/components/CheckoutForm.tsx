@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { showToast } from './ToastAlert';
+import QRPromptPay from './OnlinePayment';
 
 interface CartItem {
   product_id: string;
@@ -22,6 +23,7 @@ const CheckoutForm = () => {
   const [discountCode, setDiscountCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
+  const [orderId, setOrderId] = useState<string>('');
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -164,6 +166,14 @@ const CheckoutForm = () => {
               <span className="text-gray-300">QR Promptpay</span>
             </label>
           </div>
+          {paymentMethod === 'promptpay' && (
+            <div className="mt-4">
+              <QRPromptPay 
+                amount={parseFloat(calculateTotal())} 
+                orderId={orderId} // Add orderId as a prop
+              />
+            </div>
+          )}
         </div>
 
         {/* Delivery Address Section */}
