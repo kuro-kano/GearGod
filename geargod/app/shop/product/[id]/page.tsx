@@ -300,14 +300,17 @@ export default function ProductPage() {
                   className="w-full mt-auto py-3 px-6 border-2 border-purple-600 rounded-md transition duration-300 font-kanit-regular"
                   variant="bordered"
                   disabled={product.stock_quantity <= 0}
-                  onClick={addToCart}
+                  onPress={addToCart}
                 >
                   เพิ่มลงตะกร้า
                 </Button>
                 <Button
                   className="w-full mt-auto py-3 px-6 bg-purple-600 hover:bg-purple-700 rounded-md transition duration-300 font-kanit-regular"
                   disabled={product.stock_quantity <= 0}
-                  onClick={addToCart}
+                  onPress={async () => {
+                  await addToCart();
+                  window.location.href = '/cart';
+                  }}
                 >
                   ซื้อเลย
                 </Button>
