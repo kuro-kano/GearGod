@@ -1,6 +1,8 @@
 import NextAuth, { SessionStrategy, Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
+import { connectSQLite } from '@/lib/db';
 
 declare module "next-auth" {
     interface Session {
@@ -13,16 +15,6 @@ declare module "next-auth" {
         roles: string;
         username: string;
     }
-}
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import bcrypt from "bcryptjs";
-
-async function connectSQLite() {
-    return open({
-        filename: "geargod.db",
-        driver: sqlite3.Database
-    });
 }
 
 export const authOptions = {

@@ -1,15 +1,7 @@
 
 import { NextResponse } from "next/server";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
 import bcrypt from 'bcryptjs';
-
-async function connectSQLite() {
-  return open({
-    filename: "geargod.db",
-    driver: sqlite3.Database,
-  });
-}
+import { connectSQLite } from "@/lib/db"; 
 
 export async function POST(req: Request) {
   try {
