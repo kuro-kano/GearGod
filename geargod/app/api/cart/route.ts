@@ -77,41 +77,37 @@ export async function DELETE(req: Request) {
     const url = new URL(req.url);
     const productId = url.searchParams.get('productId');
 
-    // console.log('DELETE request details:', { 
-    //   userId, 
-    //   productId,
-    //   productIdType: typeof productId,
-    //   currentCart: carts.get(userId),
-    //   allCarts: Object.fromEntries(carts)
-    // });
-
     if (!productId) {
       return NextResponse.json(
-        { error: "Product ID is required" }, 
+        { error: "Product ID is required" },
         { status: 400 }
       );
     }
 
     const cart = carts.get(userId) || [];
-    
-    // Convert IDs to strings for comparison
-    const itemToRemove = cart.find(item => String(item.product_id) === String(productId));
-    if (!itemToRemove) {
+    const itemExists = cart.some(item => String(item.product_id) === String(productId));
+
+    if (!itemExists) {
       return NextResponse.json(
-        { error: `Item not found in cart. ID: ${productId}` },
+        { error: "Item not found in cart" },
         { status: 404 }
       );
     }
 
-    const updatedCart = cart.filter(item => String(item.product_id) !== String(productId));
+    const updatedCart = cart.filter(
+      item => String(item.product_id) !== String(productId)
+    );
+    
     carts.set(userId, updatedCart);
     
-    // console.log('Updated cart:', updatedCart);
-    return NextResponse.json(updatedCart);
+    return NextResponse.json({ 
+      message: "Item removed successfully",
+      cart: updatedCart 
+    });
   } catch (error) {
     console.error('Delete error:', error);
     return NextResponse.json(
-      { error: "Failed to remove item" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

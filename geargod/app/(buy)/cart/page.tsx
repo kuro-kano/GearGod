@@ -89,17 +89,26 @@ export default function Cart() {
   // Handle item removal
   const removeItem = async (productId: string) => {
     try {
-      const response = await fetch(`/api/cart/${productId}`, {
+      const response = await fetch(`/api/cart?productId=${productId}`, {
         method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
-      if (!response.ok) throw new Error("Failed to remove item");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to remove item");
+      }
 
       setCartItems((prev) =>
         prev.filter((item) => item.product_id !== productId)
       );
     } catch (error) {
       console.error("Error removing item:", error);
+      // Optionally set an error state here to show to the user
+      setError("Failed to remove item from cart");
     }
   };
 
