@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button, Input, Checkbox, Link, Form, Divider } from "@heroui/react";
+import { Button, Input, Link, Form} from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -167,19 +167,7 @@ export default function LoginForm() {
             {isLoading ? "Signing in..." : "Sign In"}
           </Button>
         </Form>
-        <div className="flex items-center gap-4 py-2">
-          <Divider className="flex-1" />
-          <p className="shrink-0 text-tiny text-default-500">OR</p>
-          <Divider className="flex-1" />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Button
-            startContent={<Icon icon="flat-color-icons:google" width={24} />}
-            variant="bordered"
-          >
-            Continue with Google
-          </Button>
-        </div>
+
         <p className="text-center text-small">
           Need to create an account?&nbsp;
           <Link href="/signup" size="sm">
