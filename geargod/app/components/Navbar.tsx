@@ -27,6 +27,7 @@ import {
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
+  const [roles, setRoles] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
 
@@ -35,6 +36,9 @@ const Navbar = () => {
     if (session?.user) {
       setIsLoggedIn(true);
       setUsername(session.user.username || session.user.email || "");
+      setRoles(session?.user?.roles || "");
+
+      console.log(roles);
     } else {
       setIsLoggedIn(false);
       setUsername("");
@@ -95,6 +99,11 @@ const Navbar = () => {
             <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
               <Link href="/shop">ร้านค้า</Link>
             </div>
+            {roles === "staff" && (
+              <div className="group relative cursor-pointer hover:text-gray-300 transition-colors">
+                <Link href="/admin">จัดการร้านค้า</Link>
+              </div>
+            )}
           </div>
 
           {/* Search Bar & Icons */}
@@ -120,9 +129,6 @@ const Navbar = () => {
                           <User className="mr-2 h-4 w-4" />
                           <span>{username}</span>
                         </div>
-                      </DropdownItem>
-                      <DropdownItem href="/profile" key="profile">
-                        My Profile
                       </DropdownItem>
                       <DropdownItem href="/orders" key="orders">
                         My Orders
