@@ -37,13 +37,11 @@ const Navbar = () => {
       setIsLoggedIn(true);
       setUsername(session.user.username || session.user.email || "");
       setRoles(session?.user?.roles || "");
-
-      console.log(roles);
     } else {
       setIsLoggedIn(false);
       setUsername("");
     }
-  }, [session]);
+  }, [session, roles]);
 
   // // Monitor username changes
   // useEffect(() => {

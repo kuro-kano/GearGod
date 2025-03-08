@@ -148,7 +148,7 @@ export default function Cart() {
                     
                     <div className="flex-1 text-center sm:text-left mb-3 sm:mb-0">
                       <h3 className="font-medium">{item.product_name}</h3>
-                      <p className="text-gray-400">${item.price.toFixed(2)}</p>
+                      <p className="text-gray-400">฿{item.price.toFixed(2)}</p>
                     </div>
                     
                     <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 w-full sm:w-auto">
@@ -173,7 +173,7 @@ export default function Cart() {
                       
                       {/* Item total price */}
                       <div className="text-center sm:text-right mb-3 sm:mb-0 sm:w-24">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        ฿{(item.price * item.quantity).toFixed(2)}
                       </div>
                       
                       {/* Remove button */}
@@ -194,7 +194,7 @@ export default function Cart() {
               <div className="mt-6 md:mt-8 border-t border-gray-700 pt-4 md:pt-6">
                 <div className="flex justify-between items-center mb-4">
                   <span className="text-lg">Total</span>
-                  <span className="text-xl md:text-2xl font-bold">${total.toFixed(2)}</span>
+                  <span className="text-xl md:text-2xl font-bold">฿{total.toFixed(2)}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
                   <Button
