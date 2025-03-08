@@ -130,9 +130,6 @@ const Navbar = () => {
                           <span>{username}</span>
                         </div>
                       </DropdownItem>
-                      <DropdownItem href="/profile" key="profile">
-                        My Profile
-                      </DropdownItem>
                       <DropdownItem href="/orders" key="orders">
                         My Orders
                       </DropdownItem>
