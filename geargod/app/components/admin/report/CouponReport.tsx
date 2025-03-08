@@ -11,7 +11,7 @@ interface CouponReportProps {
 }
 
 export default function CouponReport({ coupon }: CouponReportProps) {
-  if (!coupon || coupon.length === 0) return <p>Loading...</p>; // Handle empty or undefined cases
+  if (!coupon || coupon.length === 0) return <p>No Have Using Coupon</p>; // Handle empty or undefined cases
 
   return (
     <div>

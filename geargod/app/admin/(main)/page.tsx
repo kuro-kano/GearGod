@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 import AdminNavbar from "@/components/admin/Navbar";
 import React from "react";
 import OrderReportBlock from "@/components/admin/report/SummaryReportBlock";
-import TopProductReport from "@/components/admin/report/RecentOrderReport";
+import TopProductReport from "@/components/admin/report/OrderReport";
 import CouponReport from "@/components/admin/report/CouponReport";
-import RecentOrderReport from "@/components/admin/report/RecentOrderReport";
+import RecentOrderReport from "@/components/admin/report/OrderReport";
 import { count } from "console";
 
 interface Orders {

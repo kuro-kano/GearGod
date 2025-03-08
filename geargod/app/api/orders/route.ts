@@ -17,26 +17,30 @@ export async function GET() {
     }
 
     const orders = await db.all(`
-            SELECT
-                order_items.order_item_id,
-                order_items.order_id,
-                orders.order_date,
-                orders.order_status as orderStatus,
-                CASE 
-                  WHEN CONCAT(COALESCE(users.first_name, ''), ' ', COALESCE(users.last_name, '')) = ' ' 
-                    THEN 'Unknown Customer' 
-                  ELSE CONCAT(COALESCE(users.first_name, ''), ' ', COALESCE(users.last_name, '')) 
-                END AS customerName,
-                product_colors.color_id,
-                products.product_name as productName
-            FROM
-                orders,
-                product_colors
-                LEFT JOIN order_items ON orders.order_id = order_items.order_id
-                LEFT JOIN users ON order_items.order_id = users.user_id
-                LEFT JOIN products ON product_colors.product_id = products.product_id
-                ORDER BY order_items.order_item_id DESC
-            LIMIT 5
+          SELECT
+              order_date,
+              CASE
+                  WHEN concat (
+                      coalesce(orders.first_name, ''),
+                      ' ',
+                      coalesce(orders.last_name, '')
+                  ) = ' ' THEN 'Unknown Customer'
+                  ELSE concat (
+                      coalesce(orders.first_name, ''),
+                      ' ',
+                      coalesce(orders.last_name, '')
+                  )
+              END AS customerName,
+              orders.order_status AS orderStatus,
+              products.product_name
+          FROM
+              order_items
+              JOIN orders USING (order_id)
+              JOIN product_colors USING (product_color_id)
+              JOIN products USING (product_id)
+          ORDER BY
+              order_date DESC
+          LIMIT 5;
         `);
 
     // console.log("Successfully fetched orders:", orders);
@@ -44,7 +48,7 @@ export async function GET() {
     const formattedOrders = orders.map((order) => ({
       ...order,
       orderDate: new Date(order.order_date).toLocaleDateString(),
-      productName: order.productName || "Unknown Product",
+      productName: order.product_name,
       customerName: order.customerName,
     }));
 
