@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { signOut, getSession } from "next-auth/react";
-import { Kbd } from "@heroui/kbd";
+// import { Kbd } from "@heroui/kbd";
 import {
   Search,
   User,
@@ -11,10 +11,10 @@ import {
   Menu,
   X,
   Home,
-  Settings,
+  // Settings,
   Package,
   Users,
-  BarChart3,
+  // BarChart3,
   LogOut,
   ChevronRight,
   ChevronLeft,
@@ -73,7 +73,7 @@ const AdminSidebar = ({
 
   // Navigation items for admin
   const navItems = [
-    { name: "หน้าหลัก", icon: <Home className="w-5 h-5" />, href: "/admin" },
+    { name: "หน้าหลัก", icon: <Home className="w-5 h-5" />, href: "/" },
     {
       name: "รายการสั่งซื้อ",
       icon: <Package className="w-5 h-5" />,
@@ -84,16 +84,16 @@ const AdminSidebar = ({
       icon: <Users className="w-5 h-5" />,
       href: "/admin/products",
     },
-    {
-      name: "Analytics",
-      icon: <BarChart3 className="w-5 h-5" />,
-      href: "/admin/analytics",
-    },
-    {
-      name: "ตั้งค่า",
-      icon: <Settings className="w-5 h-5" />,
-      href: "/admin/settings",
-    },
+  //   {
+  //     name: "Analytics",
+  //     icon: <BarChart3 className="w-5 h-5" />,
+  //     href: "/admin/analytics",
+  //   },
+  //   {
+  //     name: "ตั้งค่า",
+  //     icon: <Settings className="w-5 h-5" />,
+  //     href: "/admin/settings",
+  //   },
   ];
 
   return (
@@ -154,7 +154,7 @@ const AdminSidebar = ({
         <div className="border-b border-gray-700 w-full opacity-30 my-2"></div>
 
         {/* Search bar */}
-        {isExpanded && (
+        {/* {isExpanded && (
           <div className="px-4 mb-4">
             <div className="relative flex items-center">
               <Search
@@ -178,7 +178,7 @@ const AdminSidebar = ({
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Nav items */}
         <nav className="flex-grow px-3 py-2">
