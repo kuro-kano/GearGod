@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { signOut, getSession } from "next-auth/react";
-// import { Kbd } from "@heroui/kbd";
+import { useRouter } from 'next/navigation';
 import { Search, User, Menu, X, Home, Package, Users, 
   LogOut, ChevronRight, ChevronLeft,
 } from "lucide-react";
@@ -15,21 +15,17 @@ interface SidebarProps {
 
 const session = await getSession();
 
-if (!session || session.user.roles !== "staff") {
-  window.location.href = "/";
-}
-
-const user = session?.user?.username;
-
 const AdminSidebar = ({
   setIsSearchVisible,
   isExpanded,
   setIsExpanded,
 }: SidebarProps) => {
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
-
-  // Handle resize for responsiveness
+  const user = session?.user?.username;
+  
+  // Move useEffect before any conditional returns
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 1024) {
@@ -43,8 +39,16 @@ const AdminSidebar = ({
     handleResize();
 
     window.addEventListener("resize", handleResize);
+    
+    // Don't forget to clean up
     return () => window.removeEventListener("resize", handleResize);
-  }, [setIsExpanded]);
+  }, [setIsExpanded]); // Add setIsExpanded as a dependency
+
+  // Move the authentication check after hooks
+  if (!session || session.user.roles !== "staff") {
+    router.push('/');
+    return null;
+  }
 
   const handleUserClick = () => {
     setIsUserMenuVisible(!isUserMenuVisible);
@@ -72,16 +76,6 @@ const AdminSidebar = ({
       icon: <Users className="w-5 h-5" />,
       href: "/admin/products",
     },
-  //   {
-  //     name: "Analytics",
-  //     icon: <BarChart3 className="w-5 h-5" />,
-  //     href: "/admin/analytics",
-  //   },
-  //   {
-  //     name: "ตั้งค่า",
-  //     icon: <Settings className="w-5 h-5" />,
-  //     href: "/admin/settings",
-  //   },
   ];
 
   return (
@@ -140,33 +134,6 @@ const AdminSidebar = ({
 
         {/* Divider */}
         <div className="border-b border-gray-700 w-full opacity-30 my-2"></div>
-
-        {/* Search bar */}
-        {/* {isExpanded && (
-          <div className="px-4 mb-4">
-            <div className="relative flex items-center">
-              <Search
-                className="w-4 h-4 text-zinc-400 cursor-pointer transition-colors absolute left-3"
-                onClick={() => setIsSearchVisible(true)}
-              />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="bg-gray-800 rounded-lg pl-10 py-2 text-sm border border-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 w-full"
-                onClick={() => setIsSearchVisible(true)}
-                readOnly
-              />
-              <div className="absolute right-3 text-gray-400">
-                <Kbd
-                  className="bg-gray-700 text-gray-300 text-xs"
-                  keys={["ctrl"]}
-                >
-                  K
-                </Kbd>
-              </div>
-            </div>
-          </div>
-        )} */}
 
         {/* Nav items */}
         <nav className="flex-grow px-3 py-2">
