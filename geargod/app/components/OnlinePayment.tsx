@@ -4,10 +4,10 @@ import { showToast } from './ToastAlert';
 
 interface QRPromptPayProps {
   amount: number;
-  orderId: string;
+  onUploadSuccess: (path: string) => void; // เพิ่ม prop สำหรับส่ง path กลับ
 }
 
-const QRPromptPay: React.FC<QRPromptPayProps> = ({ amount, orderId }) => {
+const QRPromptPay: React.FC<QRPromptPayProps> = ({ amount, onUploadSuccess }) => {
   const [, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -32,7 +32,6 @@ const QRPromptPay: React.FC<QRPromptPayProps> = ({ amount, orderId }) => {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('orderId', orderId);
 
       const response = await fetch('/api/upload/payment', {
         method: 'POST',
@@ -40,8 +39,9 @@ const QRPromptPay: React.FC<QRPromptPayProps> = ({ amount, orderId }) => {
       });
 
       const data = await response.json();
-
       if (!response.ok) throw new Error(data.error);
+
+      onUploadSuccess(data.filename); // ส่ง path กลับไปที่ CheckoutForm
 
       showToast({
         title: "Success",

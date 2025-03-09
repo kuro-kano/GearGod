@@ -15,6 +15,8 @@ export async function POST(request: Request) {
     const coupon = await db.get(query, [code]);
     await db.close();
 
+    console.log(coupon);
+
     if (!coupon) {
       return NextResponse.json({ 
         valid: false,
@@ -23,6 +25,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ 
+      id: coupon.coupon_id,
       valid: true, 
       type: coupon.discount_type,
       discount: coupon.discount_value,

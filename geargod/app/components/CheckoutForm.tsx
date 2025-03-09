@@ -60,6 +60,11 @@ const CheckoutForm = () => {
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
   const [shippingAddress, setShippingAddress] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentSlipPath, setPaymentSlipPath] = useState<string>("");
+  const [activeCoupon, setActiveCoupon] = useState<{
+    coupon_id: number;
+    discount_amount: number;
+  } | null>(null);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -94,17 +99,25 @@ const CheckoutForm = () => {
       const data = await response.json();
 
       if (data.valid) {
+        let discountAmount = 0;
         if (data.type === "percentage") {
-          setDiscount(
+          discountAmount =
             (data.discount / 100) *
-              cartItems.reduce(
-                (total, item) => total + item.price * item.quantity,
-                0
-              )
-          );
+            cartItems.reduce(
+              (total, item) => total + item.price * item.quantity,
+              0
+            );
         } else if (data.type === "fixed") {
-          setDiscount(data.discount);
+          discountAmount = data.discount;
         }
+
+        setDiscount(discountAmount);
+        setActiveCoupon({
+          
+          coupon_id: data.id,
+          discount_amount: discountAmount,
+        });
+
         showToast({
           title: "Coupon Applied",
           description: data.message,
@@ -112,6 +125,7 @@ const CheckoutForm = () => {
         });
       } else {
         setDiscount(0);
+        setActiveCoupon(null);
         showToast({
           title: "Invalid Coupon",
           description: data.message,
@@ -120,6 +134,7 @@ const CheckoutForm = () => {
       }
     } catch {
       setDiscount(0);
+      setActiveCoupon(null);
       showToast({
         title: "Error",
         description: "Failed to apply coupon",
@@ -245,6 +260,10 @@ const CheckoutForm = () => {
     }
   };
 
+  const handleUploadSuccess = (path: string) => {
+    setPaymentSlipPath(path);
+  };
+
   const handlePlaceOrder = async () => {
     // Validate required fields
     if (
@@ -258,36 +277,35 @@ const CheckoutForm = () => {
         description: "Please fill in all required fields",
         color: "danger",
       });
-      // outer.push("/cart");
       return;
     }
 
     setIsProcessing(true);
     try {
       const orderData = {
-        username: session?.user?.username || null, // Get username from session
+        username: session?.user?.username || null,
         total_amount: parseFloat(calculateTotal()),
         first_name: firstName,
         last_name: lastName,
         phone: phone,
         shipping_address:
           deliveryMethod === "home" ? shippingAddress : "Store Pickup",
-        payment_method: paymentMethod,
+        payment_method:
+          paymentMethod === "promptpay" ? paymentSlipPath : paymentMethod,
+        coupon: activeCoupon,
         cart_items: cartItems.map((item) => {
           const totalUnitPrice = calculateItemPrice(item);
           return {
             ...item,
-            category: item.category,  // Changed this line
+            category: item.category,
             material_id: item.material?.id || null,
-            color_id: item.color?.id || null, // Make sure color.id exists
-            component_ids: item.components?.map(comp => comp.id) || [],
+            color_id: item.color?.id || null,
+            component_ids: item.components?.map((comp) => comp.id) || [],
             unit_price: totalUnitPrice,
-            subtotal: totalUnitPrice * item.quantity
+            subtotal: totalUnitPrice * item.quantity,
           };
-        })
+        }),
       };
-
-      // console.log('Order Data:', JSON.stringify(orderData, null, 2));
 
       const response = await fetch("/api/orders", {
         method: "POST",
@@ -306,7 +324,12 @@ const CheckoutForm = () => {
           color: "success",
         });
         setOrderId(result.orderId);
-        // Clear cart or redirect to confirmation page
+        // Redirect to finish page
+        const clearResponse = await fetch('/api/clear-cookies');
+        const clearResult = await clearResponse.json();
+        if (clearResult.success) {
+          window.location.href = "/finish";
+        }
       } else {
         throw new Error(result.message || "Failed to place order");
       }
@@ -395,38 +418,8 @@ const CheckoutForm = () => {
               <QRPromptPay
                 amount={parseFloat(calculateTotal())}
                 orderId={orderId} // Add orderId as a prop
+                onUploadSuccess={handleUploadSuccess}
               />
-              <div className="mt-4 space-y-2">
-                <p className="text-sm text-gray-400">Upload payment slip:</p>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/jpg"
-                  onChange={handleFileSelect}
-                  className="block w-full text-sm text-gray-400
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-blue-600 file:text-white
-                    hover:file:bg-blue-700"
-                />
-                {selectedFile && (
-                  <button
-                    onClick={handleUpload}
-                    disabled={uploadStatus === "uploading" || isCreatingOrder}
-                    className={`mt-2 px-4 py-2 rounded ${
-                      uploadStatus === "uploading" || isCreatingOrder
-                        ? "bg-gray-600 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    } text-white`}
-                  >
-                    {isCreatingOrder
-                      ? "Creating Order..."
-                      : uploadStatus === "uploading"
-                      ? "Uploading..."
-                      : "Upload Slip"}
-                  </button>
-                )}
-              </div>
             </div>
           )}
         </div>
