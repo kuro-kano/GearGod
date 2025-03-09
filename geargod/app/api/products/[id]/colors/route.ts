@@ -56,7 +56,7 @@ export async function GET(
         // Check if color_id column exists
         try {
           await db.get(`SELECT color_id FROM product_images LIMIT 1`);
-        } catch (e) {
+        } catch {
           // Column doesn't exist, add it
           await db.exec(`ALTER TABLE product_images ADD COLUMN color_id INTEGER NULL`);
         }
