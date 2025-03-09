@@ -318,18 +318,21 @@ const CheckoutForm = () => {
       const result = await response.json();
 
       if (result.success) {
+        // Clear cart using cart API
+        await fetch("/api/cart", { method: "PATCH" });
+        setCartItems([]); // Clear cart items in state
+        
         showToast({
           title: "Success",
           description: "Order placed successfully!",
           color: "success",
         });
         setOrderId(result.orderId);
-        // Redirect to finish page
-        const clearResponse = await fetch('/api/clear-cookies');
-        const clearResult = await clearResponse.json();
-        if (clearResult.success) {
+        
+        // Small delay before redirect to ensure state updates
+        setTimeout(() => {
           window.location.href = "/finish";
-        }
+        }, 100);
       } else {
         throw new Error(result.message || "Failed to place order");
       }

@@ -157,3 +157,13 @@ export async function DELETE(req: Request) {
     );
   }
 }
+
+// เพิ่มฟังก์ชันใหม่สำหรับล้าง cart
+export async function PATCH() {
+  const userId = await getUserId();
+  carts.delete(userId);
+  return NextResponse.json({ 
+    success: true,
+    message: 'Cart cleared successfully' 
+  });
+}
