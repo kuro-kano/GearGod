@@ -230,6 +230,9 @@ const CheckoutForm = () => {
         }))
       };
 
+      // Add this line to inspect orderData
+      console.log('Order Data:', JSON.stringify(orderData, null, 2));
+
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: {
