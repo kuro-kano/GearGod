@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
-import { showToast } from './ToastAlert';
+import React, { useState } from "react";
+import Image from "next/image";
+import { showToast } from "./ToastAlert";
 
 interface QRPromptPayProps {
   amount: number;
   onUploadSuccess: (path: string) => void; // เพิ่ม prop สำหรับส่ง path กลับ
 }
 
-const QRPromptPay: React.FC<QRPromptPayProps> = ({ amount, onUploadSuccess }) => {
+const QRPromptPay: React.FC<QRPromptPayProps> = ({
+  amount,
+  onUploadSuccess,
+}) => {
   const [, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
@@ -31,10 +36,10 @@ const QRPromptPay: React.FC<QRPromptPayProps> = ({ amount, onUploadSuccess }) =>
     setIsUploading(true);
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
-      const response = await fetch('/api/upload/payment', {
-        method: 'POST',
+      const response = await fetch("/api/upload/payment", {
+        method: "POST",
         body: formData,
       });
 
@@ -46,15 +51,14 @@ const QRPromptPay: React.FC<QRPromptPayProps> = ({ amount, onUploadSuccess }) =>
       showToast({
         title: "Success",
         description: "Payment slip uploaded successfully",
-        color: "success"
+        color: "success",
       });
-
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error("Upload error:", error);
       showToast({
         title: "Error",
         description: "Failed to upload payment slip",
-        color: "danger"
+        color: "danger",
       });
     } finally {
       setIsUploading(false);
@@ -72,18 +76,26 @@ const QRPromptPay: React.FC<QRPromptPayProps> = ({ amount, onUploadSuccess }) =>
           className="rounded-lg"
         />
       </div>
-      
+
       <div className="text-center">
-        <p className="text-lg font-semibold mb-2">Amount: ฿{amount.toFixed(2)}</p>
-        <p className="text-sm text-gray-400 mb-4">Scan QR code to pay via PromptPay</p>
+        <p className="text-lg font-semibold mb-2">
+          Amount: ฿{amount.toFixed(2)}
+        </p>
+        <p className="text-sm text-gray-400 mb-4">
+          Scan QR code to pay via PromptPay
+        </p>
       </div>
 
       <div className="space-y-2">
         <p className="text-sm font-medium">Upload Payment Confirmation</p>
         <div className="flex flex-col items-center gap-4">
           <label className="w-full cursor-pointer">
-            <div className={`border-2 border-dashed border-gray-600 rounded-lg p-4 text-center 
-              ${isUploading ? 'opacity-50' : 'hover:border-blue-500'} transition-colors`}>
+            <div
+              className={`border-2 border-dashed border-gray-600 rounded-lg p-4 text-center 
+              ${
+                isUploading ? "opacity-50" : "hover:border-blue-500"
+              } transition-colors`}
+            >
               <input
                 type="file"
                 accept="image/*"
@@ -92,11 +104,11 @@ const QRPromptPay: React.FC<QRPromptPayProps> = ({ amount, onUploadSuccess }) =>
                 disabled={isUploading}
               />
               <p className="text-gray-400">
-                {isUploading ? 'Uploading...' : 'Click to upload payment slip'}
+                {isUploading ? "Uploading..." : "Click to upload payment slip"}
               </p>
             </div>
           </label>
-          
+
           {previewUrl && (
             <div className="relative w-full h-48">
               <Image

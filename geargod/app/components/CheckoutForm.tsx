@@ -113,7 +113,6 @@ const CheckoutForm = () => {
 
         setDiscount(discountAmount);
         setActiveCoupon({
-          
           coupon_id: data.id,
           discount_amount: discountAmount,
         });
@@ -321,14 +320,14 @@ const CheckoutForm = () => {
         // Clear cart using cart API
         await fetch("/api/cart", { method: "PATCH" });
         setCartItems([]); // Clear cart items in state
-        
+
         showToast({
           title: "Success",
           description: "Order placed successfully!",
           color: "success",
         });
         setOrderId(result.orderId);
-        
+
         // Small delay before redirect to ensure state updates
         setTimeout(() => {
           window.location.href = "/finish";
