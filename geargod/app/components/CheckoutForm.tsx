@@ -27,6 +27,8 @@ const CheckoutForm = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [shippingAddress, setShippingAddress] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -200,6 +202,66 @@ const CheckoutForm = () => {
     }
   };
 
+  const handlePlaceOrder = async () => {
+    // Validate required fields
+    if (!firstName || !lastName || !phone || (deliveryMethod === 'home' && !shippingAddress)) {
+      showToast({
+        title: "Error",
+        description: "Please fill in all required fields",
+        color: "danger"
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      const orderData = {
+        user_id: null, // Add user_id if you have auth
+        total_amount: parseFloat(calculateTotal()),
+        first_name: firstName,
+        last_name: lastName,
+        phone: phone,
+        shipping_address: deliveryMethod === 'home' ? shippingAddress : 'Store Pickup',
+        payment_method: paymentMethod,
+        cart_items: cartItems.map(item => ({
+          ...item,
+          unit_price: item.price,
+          subtotal: item.price * item.quantity
+        }))
+      };
+
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        showToast({
+          title: "Success",
+          description: "Order placed successfully!",
+          color: "success"
+        });
+        setOrderId(result.orderId);
+        // Clear cart or redirect to confirmation page
+      } else {
+        throw new Error(result.message || 'Failed to place order');
+      }
+    } catch (error) {
+      showToast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to place order",
+        color: "danger"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="bg-[#1D1C21] rounded-md p-6 shadow-foreground-700 backdrop-filter backdrop-blur-sm bg-opacity-60">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
@@ -337,6 +399,8 @@ const CheckoutForm = () => {
             <textarea 
               className="w-full p-3 rounded bg-black/20 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your delivery address"
+              value={shippingAddress}
+              onChange={(e) => setShippingAddress(e.target.value)}
               rows={4}
             ></textarea>
           )}
@@ -405,10 +469,11 @@ const CheckoutForm = () => {
                 Back to Cart
               </button>
               <button 
-                className="bg-blue-600 text-white px-8 py-2 rounded hover:bg-blue-700 transition-colors"
-                disabled={cartItems.length === 0}
+                className="bg-blue-600 text-white px-8 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+                disabled={cartItems.length === 0 || isProcessing}
+                onClick={handlePlaceOrder}
               >
-                Place Order
+                {isProcessing ? 'Processing...' : 'Place Order'}
               </button>
             </div>
           </div>

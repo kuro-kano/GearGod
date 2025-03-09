@@ -16,19 +16,16 @@ export async function POST(request: Request) {
       cart_items
     } = await request.json();
 
-    console.log("material:", cart_items[0].material_id);
-    console.log("color:", cart_items);
-
     // Start transaction
     await db.run('BEGIN TRANSACTION');
 
     // Insert order
     const orderResult = await db.run(`
       INSERT INTO orders (
-        total_amount, first_name, last_name, phone, 
+        user_id, total_amount, first_name, last_name, phone, 
         shipping_address, payment_method, order_status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [total_amount, first_name, last_name, phone, 
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [user_id || null, total_amount, first_name, last_name, phone, 
        shipping_address, payment_method, 'pending']
     );
 
@@ -37,7 +34,7 @@ export async function POST(request: Request) {
     // Process each cart item
     for (const item of cart_items) {
       if (item.category === "Computer-Cases") {
-        // Create custom design
+        // Create custom design first
         const designResult = await db.run(`
           INSERT INTO custom_designs (
             user_id, product_id, color_id, material_id
@@ -46,7 +43,7 @@ export async function POST(request: Request) {
            item.color_id, item.material_id]
         );
 
-        // Create order item with design_id
+        // Create order item with the design_id
         await db.run(`
           INSERT INTO order_items (
             order_id, design_id, quantity, unit_price, subtotal
@@ -55,12 +52,12 @@ export async function POST(request: Request) {
            item.quantity, item.unit_price, item.subtotal]
         );
       } else {
-        // Create order item with product_color_id
+        // For non-custom products, use product_color_id directly
         await db.run(`
           INSERT INTO order_items (
             order_id, product_color_id, quantity, unit_price, subtotal
           ) VALUES (?, ?, ?, ?, ?)`,
-          [orderId, item.color_id, 
+          [orderId, item.product_color_id, 
            item.quantity, item.unit_price, item.subtotal]
         );
       }
