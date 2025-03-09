@@ -155,11 +155,7 @@ export default function Shop() {
 
         {/* Main content area with products */}
         <div
-          className="flex-1 bg-[#1D1C21] rounded-md border-[#1D1C21] p-5 shadow-foreground-700 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-60"
-          style={{
-            boxShadow:
-              "0 10px 20px rgba(156, 39, 176, 0.2), 0 6px 6px rgba(32, 17, 126, 0.15)",
-          }}
+          className="flex-1 bg-[#1D1C21] rounded-md border-[#1D1C21] p-5 shadow-foreground-700 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-60 products-container"
         >
           {/* Results summary */}
           <div className="mb-6 flex justify-between items-center">
