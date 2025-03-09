@@ -24,6 +24,9 @@ const CheckoutForm = () => {
   const [discount, setDiscount] = useState(0);
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
   const [orderId, setOrderId] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -102,6 +105,101 @@ const CheckoutForm = () => {
     setPaymentMethod(method);
   };
 
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file);
+  };
+
+  const createOrder = async () => {
+    setIsCreatingOrder(true);
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: cartItems,
+          firstName,
+          lastName,
+          phone,
+          deliveryMethod,
+          paymentMethod,
+          total: parseFloat(calculateTotal())
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to create order');
+      const data = await response.json();
+      setOrderId(data.orderId);
+      return data.orderId;
+    } catch (error) {
+      showToast({
+        title: "Error",
+        description: "Failed to create order",
+        color: "danger"
+      });
+      throw error;
+    } finally {
+      setIsCreatingOrder(false);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      showToast({
+        title: "Error",
+        description: "Please select a file first",
+        color: "danger"
+      });
+      return;
+    }
+
+    try {
+      setUploadStatus('uploading');
+      
+      // Create order if it doesn't exist
+      let currentOrderId = orderId;
+      if (!currentOrderId) {
+        currentOrderId = await createOrder();
+      }
+
+      const formData = new FormData();
+      formData.append('slip', selectedFile);
+      formData.append('orderId', currentOrderId);
+
+      const response = await fetch('/api/upload-slip', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Upload failed');
+      }
+
+      if (data.success) {
+        setUploadStatus('success');
+        showToast({
+          title: "Success",
+          description: "Payment slip uploaded successfully",
+          color: "success"
+        });
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      setUploadStatus('error');
+      showToast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to upload slip",
+        color: "danger"
+      });
+    }
+  };
+
   return (
     <div className="bg-[#1D1C21] rounded-md p-6 shadow-foreground-700 backdrop-filter backdrop-blur-sm bg-opacity-60">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
@@ -172,6 +270,35 @@ const CheckoutForm = () => {
                 amount={parseFloat(calculateTotal())} 
                 orderId={orderId} // Add orderId as a prop
               />
+              <div className="mt-4 space-y-2">
+                <p className="text-sm text-gray-400">Upload payment slip:</p>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/jpg"
+                  onChange={handleFileSelect}
+                  className="block w-full text-sm text-gray-400
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-600 file:text-white
+                    hover:file:bg-blue-700"
+                />
+                {selectedFile && (
+                  <button
+                    onClick={handleUpload}
+                    disabled={uploadStatus === 'uploading' || isCreatingOrder}
+                    className={`mt-2 px-4 py-2 rounded ${
+                      uploadStatus === 'uploading' || isCreatingOrder
+                        ? 'bg-gray-600 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700'
+                    } text-white`}
+                  >
+                    {isCreatingOrder ? 'Creating Order...' : 
+                     uploadStatus === 'uploading' ? 'Uploading...' : 
+                     'Upload Slip'}
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>
