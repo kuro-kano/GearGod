@@ -8,16 +8,20 @@ interface CartItem {
   price: number;         // Added to match frontend
   quantity: number;
   image_url?: string;    // Added to match frontend
+  category?: string;     // Added category property
   color?: {
+    id: number;  // Add this
     color_name: string;
     color_code: string;
     add_price: number;
   };
   material?: {
+    id: number;  // Add this
     name: string;
     add_price: number;
   };
   components?: Array<{
+    id: number;  // Add this
     name: string;
     add_price: number;
   }>;
@@ -45,23 +49,47 @@ export async function POST(req: Request) {
   const userId = await getUserId();
   const data = await req.json() as CartItem;
   
+  console.log('Received cart item:', data); // Add this for debugging
+  
   if (!data.product_id || typeof data.quantity !== 'number') {
     return NextResponse.json({ error: "Invalid request data" }, { status: 400 });
   }
 
+  // Format incoming data to ensure IDs are properly structured
+  const formattedItem = {
+    ...data,
+    category: data.category, // Preserve category
+    material: data.material && {
+      id: data.material.id,
+      name: data.material.name,
+      add_price: data.material.add_price
+    },
+    color: data.color && {
+      id: data.color.id,
+      color_name: data.color.color_name,
+      color_code: data.color.color_code,
+      add_price: data.color.add_price
+    },
+    components: data.components?.map(comp => ({
+      id: comp.id,
+      name: comp.name,
+      add_price: comp.add_price
+    }))
+  };
+
   const cart = carts.get(userId) || [];
   const existingItemIndex = cart.findIndex(
     (item) => 
-      item.product_id === data.product_id &&
-      JSON.stringify(item.color) === JSON.stringify(data.color) &&
-      JSON.stringify(item.material) === JSON.stringify(data.material) &&
-      JSON.stringify(item.components) === JSON.stringify(data.components)
+      item.product_id === formattedItem.product_id &&
+      JSON.stringify(item.color) === JSON.stringify(formattedItem.color) &&
+      JSON.stringify(item.material) === JSON.stringify(formattedItem.material) &&
+      JSON.stringify(item.components) === JSON.stringify(formattedItem.components)
   );
 
   if (existingItemIndex > -1) {
-    cart[existingItemIndex].quantity += data.quantity;
+    cart[existingItemIndex].quantity += formattedItem.quantity;
   } else {
-    cart.push(data);
+    cart.push(formattedItem);
   }
 
   carts.set(userId, cart);

@@ -8,6 +8,7 @@ import {
   User,
   Menu,
   X,
+  CloudFog,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
@@ -26,6 +27,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
 
+  // console.log(session?.user);
   // Monitor session changes
   useEffect(() => {
     if (session?.user) {

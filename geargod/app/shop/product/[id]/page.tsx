@@ -9,6 +9,7 @@ import { showToast } from "@/components/ToastAlert";
 
 // Add this interface above the Product interface
 interface ProductColor {
+  id: number;
   color_name: string;
   color_code: string;
   add_price: number;
@@ -136,9 +137,8 @@ export default function ProductPage() {
 
     fetchProduct();
 
-    // No need for id in the dependency array since we're using the ref
-    // to prevent re-fetching, and we want this effect to run only once
-  }, []);
+    // Added id to dependency array, but fetchInitiated.current prevents re-fetching
+  }, [id]);
 
   // Function to process image URLs
   const processImageUrl = (url: string, productId: string): string => {
@@ -210,19 +210,23 @@ export default function ProductPage() {
           price: finalPrice,
           quantity: 1,
           image_url: imageUrl,
-          color: selectedColor ? {
+          category: product?.category_name,
+          material: selectedMaterial ? {
+            id: selectedMaterial.id,
+            name: selectedMaterial.name,
+            add_price: selectedMaterial.add_price
+          } : undefined,
+          color: selectedColor ? {  
+            id: selectedColor.id,
             color_name: selectedColor.color_name,
             color_code: selectedColor.color_code,
             add_price: selectedColor.add_price
-          } : null,
-          material: selectedMaterial ? {
-            name: selectedMaterial.name,
-            add_price: selectedMaterial.add_price
-          } : null,
-          components: selectedComponent.map(comp => ({
+          } : undefined,
+          components: selectedComponent?.map(comp => ({
+            id: comp.id,
             name: comp.name,
             add_price: comp.add_price
-          })),
+          }))
         }),
       });
 
