@@ -258,6 +258,7 @@ const CheckoutForm = () => {
         description: "Please fill in all required fields",
         color: "danger",
       });
+      // outer.push("/cart");
       return;
     }
 

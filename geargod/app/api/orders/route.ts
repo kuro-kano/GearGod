@@ -119,15 +119,20 @@ export async function POST(request: Request) {
           [orderId, designId, item.quantity, item.unit_price, item.subtotal]
         );
       } else {
-        const product_color_result = await db.get(`
-          SELECT pc.product_color_id
-          FROM product_colors pc
-          JOIN colors c ON pc.color_id = c.color_id
-          WHERE pc.product_id = ? AND c.color_name = ?`,
-          [item.product_id, item.color.color_name]
-        );
+        let product_color_id = null;
+        
+        // Only query for product color if color information exists
+        if (item.color && item.color.color_name) {
+          const product_color_result = await db.get(`
+            SELECT pc.product_color_id
+            FROM product_colors pc
+            JOIN colors c ON pc.color_id = c.color_id
+            WHERE pc.product_id = ? AND c.color_name = ?`,
+            [item.product_id, item.color.color_name]
+          );
+          product_color_id = product_color_result?.product_color_id;
+        }
 
-        const product_color_id = product_color_result?.product_color_id;
         console.log("pc_id: ", product_color_id);
         // For non-custom products, use product_color_id directly
         await db.run(
