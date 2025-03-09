@@ -571,10 +571,18 @@ export default function ProductPage() {
                 </Button>
                 <Button
                   className="w-full mt-auto py-3 px-6 bg-purple-600 hover:bg-purple-700 rounded-md transition duration-300 font-kanit-regular"
-                  disabled={product.stock_quantity <= 0}
+                  disabled={product.stock_quantity <= 0 || (product.colors && product.colors.length > 0 && !selectedColor)}
                   onPress={async () => {
-                  await addToCart();
-                  window.location.href = '/cart';
+                    if (product.colors && product.colors.length > 0 && !selectedColor) {
+                      showToast({
+                        title: "Error",
+                        description: "Please select a color",
+                        color: "danger"
+                      });
+                      return;
+                    }
+                    await addToCart();
+                    window.location.href = '/cart';
                   }}
                 >
                   ซื้อเลย
