@@ -92,11 +92,7 @@ export default function ProductsPage() {
     <main className="ambient-bg">
       <div className="p-4 sm:p-6 md:p-10 lg:p-16 min-h-screen flex flex-col items-center">
         <div
-          className="p-6 backdrop-filter backdrop-blur-lg bg-black bg-opacity-25 w-full max-w-7xl rounded-lg overflow-hidden"
-          style={{
-            boxShadow:
-              "0 10px 20px rgba(156, 39, 176, 0.2), 0 6px 6px rgba(32, 17, 126, 0.15)",
-          }}
+          className="p-6 backdrop-filter backdrop-blur-lg bg-black bg-opacity-25 w-full max-w-7xl rounded-lg overflow-hidden custom-box-shadow"
         >
           <div className="flex justify-between items-center mb-8">
             <h1 className="font-kanit-regular text-2xl">รายการสินค้าทั้งหมด</h1>
