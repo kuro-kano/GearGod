@@ -13,6 +13,14 @@ interface CartItem {
     color_code: string;
     add_price: number;
   };
+  material?: {
+    name: string;
+    add_price: number;
+  };
+  components?: Array<{
+    name: string;
+    add_price: number;
+  }>;
 }
 
 // In-memory cart storage
@@ -43,7 +51,11 @@ export async function POST(req: Request) {
 
   const cart = carts.get(userId) || [];
   const existingItemIndex = cart.findIndex(
-    (item) => item.product_id === data.product_id
+    (item) => 
+      item.product_id === data.product_id &&
+      JSON.stringify(item.color) === JSON.stringify(data.color) &&
+      JSON.stringify(item.material) === JSON.stringify(data.material) &&
+      JSON.stringify(item.components) === JSON.stringify(data.components)
   );
 
   if (existingItemIndex > -1) {
