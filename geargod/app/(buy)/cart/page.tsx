@@ -14,6 +14,11 @@ interface CartItem {
   price: number;
   quantity: number;
   image_url?: string;
+  color?: {
+    color_name: string;
+    color_code: string;
+    add_price: number;
+  };
 }
 
 // Define the step interface
@@ -166,6 +171,11 @@ export default function Cart() {
                     <div className="flex-1 text-center sm:text-left mb-3 sm:mb-0">
                       <h3 className="font-medium">{item.product_name}</h3>
                       <p className="text-gray-400">฿{item.price.toFixed(2)}</p>
+                      {item.color && (
+                        <p className="text-sm text-gray-400">
+                          Color: {item.color.color_name}
+                        </p>
+                      )}
                     </div>
                     
                     <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 w-full sm:w-auto">

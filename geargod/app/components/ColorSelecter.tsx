@@ -1,6 +1,7 @@
 interface ProductColor {
   color_name: string;
   color_code: string;
+  add_price: number;
 }
 
 interface ColorSelectorProps {
@@ -41,7 +42,7 @@ export default function ColorSelector({ colors, selectedColor, onColorSelect }: 
       </div>
       {selectedColor && (
         <p className="mt-2 text-sm text-gray-300">
-          Selected: {selectedColor.color_name}
+          Selected: {selectedColor.color_name} add: {selectedColor.add_price}
         </p>
       )}
     </div>

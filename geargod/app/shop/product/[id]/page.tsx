@@ -11,6 +11,20 @@ import { showToast } from "@/components/ToastAlert";
 interface ProductColor {
   color_name: string;
   color_code: string;
+  add_price: number;
+}
+
+// Add these interfaces near the top with other interfaces
+interface Material {
+  id: string;
+  name: string;
+  add_price: number;
+}
+
+interface Component {
+  id: string;
+  name: string;
+  add_price: number;
 }
 
 // Define the Product interface
@@ -27,6 +41,8 @@ interface Product {
   image_url?: string;
   images?: Array<{ image_url: string; is_primary?: number }>;
   colors?: ProductColor[]; // Add this line
+  materials?: Material[];
+  components?: Component[];
 }
 
 export default function ProductPage() {
@@ -38,16 +54,11 @@ export default function ProductPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [categoryName, setCategoryName] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<ProductColor | null>(null); // Add this line
+  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<Component[]>([]); // Changed to array
+  const [isComponentsOpen, setIsComponentsOpen] = useState(false); // Add this line
   // Add a ref to track if we've already initiated the fetch
   const fetchInitiated = useRef(false);
-
-  console.log("Color: ", product?.colors);
-
-  // Add console log after state declarations
-  useEffect(() => {
-    console.log("Current product state:", product);
-    console.log("Current colors:", product?.colors);
-  }, [product]); // This will run whenever product changes
 
   // Fetch product data
   useEffect(() => {
@@ -61,37 +72,48 @@ export default function ProductPage() {
       try {
         setLoading(true);
         console.log("Fetching product with ID:", id);
-        const response = await fetch(`/api/products/${id}`);
+        const [productResponse, colorsResponse] = await Promise.all([
+          fetch(`/api/products/${id}`),
+          fetch(`/api/products/${id}/colors`)
+        ]);
 
-        if (!response.ok) {
+        if (!productResponse.ok) {
           throw new Error("Failed to fetch product");
         }
 
-        const data = await response.json();
-        console.log("API Response data:", data);
-        console.log("Colors from API:", data.colors);
+        const productData = await productResponse.json();
+        const colorsData = await colorsResponse.json();
 
-        // Ensure colors data is properly structured if it exists
-        if (data.colors && !Array.isArray(data.colors)) {
-          console.warn("Colors data is not an array, initializing empty array");
-          data.colors = [];
+        // Merge colors data with product data
+        productData.colors = colorsData;
+
+        // Add these fetch calls for Computer Cases
+        if (productData.category_name === "Computer-Cases") {
+          const [materialsRes, componentsRes] = await Promise.all([
+            fetch(`/api/products/${id}/materials`),
+            fetch(`/api/products/${id}/components`)
+          ]);
+          console.log("Fetching materials and components for Computer Cases:", id);
+          const materials = await materialsRes.json();
+          const components = await componentsRes.json();
+          productData.materials = materials;
+          productData.components = components;
         }
 
-        setProduct(data);
+        setProduct(productData);
 
-        // Fetch category name if we have category_id but no name
-        if (data.category_id && !data.category_name) {
-          fetchCategoryName(data.category_id);
+        // Rest of your existing fetch product code...
+        if (productData.category_id && !productData.category_name) {
+          fetchCategoryName(productData.category_id);
         }
 
-        // Handle image URL
-        if (data.images && data.images.length > 0) {
-          // Find the primary image or use the first one
-          const mainImage = data.images[0];
-          setImageUrl(processImageUrl(mainImage.image_url, data.product_id));
-        } else if (data.image_url) {
-          setImageUrl(processImageUrl(data.image_url, data.product_id));
+        if (productData.images && productData.images.length > 0) {
+          const mainImage = productData.images[0];
+          setImageUrl(processImageUrl(mainImage.image_url, productData.product_id));
+        } else if (productData.image_url) {
+          setImageUrl(processImageUrl(productData.image_url, productData.product_id));
         }
+        
       } catch (err) {
         console.error("Error fetching product:", err);
         setError("Failed to load product data");
@@ -139,6 +161,30 @@ export default function ProductPage() {
     }
   };
 
+  // Helper function to calculate total additional price
+  const calculateTotalPrice = () => {
+    if (!product) return 0;
+    
+    const basePrice = product.price || 0;
+    const colorPrice = selectedColor?.add_price || 0;
+    const materialPrice = selectedMaterial?.add_price || 0;
+    const componentsPrice = selectedComponent?.reduce((sum, comp) => sum + (comp?.add_price || 0), 0) || 0;
+    
+    return basePrice + colorPrice + materialPrice + componentsPrice;
+  };
+
+  // Helper function to toggle component selection
+  const toggleComponent = (component: Component) => {
+    setSelectedComponent(prev => {
+      const exists = prev.find(c => c.id === component.id);
+      if (exists) {
+        return prev.filter(c => c.id !== component.id);
+      } else {
+        return [...prev, component];
+      }
+    });
+  };
+
   const addToCart = async () => {
     try {
       if (!product) return;
@@ -150,7 +196,9 @@ export default function ProductPage() {
         });
         return;
       }
-  
+
+      const finalPrice = calculateTotalPrice();
+
       const response = await fetch('/api/cart', {
         method: 'POST',
         headers: {
@@ -159,13 +207,25 @@ export default function ProductPage() {
         body: JSON.stringify({
           product_id: product?.product_id,
           product_name: product?.product_name,
-          price: product?.price,
+          price: finalPrice,
           quantity: 1,
           image_url: imageUrl,
-          color: selectedColor ? selectedColor.color_name : null,
+          color: selectedColor ? {
+            color_name: selectedColor.color_name,
+            color_code: selectedColor.color_code,
+            add_price: selectedColor.add_price
+          } : null,
+          material: selectedMaterial ? {
+            name: selectedMaterial.name,
+            add_price: selectedMaterial.add_price
+          } : null,
+          components: selectedComponent.map(comp => ({
+            name: comp.name,
+            add_price: comp.add_price
+          })),
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to add to cart');
       }
@@ -269,7 +329,13 @@ export default function ProductPage() {
 
               {/* Price */}
               <div className="text-2xl font-bold mb-4 text-purple-400">
-                ฿{product.price.toLocaleString()}
+                ฿{(calculateTotalPrice() || 0).toLocaleString()}
+                <div className="text-sm text-gray-400">
+                  Base: ฿{(product?.price || 0).toLocaleString()}
+                  {selectedColor && ` + Color: ฿${(selectedColor?.add_price || 0).toLocaleString()}`}
+                  {selectedMaterial && ` + Material: ฿${(selectedMaterial?.add_price || 0).toLocaleString()}`}
+                  {selectedComponent?.length > 0 && ` + Components: ฿${(selectedComponent.reduce((sum, comp) => sum + (comp?.add_price || 0), 0) || 0).toLocaleString()}`}
+                </div>
               </div>
 
               {/* Description */}
@@ -360,10 +426,133 @@ export default function ProductPage() {
                   </div>
                   {selectedColor && (
                     <p className="mt-2 text-sm text-gray-300">
-                      Selected: {selectedColor.color_name}
+                      Selected: {selectedColor.color_name} add: {selectedColor.add_price}
                     </p>
                   )}
                 </div>
+              )}
+
+              {/* Add this after the Color Selector section */}
+              {product.category_name === "Computer-Cases" && (
+                <>
+                  {/* Material Selector - updated to dropdown */}
+                  {product.materials && product.materials.length > 0 && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">Select Material</h2>
+                      <div className="relative">
+                        <select
+                          value={selectedMaterial?.id || ''}
+                          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                            const materialId = e.target.value;
+                            const selected = product.materials?.find(m => m.id === materialId);
+                            setSelectedMaterial(selected || null);
+                          }}
+                          className="w-full px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none cursor-pointer"
+                        >
+                          <option value="">Choose a material...</option>
+                          {product.materials.map((material) => (
+                            <option 
+                              key={material.id} 
+                              value={material.id}
+                              className="bg-gray-700"
+                            >
+                              {material.name} (+฿{material.add_price.toLocaleString()})
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
+                      </div>
+                      {selectedMaterial && (
+                        <p className="mt-2 text-sm text-purple-400">
+                          Selected: {selectedMaterial.name} (+฿{selectedMaterial.add_price.toLocaleString()})
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Component Selector */}
+                  {product.components && product.components.length > 0 && (
+                    <div className="mb-6">
+                      <h2 className="text-xl font-semibold mb-2">เลือกอุปกรณ์เสริม</h2>
+                      <div className="relative">
+                        <div 
+                          className="w-full px-4 py-2 bg-gray-700 text-white rounded-md cursor-pointer border border-gray-600 hover:border-purple-500"
+                          onClick={() => setIsComponentsOpen(!isComponentsOpen)}
+                        >
+                          <div className="flex justify-between items-center">
+                            <span>{selectedComponent.length ? `เลือกแล้ว ${selectedComponent.length} รายการ` : 'เลือกอุปกรณ์เสริม...'}</span>
+                            <svg className={`w-5 h-5 transition-transform ${isComponentsOpen ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+                        </div>
+                  
+                        {/* Dropdown Panel - Updated positioning */}
+                        {isComponentsOpen && (
+                          <div className="absolute z-10 w-full bottom-full mb-1 bg-gray-800 border border-gray-700 rounded-md shadow-lg">
+                            <div className="max-h-60 overflow-auto">
+                              {product.components.map((component) => (
+                                <div
+                                  key={component.id}
+                                  className="flex items-center justify-between px-4 py-2 hover:bg-gray-700 cursor-pointer"
+                                  onClick={() => toggleComponent(component)}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="checkbox"
+                                      checked={selectedComponent.some(c => c.id === component.id)}
+                                      readOnly
+                                      className="w-4 h-4 accent-purple-500"
+                                    />
+                                    <span>{component.name}</span>
+                                  </div>
+                                  <span className="text-purple-400">+฿{component.add_price.toLocaleString()}</span>
+                                </div>
+                              ))}
+                            </div>
+                            
+                            {selectedComponent.length > 0 && (
+                              <div className="border-t border-gray-700 p-3">
+                                <div className="flex justify-between text-sm">
+                                  <span>รวม {selectedComponent.length} รายการ</span>
+                                  <span className="text-purple-400">
+                                    +฿{selectedComponent.reduce((sum, comp) => sum + comp.add_price, 0).toLocaleString()}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                  
+                        {/* Selected Components Summary */}
+                        {selectedComponent.length > 0 && !isComponentsOpen && (
+                          <div className="mt-2 text-sm text-gray-300">
+                            <div className="flex flex-wrap gap-1">
+                              {selectedComponent.map((comp) => (
+                                <span key={comp.id} className="inline-flex items-center gap-1 bg-purple-900/30 px-2 py-1 rounded">
+                                  {comp.name}
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleComponent(comp);
+                                    }}
+                                    className="text-gray-400 hover:text-gray-200"
+                                  >
+                                    ×
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
 
               {/* Add to cart button */}

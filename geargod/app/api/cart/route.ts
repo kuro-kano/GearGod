@@ -8,6 +8,11 @@ interface CartItem {
   price: number;         // Added to match frontend
   quantity: number;
   image_url?: string;    // Added to match frontend
+  color?: {
+    color_name: string;
+    color_code: string;
+    add_price: number;
+  };
 }
 
 // In-memory cart storage

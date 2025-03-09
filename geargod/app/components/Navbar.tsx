@@ -19,11 +19,6 @@ import {
   Avatar,
 } from "@heroui/react";
 
-// interface NavbarProps {
-//   setIsSearchVisible: (visible: boolean) => void;
-// }
-// const Navbar = ({ setIsSearchVisible }: NavbarProps) => {
-
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
@@ -42,14 +37,6 @@ const Navbar = () => {
       setUsername("");
     }
   }, [session, roles]);
-
-  // // Monitor username changes
-  // useEffect(() => {
-  //   if (username) {
-  //     console.log('Username updated:', username);
-  //     console.log('Login status:', isLoggedIn);
-  //   }
-  // }, [username, isLoggedIn]);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
