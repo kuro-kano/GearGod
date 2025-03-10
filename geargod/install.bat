@@ -46,3 +46,6 @@ npm install --save-dev ^
     typescript@5
 
 echo Dependencies installed successfully.
+
+echo Staring the development server...
+npm run dev

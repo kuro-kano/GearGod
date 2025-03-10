@@ -3,6 +3,8 @@ import { Divider } from "@heroui/divider";
 import { CheckboxGroup, Checkbox, Chip } from "@heroui/react";
 import { useState, useEffect } from "react";
 import PriceSlider from "./PriceSlider";
+import "@/styles/globals.css";
+
 
 interface ProductFiltersProps {
   selectedTypes: string[];
@@ -80,7 +82,7 @@ export default function ProductFilters({
   };
 
   return (
-    <div className="w-64 h-auto px-3 py-3 bg-[#1D1C21] rounded-md border-[#1D1C21] p-5 shadow-foreground-700 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-60">
+    <div className="dark text-white w-64 h-auto px-3 py-3 bg-[#1D1C21] rounded-md border-[#1D1C21] p-5 shadow-foreground-700 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-60">
       {/* Display selected filters as chips */}
       {(selectedTypes.length > 0 ||
         selectedBrands.length > 0 ||
@@ -138,9 +140,13 @@ export default function ProductFilters({
 
       <CheckboxGroup
         size="sm"
-        className="font-kanit-regular"
+        className="font-kanit-regular dark"
         value={selectedTypes}
         onChange={handleTypeChange}
+        classNames={{
+          label: "text-white",
+          wrapper: "text-white",
+        }}
       >
         <Checkbox value="Computer-Cases">เคสคอมพิวเตอร์</Checkbox>
         <Checkbox value="headset">หูฟัง</Checkbox>
@@ -155,8 +161,13 @@ export default function ProductFilters({
 
       <CheckboxGroup
         size="sm"
+        className="font-kanit-regular dark"
         value={selectedBrands}
         onChange={handleBrandChange}
+        classNames={{
+          label: "text-white",
+          wrapper: "text-white",
+        }}
       >
         <Checkbox value="steelseries">Steelseries</Checkbox>
         <Checkbox value="hyperx">HyperX</Checkbox>
