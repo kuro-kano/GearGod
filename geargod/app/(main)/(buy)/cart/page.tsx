@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Image from "next/image";
 import { Minus, Plus, Trash2 } from "lucide-react";
@@ -29,6 +30,7 @@ interface Step {
 }
 
 export default function Cart() {
+  const { data: session } = useSession();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -122,6 +124,14 @@ export default function Cart() {
       console.error("Error removing item:", error);
       // Optionally set an error state here to show to the user
       setError("Failed to remove item from cart");
+    }
+  };
+
+  const handleCheckout = () => {
+    if (!session) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/checkout';
     }
   };
 
@@ -234,7 +244,7 @@ export default function Cart() {
                   <Button
                     color="primary"
                     className="w-full"
-                    onPress={() => window.location.href = '/checkout'}
+                    onPress={handleCheckout}
                   >
                     Proceed to Checkout
                   </Button>
