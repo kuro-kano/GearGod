@@ -84,7 +84,7 @@ export default function FinishPage() {
   ];
 
   return (
-    <main className="ambient-bg min-h-screen flex flex-col items-center">
+    <main className="dark ambient-bg min-h-screen flex flex-col items-center">
       <div className="w-full pt-20 md:pt-28 lg:pt-32 px-4 sm:px-6 md:px-8 lg:px-48">
         <BreadCrumbs />
       </div>
@@ -92,7 +92,7 @@ export default function FinishPage() {
       <div className="w-full px-4 sm:px-6 md:px-8 lg:px-48 py-4 md:py-8">
         <ProgressCheckout steps={steps} />
         
-        <div className="flex justify-center w-full">
+        <div className="flex justify-center w-full font-kanit-regular">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -107,9 +107,9 @@ export default function FinishPage() {
               <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
             </motion.div>
             
-            <h1 className="text-3xl font-bold mb-4">Thank You for Your Order!</h1>
+            <h1 className="text-white text-3xl font-bold mb-4">ขอบคุณสำหรับคำสั่งซื้อ</h1>
             <p className="text-gray-400 mb-8 text-lg">
-              We&apos;ll send you an email with your order details shortly.
+              เราจะส่งอีเมลถึงคุณพร้อมรายละเอียดคำสั่งซื้อ
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -118,7 +118,7 @@ export default function FinishPage() {
                 className="w-full border border-gray-700 hover:bg-gray-800 transition-colors"
                 onPress={() => router.push("/orders")}
               >
-                View Orders
+                ดูรายการสั่งซื้อ
               </Button>
               
               <Button
@@ -127,7 +127,7 @@ export default function FinishPage() {
                 onPress={() => router.push("/shop")}
               >
                 <ShoppingBag className="w-5 h-5" />
-                Continue Shopping
+                ซื้อสินค้าเพิ่ม
               </Button>
             </div>
           </motion.div>

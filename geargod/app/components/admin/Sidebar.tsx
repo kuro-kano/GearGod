@@ -5,6 +5,7 @@ import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { Search, User, Menu, X, Home, Package, Users, 
   LogOut, ChevronRight, ChevronLeft,
+  Warehouse,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -64,7 +65,8 @@ const AdminSidebar = ({
 
   // Navigation items for admin
   const navItems = [
-    { name: "หน้าหลัก", icon: <Home className="w-5 h-5" />, href: "/" },
+    { name: "หน้าหลักเว็บไซต์", icon: <Home className="w-5 h-5" />, href: "/" },
+    { name: "แดชบอร์ด", icon: <Warehouse className="w-5 h-5" />, href: "/admin" },
     {
       name: "รายการสั่งซื้อ",
       icon: <Package className="w-5 h-5" />,

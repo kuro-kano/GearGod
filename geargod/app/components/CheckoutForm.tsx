@@ -348,14 +348,14 @@ const CheckoutForm = () => {
   };
 
   return (
-    <div className="bg-[#1D1C21] rounded-md p-6 shadow-foreground-700 backdrop-filter backdrop-blur-sm bg-opacity-60">
+    <div className="font-kanit-regular text-white bg-[#1D1C21] rounded-md p-6 shadow-foreground-700 backdrop-filter backdrop-blur-sm bg-opacity-60">
       <h1 className="text-2xl font-bold mb-6">Checkout</h1>
       {/* Order Summary Section */}
       <div className="space-y-6 mb-8">
         {isLoading ? (
           <div className="text-center py-4">Loading cart items...</div>
         ) : cartItems.length === 0 ? (
-          <div className="text-center py-4">Your cart is empty</div>
+          <div className="text-center py-4">ไม่มีสินค้าในตระกร้า</div>
         ) : (
           cartItems.map((item) => (
             <div
@@ -374,11 +374,11 @@ const CheckoutForm = () => {
                 <p className="text-gray-400">฿{item.price.toFixed(2)}</p>
               </div>
               <div className="text-center mx-4">
-                <p className="text-sm text-gray-400">Quantity</p>
+                <p className="text-sm text-gray-400">จำนวน</p>
                 <p className="font-medium">{item.quantity}</p>
               </div>
               <div className="w-24 text-right">
-                <p className="text-sm text-gray-400">Price</p>
+                <p className="text-sm text-gray-400">ราคา</p>
                 <p className="font-medium">
                   ฿{(item.price * item.quantity).toFixed(2)}
                 </p>
@@ -392,7 +392,7 @@ const CheckoutForm = () => {
       <div className="space-y-6">
         {/* Payment Method */}
         <div className="space-y-2">
-          <h3 className="font-medium mb-3">Payment Method</h3>
+          <h3 className="font-medium mb-3">วิธีการจ่ายเงิน</h3>
           <div className="flex gap-6">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
@@ -419,7 +419,6 @@ const CheckoutForm = () => {
             <div className="mt-4">
               <QRPromptPay
                 amount={parseFloat(calculateTotal())}
-                orderId={orderId} // Add orderId as a prop
                 onUploadSuccess={handleUploadSuccess}
               />
             </div>
@@ -428,20 +427,20 @@ const CheckoutForm = () => {
 
         {/* Delivery Address Section */}
         <div className="space-y-4">
-          <h3 className="font-medium mb-3">Delivery Information</h3>
+          <h3 className="font-medium mb-3">ข้อมูลการจัดส่ง</h3>
 
           {/* Contact Information */}
           <div className="grid grid-cols-2 gap-4">
             <input
               type="text"
-              placeholder="First Name"
+              placeholder="ชื่อจริง"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               className="p-3 rounded bg-black/20 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <input
               type="text"
-              placeholder="Last Name"
+              placeholder="นามสกุล"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="p-3 rounded bg-black/20 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -450,7 +449,7 @@ const CheckoutForm = () => {
 
           <input
             type="tel"
-            placeholder="Phone Number"
+            placeholder="หมายเลขโทรศัพท์"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="w-full p-3 rounded bg-black/20 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -459,7 +458,7 @@ const CheckoutForm = () => {
           {deliveryMethod === "home" && (
             <textarea
               className="w-full p-3 rounded bg-black/20 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter your delivery address"
+              placeholder="ที่อยู่จัดส่ง"
               value={shippingAddress}
               onChange={(e) => setShippingAddress(e.target.value)}
               rows={4}
@@ -475,7 +474,7 @@ const CheckoutForm = () => {
               }`}
               onClick={() => handleDeliveryMethodChange("home")}
             >
-              Home Delivery
+              จัดส่งตามที่อยู่
             </button>
             <button
               className={`flex-1 py-2 rounded transition-colors ${
@@ -485,7 +484,7 @@ const CheckoutForm = () => {
               }`}
               onClick={() => handleDeliveryMethodChange("store")}
             >
-              Store Pickup
+              รับสินค้าเอง
             </button>
           </div>
         </div>
@@ -496,7 +495,7 @@ const CheckoutForm = () => {
           <div className="flex gap-4 items-center">
             <input
               type="text"
-              placeholder="Enter discount code"
+              placeholder="โค้ดคูปอง"
               value={discountCode}
               onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
               className="flex-1 p-2 rounded bg-black/20 text-white border border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -510,14 +509,14 @@ const CheckoutForm = () => {
                   : "bg-blue-600 hover:bg-blue-700"
               } text-white`}
             >
-              {isApplyingDiscount ? "Applying..." : "Apply Code"}
+              {isApplyingDiscount ? "กำลังใช้งาน..." : "ใช้งาน"}
             </button>
           </div>
 
           <div className="flex justify-between items-center">
             <div className="space-y-2">
               <p className="text-gray-400">
-                Subtotal: ฿
+                ราคาสุทธิ: ฿
                 {cartItems
                   .reduce(
                     (total, item) => total + item.price * item.quantity,
@@ -527,24 +526,24 @@ const CheckoutForm = () => {
               </p>
               {discount > 0 && (
                 <p className="text-green-500">
-                  Discount: -฿{discount.toFixed(2)}
+                  ส่วนลด: -฿{discount.toFixed(2)}
                 </p>
               )}
-              <p className="text-2xl font-bold">Total: ฿{calculateTotal()}</p>
+              <p className="text-2xl font-bold">ราคา: ฿{calculateTotal()}</p>
             </div>
             <div className="flex gap-4">
               <button
                 onClick={() => (window.location.href = "/cart")}
                 className="px-6 py-2 rounded border border-gray-600 hover:bg-gray-700 transition-colors"
               >
-                Back to Cart
+                กลับไปที่ตะกร้า
               </button>
               <button
                 className="bg-blue-600 text-white px-8 py-2 rounded hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
                 disabled={cartItems.length === 0 || isProcessing}
                 onClick={handlePlaceOrder}
               >
-                {isProcessing ? "Processing..." : "Place Order"}
+                {isProcessing ? "Processing..." : "สั่งซื้อสินค้า"}
               </button>
             </div>
           </div>

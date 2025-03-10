@@ -118,7 +118,7 @@ export default function ShopProductCard({
         style={{ transform: isHovered ? "translateY(-5px)" : "none" }}
       >
         <Card
-          className="w-full sm:w-[250px] max-w-[250px] space-y-4 p-3 sm:p-4"
+          className="dark w-full sm:w-[250px] max-w-[250px] space-y-4 p-3 sm:p-4"
           radius="lg"
           style={{
             boxShadow: isHovered

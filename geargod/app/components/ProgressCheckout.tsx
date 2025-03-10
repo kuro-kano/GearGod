@@ -14,7 +14,7 @@ interface CheckoutStepperProps {
 
 const CheckoutStepper: React.FC<CheckoutStepperProps> = ({ steps }) => {
   return (
-    <div className="mb-8">
+    <div className="dark mb-8">
       <div className="bg-white rounded-t-md px-4 sm:px-6 py-4">
         <h2 className="text-gray-800 font-bold text-lg sm:text-xl">SHOP</h2>
       </div>

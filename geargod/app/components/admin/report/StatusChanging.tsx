@@ -44,7 +44,7 @@ export default function StatusChanging({
           <option value="Pending">Checking</option>
           <option value="Processing">Processing</option>
           <option value="Completed">Completed</option>
-          <option value="Cancelled">Cancelled</option>
+          {/* <option value="Cancelled">Cancelled</option> */}
         </select>
         <div className="flex justify-end mt-6 gap-3">
           <button 

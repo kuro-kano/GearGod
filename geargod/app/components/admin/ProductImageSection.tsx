@@ -33,8 +33,8 @@ export default function ProductImageSection({
   const [imageLoading, setImageLoading] = useState<boolean>(false);
 
   return (
-    <div className="mb-6 p-6 bg-gray-800 rounded-lg">
-      <h2 className="text-xl font-semibold mb-3">Product Image</h2>
+    <div className="mb-6 p-6 bg-gray-800 rounded-lg text-white">
+      <h2 className="text-xl font-semibold mb-3">รูปภาพสินค้า</h2>
 
       {/* Display current image */}
       <div className="mb-4">

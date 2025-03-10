@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Image from "next/image";
 import { Minus, Plus, Trash2 } from "lucide-react";
@@ -29,6 +30,7 @@ interface Step {
 }
 
 export default function Cart() {
+  const { data: session } = useSession();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -125,8 +127,16 @@ export default function Cart() {
     }
   };
 
+  const handleCheckout = () => {
+    if (!session) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/checkout';
+    }
+  };
+
   return (
-    <main className="ambient-bg min-h-screen">
+    <main className="dark ambient-bg min-h-screen text-white">
       <div className="pt-20 md:pt-28 lg:pt-40 px-4 sm:px-6 md:px-8 lg:px-48">
         <BreadCrumbs />
       </div>
@@ -218,9 +228,9 @@ export default function Cart() {
               </div>
 
               {/* Cart Summary */}
-              <div className="mt-6 md:mt-8 border-t border-gray-700 pt-4 md:pt-6">
+              <div className="mt-6 md:mt-8 border-t border-gray-700 pt-4 md:pt-6 font-kanit-regular">
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg">Total</span>
+                  <span className="text-lg">ราคา</span>
                   <span className="text-xl md:text-2xl font-bold">฿{total.toFixed(2)}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
@@ -229,14 +239,14 @@ export default function Cart() {
                     className="w-full"
                     onPress={() => window.location.href = '/shop'}
                   >
-                    Continue Shopping
+                    เลือกสินค้าเพิ่ม
                   </Button>
                   <Button
                     color="primary"
                     className="w-full"
-                    onPress={() => window.location.href = '/checkout'}
+                    onPress={handleCheckout}
                   >
-                    Proceed to Checkout
+                    จ่ายเงิน
                   </Button>
                 </div>
               </div>
