@@ -8,7 +8,7 @@ export default function BreadCrumbs() {
   const pathnames = pathname.split("/").filter((x) => x);
 
   return (
-    <div className="w-full px-2 py-2 relative z-10 bg-transparent shadow">
+    <div className="w-full px-2 py-2 relative z-10 bg-transparent shadow text-white">
       <Breadcrumbs variant="solid" className="!bg-transparent" classNames={{
         list: "bg-black/60 ",
       }}>

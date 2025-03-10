@@ -134,7 +134,7 @@ export default function AdminProductCard({
 
   return (
     <Card
-      className="w-full sm:w-[280px] max-w-[280px] space-y-3 p-4"
+      className="text-white w-full sm:w-[280px] max-w-[280px] space-y-3 p-4"
       radius="lg"
       style={{
         boxShadow: isHovered
