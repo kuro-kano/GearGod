@@ -6,17 +6,17 @@ const SignUpPage = () => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // Ensure this runs only on the client
+    setIsClient(true);
   }, []);
 
-  if (!isClient) return null; // Prevent rendering on the server
+  if (!isClient) return null;
 
   return (
     <main>
       <div className="relative w-full h-screen overflow-hidden">
         {/* Background Image */}
         <img
-          src="/images/login.png" // Path to your image file
+          src="/images/login.png"
           alt="Background"
           className="absolute top-0 left-0 w-full h-full object-cover"
         />

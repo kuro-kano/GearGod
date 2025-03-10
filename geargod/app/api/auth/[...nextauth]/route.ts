@@ -1,14 +1,20 @@
-import NextAuth, { SessionStrategy } from "next-auth";
+import NextAuth, { SessionStrategy, Session, User } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
 import bcrypt from "bcryptjs";
+import { connectSQLite } from '@/lib/db';
 
-async function connectSQLite() {
-    return open({
-        filename: "geargod.db",
-        driver: sqlite3.Database
-    });
+declare module "next-auth" {
+    interface Session {
+        user: User & {
+            roles: string;
+            username: string;
+        };
+    }
+    interface User {
+        roles: string;
+        username: string;
+    }
 }
 
 export const authOptions = {
@@ -19,11 +25,11 @@ export const authOptions = {
                 email: { label: "Email", type: "text" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials, req) {
-                console.log("✅ authorize() called with:", credentials);
+            async authorize(credentials) {
+                console.log("✅ authorize() called with:", credentials?.email);
 
                 if (!credentials?.email || !credentials?.password) {
-                    console.log("❌ Missing credentials:", credentials);
+                    // ! console.log("❌ Missing credentials:", credentials);
                     return null;
                 }
 
@@ -52,7 +58,14 @@ export const authOptions = {
                     }
 
                     console.log("🎉 Authentication successful!");
-                    return user;
+                    // ? Return only necessary user data
+                    // * console.log("🎉🎉🎉", user.roles);
+                    return {
+                        id: user.id,
+                        username: user.username,
+                        email: user.email,
+                        roles: user.roles
+                    };
                 } catch (error) {
                     console.log("🚨 Authorization error:", error);
                     return null;
@@ -66,6 +79,22 @@ export const authOptions = {
     secret: process.env.NEXTAUTH_SECRET,
     pages: {
         signIn: "/login"
+    },
+    callbacks: {
+        async jwt({ token, user }: { token: JWT, user: User | undefined }) {
+            if (user) {
+                token.roles = user.roles;
+                token.username = user.username;
+            }
+            return token;
+        },
+        async session({ session, token }: { session: Session; token: JWT }) {
+            if (session?.user) {
+                session.user.roles = token.roles as string;
+                session.user.username = token.username as string;
+            }
+            return session;
+        }
     }
 };
 

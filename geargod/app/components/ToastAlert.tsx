@@ -1,4 +1,4 @@
-import { addToast, Button, cn } from "@heroui/react";
+import { addToast, cn } from "@heroui/react";
 
 // Toast configuration interface
 export interface ToastOptions {

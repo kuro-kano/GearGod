@@ -3,6 +3,7 @@ import { Divider } from "@heroui/divider";
 import { CheckboxGroup, Checkbox, Chip } from "@heroui/react";
 import { useState, useEffect } from "react";
 import PriceSlider from "./PriceSlider";
+import "@/styles/globals.css";
 
 interface ProductFiltersProps {
   selectedTypes: string[];
@@ -37,6 +38,7 @@ export default function ProductFilters({
   // Handle brand selection
   const handleBrandChange = (values: string[]) => {
     onBrandChange(values);
+    console.log(values);
   };
 
   // Handle price range change from PriceSlider
@@ -59,7 +61,7 @@ export default function ProductFilters({
 
   // Map of values to display names
   const typeDisplayNames: Record<string, string> = {
-    "pc-case": "เคสคอมพิวเตอร์",
+    "Computer-Cases": "เคสคอมพิวเตอร์",
     headset: "หูฟัง",
     mouse: "เมาส์",
     keyboard: "คีย์บอร์ด",
@@ -70,14 +72,16 @@ export default function ProductFilters({
     steelseries: "Steelseries",
     hyperx: "HyperX",
     beyerdynamics: "BeyerDynamics",
-    "cooler-master": "Cooler Master",
+    "Cooler Master": "Cooler Master",
+    aerocool: "Aerocool",
     razer: "Razer",
     logitech: "Logitech",
     nzxt: "NZXT",
+    loga: "Loga",
   };
 
   return (
-    <div className="w-64 h-auto px-3 py-3 bg-[#1D1C21] rounded-md border-[#1D1C21] p-5 shadow-foreground-700 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-60">
+    <div className="dark text-white w-64 h-auto px-3 py-3 bg-[#1D1C21] rounded-md border-[#1D1C21] p-5 shadow-foreground-700 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-60">
       {/* Display selected filters as chips */}
       {(selectedTypes.length > 0 ||
         selectedBrands.length > 0 ||
@@ -139,11 +143,21 @@ export default function ProductFilters({
         value={selectedTypes}
         onChange={handleTypeChange}
       >
-        <Checkbox value="pc-case">เคสคอมพิวเตอร์</Checkbox>
-        <Checkbox value="headset">หูฟัง</Checkbox>
-        <Checkbox value="mouse">เมาส์</Checkbox>
-        <Checkbox value="keyboard">คีย์บอร์ด</Checkbox>
-        <Checkbox value="mousepad">แผ่นรองเมาส์</Checkbox>
+        <Checkbox value="Computer-Cases" className="!text-white">
+          <span className="!text-white">เคสคอมพิวเตอร์</span>
+        </Checkbox>
+        <Checkbox value="headset" className="!text-white">
+          <span className="!text-white">หูฟัง</span>
+        </Checkbox>
+        <Checkbox value="mouse" className="!text-white">
+          <span className="!text-white">เมาส์</span>
+        </Checkbox>
+        <Checkbox value="keyboard" className="!text-white">
+          <span className="!text-white">คีย์บอร์ด</span>
+        </Checkbox>
+        <Checkbox value="mousepad" className="!text-white">
+          <span className="!text-white">แผ่นรองเมาส์</span>
+        </Checkbox>
       </CheckboxGroup>
 
       <Divider className="my-4" />
@@ -152,16 +166,37 @@ export default function ProductFilters({
 
       <CheckboxGroup
         size="sm"
+        className="font-kanit-regular dark"
         value={selectedBrands}
         onChange={handleBrandChange}
       >
-        <Checkbox value="steelseries">Steelseries</Checkbox>
-        <Checkbox value="hyperx">HyperX</Checkbox>
-        <Checkbox value="beyerdynamics">BeyerDynamics</Checkbox>
-        <Checkbox value="cooler-master">Cooler Master</Checkbox>
-        <Checkbox value="razer">Razer</Checkbox>
-        <Checkbox value="logitech">Logitech</Checkbox>
-        <Checkbox value="nzxt">NZXT</Checkbox>
+        <Checkbox value="steelseries" className="!text-white">
+          <span className="!text-white">Steelseries</span>
+        </Checkbox>
+        <Checkbox value="hyperx" className="!text-white">
+          <span className="!text-white">HyperX</span>
+        </Checkbox>
+        <Checkbox value="beyerdynamics" className="!text-white">
+          <span className="!text-white">BeyerDynamics</span>
+        </Checkbox>
+        <Checkbox value="Cooler Master" className="!text-white">
+          <span className="!text-white">Cooler Master</span>
+        </Checkbox>
+        <Checkbox value="aerocool" className="!text-white">
+          <span className="!text-white">Aerocool</span>
+        </Checkbox>
+        <Checkbox value="razer" className="!text-white">
+          <span className="!text-white">Razer</span>
+        </Checkbox>
+        <Checkbox value="logitech" className="!text-white">
+          <span className="!text-white">Logitech</span>
+        </Checkbox>
+        <Checkbox value="nzxt" className="!text-white">
+          <span className="!text-white">NZXT</span>
+        </Checkbox>
+        <Checkbox value="loga" className="!text-white">
+          <span className="!text-white">Loga</span>
+        </Checkbox>
       </CheckboxGroup>
 
       <Divider className="my-4" />
@@ -169,8 +204,8 @@ export default function ProductFilters({
       <br />
       <PriceSlider
         onPriceChange={handlePriceChange}
-        initialMin={priceRange.min}
-        initialMax={priceRange.max}
+        initialMin={0}
+        initialMax={5000}
       />
     </div>
   );

@@ -18,7 +18,7 @@ export default function CategoryTags({ tags, categoryName }: CategoryTagsProps) 
   const tagList = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
   
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="text-white flex flex-wrap gap-2">
       {categoryName && (
         <Chip color="primary">{categoryName}</Chip>
       )}

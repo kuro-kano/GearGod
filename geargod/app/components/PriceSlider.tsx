@@ -11,24 +11,29 @@ interface PriceSliderProps {
 export default function PriceSlider({
   onPriceChange,
   initialMin = 0,
-  initialMax = 50000,
+  initialMax = 5000,
 }: PriceSliderProps) {
   const [value, setValue] = useState([initialMin, initialMax]);
+
+  useEffect(() => {
+    // console.log('Initial values:', initialMin, initialMax);
+    // console.log('Current value:', value);
+  }, [initialMin, initialMax, value]);
 
   // Update local state when props change
   useEffect(() => {
     setValue([initialMin, initialMax]);
   }, [initialMin, initialMax]);
 
-  const handleChange = (newValue: any) => {
+  const handleChange = (newValue: number | number[]) => {
     // Simplified handler
-    let min, max;
+    let min: number, max: number;
 
     if (Array.isArray(newValue)) {
       [min, max] = newValue;
     } else {
-      min = initialMin;
-      max = initialMax;
+      // For single value, use it as both min and max
+      min = max = newValue;
     }
 
     setValue([min, max]);
@@ -38,14 +43,13 @@ export default function PriceSlider({
   return (
     <div>
       <label id="price-range-label" className="block mb-2 text-sm text-white">
-        Price Range
+        Price Range:
       </label>
       <Slider
-        // Only use props that are known to work with @heroui/react
         defaultValue={value}
         value={value}
         onChange={handleChange}
-        maxValue={50000}
+        maxValue={5000}    // Make sure this matches initialMax
         minValue={0}
         className="mb-2"
         aria-labelledby="price-range-label"

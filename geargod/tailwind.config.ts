@@ -1,3 +1,4 @@
+import { darkLayout } from "@heroui/react";
 import type { Config } from "tailwindcss";
 const { heroui } = require("@heroui/react");
 
@@ -24,6 +25,7 @@ export default {
         "urbanist-bold": ["Urbanist-bold", "sans-serif"],
         "kanit-regular": ["Kanit", "sans-serif"],
       },
+      
     },
   },
   darkMode: "class",
@@ -35,10 +37,6 @@ export default {
       defaultExtendTheme: "dark", // default theme to extend on custom themes
       layout: {}, // common layout tokens (applied to all themes)
       themes: {
-        light: {
-          layout: {}, // light theme layout tokens
-          colors: {}, // light theme colors
-        },
         dark: {
           layout: {}, // dark theme layout tokens
           colors: {}, // dark theme colors

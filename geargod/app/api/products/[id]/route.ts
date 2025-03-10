@@ -5,37 +5,60 @@ import { connectSQLite } from "@/lib/db"; // Use shared DB connection
 // GET product by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  // For Next.js 13+ dynamic API routes, we don't need to await params.id
-  // The warning is incorrect in this context - params object is already resolved
-  const id = params.id;
+  const { id } = await context.params;
+  console.log("Fetching product with ID:", id);
 
   try {
     const db = await connectSQLite();
 
-    // Query product by ID
+    // Query product details
     const product = await db.get(
-      `
-      SELECT p.*, c.category_name 
-      FROM products p
-      LEFT JOIN categories c ON p.category_id = c.category_id
-      WHERE p.product_id = ?
-    `,
+      `SELECT p.*, c.category_name 
+       FROM products p
+       LEFT JOIN categories c ON p.category_id = c.category_id
+       WHERE p.product_id = ?`,
       [id]
     );
 
-    await db.close();
+    console.log("Product query result:", product);
 
     if (!product) {
+      console.log("Product not found for ID:", id);
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json(product);
+    // Get product images
+    const productImages = await db.all(
+      `SELECT * FROM products_image WHERE product_id = ? ORDER BY is_primary DESC`,
+      [id]
+    );
+
+    const productColors = await db.all(
+      `SELECT c.color_id, c.color_name, c.color_code
+      FROM colors c
+      JOIN product_colors pc ON c.color_id = pc.color_id
+      WHERE pc.product_id = ?`,
+      [id]
+    );
+
+    // Enhance product with images data
+    const enhancedProduct = {
+      ...product,
+      images: productImages,
+      // Still keep the main image_url for backward compatibility
+      image_url: productImages.length > 0 ? productImages[0].image_url : null,
+      colors: productColors.length > 0 ? productColors : [],
+    };
+
+    await db.close();
+    return NextResponse.json(enhancedProduct);
+
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error("Detailed error in GET product:", error);
     return NextResponse.json(
-      { error: "Failed to fetch product" },
+      { error: "Failed to fetch product", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
@@ -44,89 +67,18 @@ export async function GET(
 // UPDATE product
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
-  // Same here, params.id is already available
-  const id = params.id;
+  const { id } = await context.params;
 
   try {
     const productData = await request.json();
     const db = await connectSQLite();
 
-    console.log("Updating product with data:", productData);
+    const result = await updateProductBase(db, id, productData);
+    await handleColorAssociations(db, id, productData);
+    await handleProductImages(db, productData);
 
-    // First, get the table info to check available columns
-    const tableInfo = await db.all("PRAGMA table_info(products)");
-    const columnNames = tableInfo.map((col) => col.name);
-    console.log("Available columns:", columnNames);
-
-    // Build SQL query dynamically based on available columns
-    let sql = "UPDATE products SET ";
-    const columns = [];
-    const values = [];
-
-    if (columnNames.includes("product_name")) {
-      columns.push("product_name = ?");
-      values.push(productData.product_name);
-    }
-
-    if (columnNames.includes("description")) {
-      columns.push("description = ?");
-      values.push(productData.description || null);
-    }
-
-    if (columnNames.includes("category_id")) {
-      columns.push("category_id = ?");
-      values.push(productData.category_id || null);
-    }
-
-    if (columnNames.includes("price")) {
-      columns.push("price = ?");
-      values.push(productData.price);
-    }
-
-    if (columnNames.includes("stock_quantity")) {
-      columns.push("stock_quantity = ?");
-      values.push(productData.stock_quantity || 0);
-    }
-
-    if (columnNames.includes("is_customizable")) {
-      columns.push("is_customizable = ?");
-      values.push(
-        productData.is_customizable === "TRUE" ||
-          productData.is_customizable === true ||
-          productData.is_customizable === 1
-          ? 1
-          : 0
-      );
-    }
-
-    if (columnNames.includes("tags")) {
-      columns.push("tags = ?");
-      values.push(productData.tags || null);
-    }
-
-    // Only include image_url if it exists in the database
-    if (
-      columnNames.includes("image_url") &&
-      productData.image_url !== undefined
-    ) {
-      columns.push("image_url = ?");
-      values.push(productData.image_url || null);
-    }
-
-    if (columnNames.includes("updated_at")) {
-      columns.push("updated_at = CURRENT_TIMESTAMP");
-    }
-
-    sql += columns.join(", ") + " WHERE product_id = ?";
-    values.push(id);
-
-    console.log("SQL:", sql);
-    console.log("Values:", values);
-
-    // Execute the update
-    const result = await db.run(sql, values);
     await db.close();
 
     return NextResponse.json({
@@ -145,13 +97,106 @@ export async function PUT(
   }
 }
 
+async function updateProductBase(db: any, id: string, productData: any) {
+  const tableInfo = await db.all("PRAGMA table_info(products)");
+  const columnNames = tableInfo.map((col: any) => col.name);
+
+  const updates = buildUpdateObject(columnNames, productData);
+  const { sql, values } = constructUpdateQuery(updates, id);
+
+  return await db.run(sql, values);
+}
+
+function buildUpdateObject(columnNames: string[], productData: any) {
+  const updates: Record<string, any> = {};
+
+  const columnMappings = {
+    product_name: () => productData.product_name,
+    description: () => productData.description || null,
+    category_id: () => productData.category_id || null,
+    price: () => productData.price,
+    stock_quantity: () => productData.stock_quantity || 0,
+    is_customizable: () =>
+      productData.is_customizable === "TRUE" ||
+      productData.is_customizable === true ||
+      productData.is_customizable === 1
+        ? 1
+        : 0,
+    tags: () => productData.tags || null,
+    image_url: () =>
+      productData.image_url !== undefined
+        ? productData.image_url || null
+        : undefined,
+    updated_at: () => "CURRENT_TIMESTAMP",
+  };
+
+  for (const column of columnNames) {
+    if (column in columnMappings) {
+      const value = columnMappings[column as keyof typeof columnMappings]();
+      if (value !== undefined) {
+        updates[column] = value;
+      }
+    }
+  }
+
+  return updates;
+}
+
+function constructUpdateQuery(updates: Record<string, any>, id: string) {
+  const columns = [];
+  const values = [];
+
+  for (const [column, value] of Object.entries(updates)) {
+    if (value === "CURRENT_TIMESTAMP") {
+      columns.push(`${column} = CURRENT_TIMESTAMP`);
+    } else {
+      columns.push(`${column} = ?`);
+      values.push(value);
+    }
+  }
+
+  const sql = `UPDATE products SET ${columns.join(", ")} WHERE product_id = ?`;
+  values.push(id);
+
+  return { sql, values };
+}
+
+async function handleColorAssociations(db: any, id: string, productData: any) {
+  if (productData.is_customizable === 1 && Array.isArray(productData.colors)) {
+    await db.run(`DELETE FROM product_colors WHERE product_id = ?`, [id]);
+
+    if (productData.colors.length > 0) {
+      for (const color of productData.colors) {
+        if (color?.color_id) {
+          await db.run(
+            `INSERT OR REPLACE INTO product_colors (product_id, color_id) VALUES (?, ?)`,
+            [id, color.color_id]
+          );
+        }
+      }
+    }
+  }
+}
+
+async function handleProductImages(db: any, productData: any) {
+  if (Array.isArray(productData.images)) {
+    try {
+      await db.run(
+        `ALTER TABLE products_image ADD COLUMN color_id INTEGER NULL`
+      );
+    } catch (error) {
+      // Column might already exist, continue
+    }
+  }
+}
+
 // DELETE product
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: { id: string } }
 ) {
-  // Remove the await from params.id - it's not a Promise
-  const productId = params.id;
+  // Fix: Use context directly and await the params
+  const { id } = await context.params;
 
   try {
     const db = await connectSQLite();
@@ -159,7 +204,7 @@ export async function DELETE(
     // Check if product exists
     const existingProduct = await db.get(
       "SELECT * FROM products WHERE product_id = ?",
-      [productId]
+      [id]
     );
 
     if (!existingProduct) {
@@ -173,13 +218,13 @@ export async function DELETE(
     // Check if this product is referenced in other tables (like orders)
     // If you have order tables that reference products, add that check here
 
-    await db.run("DELETE FROM products WHERE product_id = ?", [productId]);
+    await db.run("DELETE FROM products WHERE product_id = ?", [id]);
 
     await db.close();
 
     return NextResponse.json({
       message: "Product deleted successfully",
-      deleted_product_id: productId,
+      deleted_product_id: id,
     });
   } catch (error) {
     console.error("Error deleting product:", error);
