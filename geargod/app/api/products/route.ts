@@ -71,7 +71,9 @@ export async function GET(req: Request) {
 
 // POST new product - keep existing implementation
 export async function POST(req: Request) {
+
   try {
+
     const {
       product_name,
       description,
@@ -119,6 +121,11 @@ export async function POST(req: Request) {
       "SELECT * FROM products WHERE product_id = ?",
       [result.lastID]
     );
+
+    await db.run(`
+INSERT INTO product_colors (product_id, color_id) VALUES (?, ?);`,
+[result.lastID, 51]
+);
 
     await db.close();
 

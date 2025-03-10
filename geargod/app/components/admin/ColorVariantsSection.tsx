@@ -72,6 +72,8 @@ export default function ColorVariantsSection({
   };
 
   const toggleColorSelection = (colorId: number) => {
+    // Prevent removing color_id 51
+    if (colorId === 51) return;
     onColorsChange(selectedColors.filter((c) => c.color_id !== colorId));
   };
 
@@ -215,6 +217,7 @@ export default function ColorVariantsSection({
                       isIconOnly
                       variant="flat"
                       color="danger"
+                      isDisabled={color.color_id === 51}
                       onPress={() => toggleColorSelection(color.color_id!)}
                     >
                       <XCircle size={16} />

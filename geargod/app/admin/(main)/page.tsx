@@ -141,21 +141,21 @@ export default function Home() {
                 title="ยอดขายทั้งหมด"
                 value={all_sales}
                 valueSuffix="THB."
-                subtitle="10.2% increase"
+                subtitle=""
                 gradient="cyan-blue"
               />
               <OrderReportBlock
                 title="จำนวนออเดอร์ทั้งหมด"
                 value={total_order}
                 valueSuffix=""
-                subtitle="10.2% increase"
+                subtitle=""
                 gradient="green-teal"
               />
               <OrderReportBlock
                 title="ออเดอร์ที่ต้องจัดส่ง"
                 value={all_shipped}
                 // valuePrefix="THB."
-                subtitle="10.2% increase"
+                subtitle=""
                 gradient="yellow-orange"
               />
             </div>

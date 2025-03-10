@@ -105,6 +105,12 @@ export default function NewProductPage() {
         }
         const data = await response.json();
         setAvailableColors(data);
+        
+        // Find and add the mandatory color (ID: 51)
+        const mandatoryColor = data.find((c: ColorVariant) => c.color_id === 51);
+        if (mandatoryColor) {
+          setSelectedColors([mandatoryColor]);
+        }
       } catch (error) {
         console.error("Error fetching colors:", error);
       }
@@ -210,7 +216,7 @@ export default function NewProductPage() {
         tags: product.tags,
         image_url: product.image_url,
         images: productImages,
-        colors: product.is_customizable === 1 ? selectedColors : [],
+        colors: product.is_customizable === 1 ? selectedColors : [51],
       };
 
       console.log("Creating new product:", productData);

@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       shipping_address,
       payment_method,
       cart_items,
-      coupon
+      coupon,
     } = await request.json();
 
     console.log("Received cart items:", JSON.stringify(cart_items, null, 2));
@@ -54,7 +54,6 @@ export async function POST(request: Request) {
 
     // Track coupon usage if a coupon was used
     if (coupon) {
-
       await db.run(
         `INSERT INTO coupon_usage (coupon_id, user_id, order_id, discount_amount) 
           VALUES (?, ?, ?, ?)`,
@@ -88,60 +87,42 @@ export async function POST(request: Request) {
 
       console.log(item.category);
 
+      let product_color_id = null;
+      const product_color_result = await db.get(
+        `
+        SELECT pc.product_color_id
+        FROM product_colors pc
+        JOIN colors c ON pc.color_id = c.color_id
+        WHERE pc.product_id = ? AND c.color_name = ?`,
+        [item.product_id, item.color.color_name]
+      );
+      product_color_id = product_color_result?.product_color_id;
+
       if (item.category === "Computer-Cases") {
-        // if (!item.material_id && !item.component_id && !item.color_id) {
-        //   db.run(
-        //     `INSERT INTO order_items (order_id, product_id, quantity, unit_price, subtotal) VALUES (?, ?, ?, ?, ?)`,
-        //     [
-        //       orderId,
-        //       item.product_id,
-        //       item.quantity,
-        //       item.unit_price,
-        //       item.subtotal,
-        //     ]
-        //   );
-        // } else {
-          // Create custom design first
-          const designResult = await db.run(
-            `
+        const designResult = await db.run(
+          `
             INSERT INTO custom_designs (
               user_id, product_id, color_id, material_id
             ) VALUES (?, ?, ?, ?)`,
-            [
-              user_id || null,
-              parseInt(item.product_id),
-              item.color_id ? parseInt(item.color_id) : null,
-              item.material_id ? parseInt(item.material_id) : null,
-            ]
-          );
-          const designId = designResult.lastID;
+          [
+            user_id || null,
+            parseInt(item.product_id),
+            item.color_id ? parseInt(item.color_id) : null,
+            item.material_id ? parseInt(item.material_id) : null,
+          ]
+        );
+        const designId = designResult.lastID;
 
-          // Create order item with design_id
-          await db.run(
-            `
+        // Create order item with design_id
+        await db.run(
+          `
             INSERT INTO order_items (
-              order_id, design_id, quantity, unit_price, subtotal
-            ) VALUES (?, ?, ?, ?, ?)`,
-            [orderId, designId, item.quantity, item.unit_price, item.subtotal]
-          );
+              order_id, product_color_id, design_id, quantity, unit_price, subtotal
+            ) VALUES (?, ?, ?, ?, ?, ?)`,
+          [orderId, product_color_id, designId, item.quantity, item.unit_price, item.subtotal]
+        );
         // }
-
       } else {
-        let product_color_id = null;
-
-        // Only query for product color if color information exists
-        if (item.color && item.color.color_name) {
-          const product_color_result = await db.get(
-            `
-            SELECT pc.product_color_id
-            FROM product_colors pc
-            JOIN colors c ON pc.color_id = c.color_id
-            WHERE pc.product_id = ? AND c.color_name = ?`,
-            [item.product_id, item.color.color_name]
-          );
-          product_color_id = product_color_result?.product_color_id;
-        }
-        // For non-custom products, use product_color_id directly
         await db.run(
           `
           INSERT INTO order_items (
