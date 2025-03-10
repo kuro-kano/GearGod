@@ -136,14 +136,14 @@ export default function Home() {
             <br />
             you need to dominate the battlefield.
           </p>
-          <div className="mt-9 flex gap-4 pb-10">
+          {/* <div className="mt-9 flex gap-4 pb-10">
             <Button
               className="px-6 w-40 h-10 text-white flex items-center gap-2 border-white border-2"
               radius="full"
             >
               Explore Gear
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -160,10 +160,11 @@ export default function Home() {
             Boring cases are history. Customize your dream PC case <br /> and
             stand out from the crowd.
           </p>
-          <div className="mt-9 flex gap-4 pb-10">
+          {/* <div className="mt-9 flex gap-4 pb-10">
             <Button
               className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
               radius="full"
+              onPress={() => handleButtonPress('/shop')}
             >
               Shop Now
               <svg
@@ -181,7 +182,7 @@ export default function Home() {
                 />
               </svg>
             </Button>
-          </div>
+          </div> */}
         </div>
 
         {/* Image Section */}
@@ -209,10 +210,11 @@ export default function Home() {
             Expertly crafted gear, premium materials, and designs that scream
             power. <br /> We know what gamers want.
           </p>
-          <div className="mt-9 flex gap-4 pb-2 items-center justify-center">
+          {/* <div className="mt-9 flex gap-4 pb-2 items-center justify-center">
             <Button
               className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
               radius="full"
+              onPress={() => handleButtonPress('/shop')}
             >
               Shop Now
               <svg
@@ -230,7 +232,7 @@ export default function Home() {
                 />
               </svg>
             </Button>
-          </div>
+          </div> */}
         </div>
 
         <div className="z-0 flex justify-center items-center mt-2 w-full">
@@ -258,11 +260,12 @@ export default function Home() {
           <p className="mt-4 text-xl font-figtree-regular text-center text-neutral-300">
             Get the best gaming gear and custom PC cases today.
           </p>
-          <div className="mt-9 flex gap-4 pb-2 items-center justify-center">
+          {/* <div className="mt-9 flex gap-4 pb-2 items-center justify-center">
             <Button
               className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
               radius="full"
               href="/shop"
+              onPress={() => handleButtonPress('/shop')}
             >
               Shop Now
               <svg
@@ -280,7 +283,7 @@ export default function Home() {
                 />
               </svg>
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </main>
