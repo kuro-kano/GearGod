@@ -17,7 +17,7 @@ interface Product {
   stock_quantity: number;
   is_customizable: number;
   tags: string | null; // Added missing required property
-  [key: string]: any; // To allow dynamic property access
+  [key: string]: string | number | null | undefined; // More specific types
 }
 
 interface ProductInfoFormProps {
