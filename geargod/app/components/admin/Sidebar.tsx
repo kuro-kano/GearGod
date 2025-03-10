@@ -2,30 +2,33 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { signOut, getSession } from "next-auth/react";
-import { useRouter } from 'next/navigation';
+import { signOut } from "next-auth/react";
 import { Search, User, Menu, X, Home, Package, Users, 
   LogOut, ChevronRight, ChevronLeft,
 } from "lucide-react";
+
 interface SidebarProps {
   setIsSearchVisible: (visible: boolean) => void;
   isExpanded: boolean;
   setIsExpanded: (expanded: boolean) => void;
+  session: any; // Add session prop
 }
-
-const session = await getSession();
 
 const AdminSidebar = ({
   setIsSearchVisible,
   isExpanded,
   setIsExpanded,
+  session,
 }: SidebarProps) => {
-  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isUserMenuVisible, setIsUserMenuVisible] = useState(false);
+  const [isClientSide, setIsClientSide] = useState(false);
   const user = session?.user?.username;
   
-  // Move useEffect before any conditional returns
+  // Set client-side flag to control initial rendering
+  useEffect(() => {
+    setIsClientSide(true);
+  }, []);
+  
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 1024) {
@@ -35,23 +38,17 @@ const AdminSidebar = ({
       }
     };
 
-    // Set initial state
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-    
-    // Don't forget to clean up
-    return () => window.removeEventListener("resize", handleResize);
-  }, [setIsExpanded]); // Add setIsExpanded as a dependency
-
-  // Move the authentication check after hooks
-  if (!session || session.user.roles !== "staff") {
-    router.push('/');
-    return null;
-  }
+    if (typeof window !== 'undefined') {
+      // Set initial state
+      handleResize();
+      window.addEventListener("resize", handleResize);
+      
+      // Don't forget to clean up
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, [setIsExpanded]);
 
   const handleUserClick = () => {
-    setIsUserMenuVisible(!isUserMenuVisible);
     signOut({ callbackUrl: "/" });
   };
 
@@ -77,6 +74,11 @@ const AdminSidebar = ({
       href: "/admin/products",
     },
   ];
+
+  // During server rendering or before client hydration, return a minimal version
+  if (!isClientSide) {
+    return <div className="hidden"></div>; // This will be replaced after hydration
+  }
 
   return (
     <>
@@ -259,8 +261,7 @@ const AdminSidebar = ({
 
       {/* Main content padding to account for sidebar */}
       <div
-        className={`lg:pl-${isExpanded ? "64" : "20"
-          } transition-all duration-300`}
+        className={`lg:pl-${isExpanded ? "64" : "20"} transition-all duration-300`}
       ></div>
     </>
   );

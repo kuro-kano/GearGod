@@ -41,7 +41,7 @@ export default function StatusChanging({
           value={newStatus}
           onChange={onStatusChange}
         >
-          <option value="Pending">Pending</option>
+          <option value="Pending">Checking</option>
           <option value="Processing">Processing</option>
           <option value="Completed">Completed</option>
           <option value="Cancelled">Cancelled</option>

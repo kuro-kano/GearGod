@@ -97,7 +97,7 @@ export default function Home() {
     const fetchUsing_Coupon = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('/api/coupons');
+        const response = await fetch('/api/coupon-usage');
         const data = await response.json();
 
         if (!response.ok) {
@@ -188,7 +188,7 @@ export default function Home() {
               </div>
               <div className="w-auto">
                 <h2 className="mb-4 text-xl font-kanit-regular">
-                  อัตราการใช้คูปอง
+                  คูปองที่ยังใช้งานอยู่
                 </h2>
                 <CouponReport 
                   coupon={using_Coupons}
