@@ -10,8 +10,13 @@ export async function POST(
 ) {
   try {
     const { id } = await context.params;
+    
+    // Handle special case for new products
+    const targetId = id === 'new' ? 
+      (await (await fetch(`${request.nextUrl.origin}/api/products/nextId`)).json()).nextId.toString() 
+      : id;
 
-    console.log("📸 Image upload request received for product ID:", id);
+    console.log("📸 Image upload request received for future product ID:", targetId);
 
     // Process the form data
     console.log("Parsing form data...");
@@ -50,12 +55,12 @@ export async function POST(
     // Define paths with product-specific folder
     const publicDir = path.join(process.cwd(), "public");
     const productsBaseDir = path.join(publicDir, "images", "products");
-    const productDir = path.join(productsBaseDir, id); // Create product-specific folder
+    const productDir = path.join(productsBaseDir, targetId); // Use targetId instead of id
     const filePath = path.join(productDir, filename);
 
     // Generate relative path for database storage
     const relativePath = path
-      .join("products", id, filename)
+      .join("products", targetId, filename) // Use targetId
       .replace(/\\/g, "/");
 
     console.log("Directory paths:", {
@@ -92,64 +97,67 @@ export async function POST(
       );
     }
 
-    // Update database - using relative path
-    try {
-      console.log("Updating database with relative path:", relativePath);
-      const db = await connectSQLite();
-
-      // First check if product exists
-      const product = await db.get(
-        "SELECT * FROM products WHERE product_id = ?",
-        [id]
-      );
-
-      if (!product) {
-        console.error("Product not found:", id);
-        return NextResponse.json(
-          { message: `Product with ID ${id} not found` },
-          { status: 404 }
-        );
-      }
-
-      // Check if products_image table has color_id column
+    // For new products, don't update database yet
+    if (id !== 'new') {
+      // Update database - using relative path
       try {
-        const tableInfo = await db.all("PRAGMA table_info(products_image)");
-        if (!tableInfo.some(col => col.name === 'color_id')) {
-          console.log("Adding color_id column to products_image table");
-          await db.run("ALTER TABLE products_image ADD COLUMN color_id INTEGER NULL");
-        }
-      } catch (alterError) {
-        console.error("Error checking/altering table:", alterError);
-      }
+        console.log("Updating database with relative path:", relativePath);
+        const db = await connectSQLite();
 
-      // Determine if this is a primary image
-      let isPrimary = 0;
-      if (!colorId) {
-        // If it's not a color variant image, check if this is the first image
-        const existingImages = await db.get(
-          "SELECT COUNT(*) as count FROM products_image WHERE product_id = ?",
+        // First check if product exists
+        const product = await db.get(
+          "SELECT * FROM products WHERE product_id = ?",
           [id]
         );
-        isPrimary = existingImages.count === 0 ? 1 : 0;
+
+        if (!product) {
+          console.error("Product not found:", id);
+          return NextResponse.json(
+            { message: `Product with ID ${id} not found` },
+            { status: 404 }
+          );
+        }
+
+        // Check if products_image table has color_id column
+        try {
+          const tableInfo = await db.all("PRAGMA table_info(products_image)");
+          if (!tableInfo.some(col => col.name === 'color_id')) {
+            console.log("Adding color_id column to products_image table");
+            await db.run("ALTER TABLE products_image ADD COLUMN color_id INTEGER NULL");
+          }
+        } catch (alterError) {
+          console.error("Error checking/altering table:", alterError);
+        }
+
+        // Determine if this is a primary image
+        let isPrimary = 0;
+        if (!colorId) {
+          // If it's not a color variant image, check if this is the first image
+          const existingImages = await db.get(
+            "SELECT COUNT(*) as count FROM products_image WHERE product_id = ?",
+            [id]
+          );
+          isPrimary = existingImages.count === 0 ? 1 : 0;
+        }
+
+        // Insert into products_image table with relative path and color info
+        await db.run(
+          "INSERT INTO products_image (product_id, image_url, is_primary, color_id) VALUES (?, ?, ?, ?)",
+          [id, relativePath, isPrimary, colorId ? parseInt(colorId) : null]
+        );
+
+        await db.close();
+        console.log("Database updated successfully");
+      } catch (dbError) {
+        console.error("Database error:", dbError);
+        return NextResponse.json(
+          {
+            message: "Failed to update product image record",
+            error: dbError instanceof Error ? dbError.message : String(dbError),
+          },
+          { status: 500 }
+        );
       }
-
-      // Insert into products_image table with relative path and color info
-      await db.run(
-        "INSERT INTO products_image (product_id, image_url, is_primary, color_id) VALUES (?, ?, ?, ?)",
-        [id, relativePath, isPrimary, colorId ? parseInt(colorId) : null]
-      );
-
-      await db.close();
-      console.log("Database updated successfully");
-    } catch (dbError) {
-      console.error("Database error:", dbError);
-      return NextResponse.json(
-        {
-          message: "Failed to update product image record",
-          error: dbError instanceof Error ? dbError.message : String(dbError),
-        },
-        { status: 500 }
-      );
     }
 
     // Return the image URL with /images prefix for browser access
@@ -162,7 +170,8 @@ export async function POST(
     return NextResponse.json({
       message: "Image uploaded successfully",
       imageUrl: publicImageUrl,
-      colorId: colorId ? parseInt(colorId) : null
+      colorId: colorId ? parseInt(colorId) : null,
+      futureProductId: id === 'new' ? targetId : undefined
     });
   } catch (error) {
     console.error("CRITICAL ERROR in image upload:", error);

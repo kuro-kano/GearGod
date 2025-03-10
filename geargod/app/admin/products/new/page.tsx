@@ -121,8 +121,18 @@ export default function NewProductPage() {
     fetchAvailableColors();
   }, []);
 
+  const [futureProductId, setFutureProductId] = useState<string | null>(null);
+  
   const handleImageSuccess = (newImageUrl: string, colorId?: number) => {
     console.log("Image uploaded successfully:", newImageUrl);
+
+    // Store the future product ID if this is the first image
+    if (!futureProductId && newImageUrl.includes('/products/')) {
+      const match = newImageUrl.match(/\/products\/(\d+)\//);
+      if (match) {
+        setFutureProductId(match[1]);
+      }
+    }
 
     // If colorId is provided, this is a color variant image
     if (colorId) {
@@ -138,6 +148,7 @@ export default function NewProductPage() {
       setProductImages((prev) => [...prev, newImage]);
     } else {
       // Set the main image URL
+      console.log(newImageUrl);
       setImageUrl(newImageUrl);
 
       // Create a new image object for main product image
@@ -206,8 +217,9 @@ export default function NewProductPage() {
         return;
       }
 
-      // Prepare product data
+      // Prepare product data with futureProductId
       const productData = {
+        product_id: futureProductId, // Include the future product ID
         product_name: product.product_name,
         description: product.description,
         category_id: product.category_id,
