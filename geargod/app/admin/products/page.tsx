@@ -89,7 +89,7 @@ export default function ProductsPage() {
   };
 
   return (
-    <main className="ambient-bg">
+    <main className="dark ambient-bg">
       <div className="p-4 sm:p-6 md:p-10 lg:p-16 min-h-screen flex flex-col items-center">
         <div
           className="p-6 backdrop-filter backdrop-blur-lg bg-black bg-opacity-25 w-full max-w-7xl rounded-lg overflow-hidden custom-box-shadow"

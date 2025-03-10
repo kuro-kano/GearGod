@@ -149,12 +149,12 @@ export default function ShopProductCard({
           </div>
 
           {/* Product name */}
-          <div className="font-bold text-sm sm:text-base line-clamp-2">
+          <div className="text-white font-bold text-sm sm:text-base line-clamp-2">
             {product.product_name}
           </div>
 
           {/* Product price */}
-          <div className="text-xs sm:text-sm font-medium">
+          <div className="text-white text-xs sm:text-sm font-medium">
             ฿{product.price.toLocaleString()}
           </div>
         </Card>
