@@ -53,10 +53,10 @@ export default function ProductInfoForm({
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-kanit-regular">
         <div>
           <label className="block text-sm font-medium mb-2">
-            Product Name *
+            ชื่อสินค้า<span className="text-red-400">*</span>
           </label>
           <Input
             type="text"
@@ -71,7 +71,7 @@ export default function ProductInfoForm({
 
         <div>
           <label className="block text-sm font-medium mb-2" id="category-label">
-            Category
+            หมวดหมู่ <span className="text-red-400">*</span>
           </label>
           <Select
             name="category_id"
@@ -99,7 +99,9 @@ export default function ProductInfoForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Description</label>
+        <label className="block text-sm font-medium mb-2 font-kanit-regular">
+          ข้อมูลสินค้า
+        </label>
         <Textarea
           name="description"
           value={product.description || ""}
@@ -112,8 +114,8 @@ export default function ProductInfoForm({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <label className="block text-sm font-medium mb-2">
-            Price (THB) *
+          <label className="block text-sm font-medium mb-2 font-kanit-regular">
+            ราคา (บาท) <span className="text-red-400">*</span>
           </label>
           <Input
             type="number"
@@ -128,8 +130,8 @@ export default function ProductInfoForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">
-            Stock Quantity
+          <label className="block text-sm font-medium mb-2 font-kanit-regular">
+            จำนวนสินค้าในคลัง
           </label>
           <Input
             type="number"
@@ -149,8 +151,8 @@ export default function ProductInfoForm({
             checked={product.is_customizable === 1}
             onChange={handleCheckboxChange}
           />
-          <label htmlFor="is_customizable" className="ml-2">
-            Customizable Product
+          <label htmlFor="is_customizable" className="ml-2 font-kanit-regular">
+            สินค้าแบบปรับแต่งได้
           </label>
         </div>
       </div>
