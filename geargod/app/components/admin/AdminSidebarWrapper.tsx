@@ -1,7 +1,8 @@
 "use client";
 
-import { getSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect } from "react";
 import AdminSidebar from "./Sidebar";
 
 interface AdminSidebarWrapperProps {
@@ -11,35 +12,34 @@ interface AdminSidebarWrapperProps {
 }
 
 export default function AdminSidebarWrapper(props: AdminSidebarWrapperProps) {
-  const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  
-  // Get session on client side
+  const router = useRouter();
+  const pathname = usePathname();
+  const { data: session, status } = useSession();
+
   useEffect(() => {
-    const fetchSession = async () => {
-      const sessionData = await getSession();
-      setSession(sessionData);
-      setLoading(false);
-    };
+    // Check if we're on an admin page
+    const isAdminRoute = pathname?.startsWith('/admin');
     
-    fetchSession();
-  }, []);
-  
-  // Show nothing while loading or if not authenticated
-  if (loading) {
+    if (isAdminRoute) {
+      if (status === "unauthenticated") {
+        window.location.href = '/';
+        return;
+      }
+
+      if (session && session.user?.roles !== "staff") {
+        window.location.href = '/';
+        return;
+      }
+    }
+  }, [session, status, pathname]);
+
+  if (status === "loading" || !session) {
     return null;
   }
-  
-  if (!session || session.user.roles !== "staff") {
-    return null;
-  }
-  
-  // Pass ALL required props to AdminSidebar
+
   return (
     <AdminSidebar
-      setIsSearchVisible={props.setIsSearchVisible}
-      isExpanded={props.isExpanded}
-      setIsExpanded={props.setIsExpanded}
+      {...props}
       session={session}
     />
   );

@@ -6,12 +6,13 @@ import { signOut } from "next-auth/react";
 import { Search, User, Menu, X, Home, Package, Users, 
   LogOut, ChevronRight, ChevronLeft,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface SidebarProps {
   setIsSearchVisible: (visible: boolean) => void;
   isExpanded: boolean;
   setIsExpanded: (expanded: boolean) => void;
-  session: any;
+  session: any; // Add session prop
 }
 
 const AdminSidebar = ({
@@ -20,6 +21,7 @@ const AdminSidebar = ({
   setIsExpanded,
   session,
 }: SidebarProps) => {
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isClientSide, setIsClientSide] = useState(false);
   const user = session?.user?.username;
@@ -48,8 +50,8 @@ const AdminSidebar = ({
     }
   }, [setIsExpanded]);
 
-  const handleUserClick = () => {
-    signOut({ callbackUrl: "/" });
+  const handleUserClick = async () => {
+    await signOut({ redirect: true, callbackUrl: '/' });
   };
 
   const toggleSidebar = () => {
@@ -228,8 +230,7 @@ const AdminSidebar = ({
               <li key={index}>
                 <Link
                   href={item.href}
-                  className="flex items-center py-3 px-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-200 hover:text-white"
-                  onClick={toggleMobileMenu}
+                  className="font-kanit-regular flex items-center py-2 px-3 rounded-lg hover:bg-gray-800 transition-colors text-gray-200 hover:text-white"
                 >
                   <div className="mr-3">{item.icon}</div>
                   <span>{item.name}</span>
