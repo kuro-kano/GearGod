@@ -33,7 +33,7 @@ export default function OrderPage() {
         setError(null);
       } catch (err) {
         console.error("Error fetching orders:", err);
-        setError(err.message || 'Failed to load orders');
+        setError(err instanceof Error ? err.message : 'Failed to load orders');
       } finally {
         setIsLoading(false);
       }

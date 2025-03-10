@@ -1,4 +1,3 @@
-//app/layout.tsx
 "use client";
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
@@ -25,7 +24,7 @@ export default function ShopLayout({
 
   return (
     <>
-      <Navbar setIsSearchVisible={setIsSearchVisible} />
+      <Navbar />
       {children}
       <SearchOverlay
         isVisible={isSearchVisible}

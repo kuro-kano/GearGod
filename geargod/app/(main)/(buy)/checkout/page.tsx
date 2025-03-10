@@ -9,7 +9,6 @@ import CheckoutForm from "@/components/CheckoutForm";
 const PaymentPage = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
-  // Define the steps for the checkout process
   const steps = [
     { name: "SHOPPING CART", href: "/cart", status: "complete" as const },
     { name: "CHECKOUT", href: "/checkout", status: "current" as const },

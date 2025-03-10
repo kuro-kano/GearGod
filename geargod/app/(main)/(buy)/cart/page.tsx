@@ -8,7 +8,6 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@heroui/react";
 import ProgressCheckout from "@/components/ProgressCheckout";
 
-// Define Cart Item interface
 interface CartItem {
   product_id: string;
   product_name: string;
@@ -22,7 +21,6 @@ interface CartItem {
   };
 }
 
-// Define the step interface
 interface Step {
   name: string;
   href: string;
@@ -35,20 +33,17 @@ export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Define the steps for the checkout process
   const steps: Step[] = [
     { name: "SHOPPING CART", href: "/cart", status: "current" },
     { name: "CHECKOUT", href: "/checkout", status: "upcoming" },
     { name: "FINISH", href: "/finish", status: "upcoming" },
   ];
 
-  // Calculate total price
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  // Fetch cart items when component mounts
   useEffect(() => {
     async function fetchCartItems() {
       try {
@@ -69,7 +64,6 @@ export default function Cart() {
     fetchCartItems();
   }, []);
 
-  // Handle quantity changes
   const updateQuantity = async (productId: string, newQuantity: number) => {
     if (newQuantity < 1) return;
     try {
@@ -79,7 +73,7 @@ export default function Cart() {
           "Content-Type": "application/json" 
         },
         body: JSON.stringify({ 
-          product_id: productId,  // Changed from productId to product_id to match API
+          product_id: productId,
           quantity: newQuantity 
         })
       });
@@ -101,7 +95,7 @@ export default function Cart() {
     }
   };
 
-  // Handle item removal
+
   const removeItem = async (productId: string) => {
     try {
       const response = await fetch(`/api/cart?productId=${productId}`, {
@@ -122,7 +116,6 @@ export default function Cart() {
       );
     } catch (error) {
       console.error("Error removing item:", error);
-      // Optionally set an error state here to show to the user
       setError("Failed to remove item from cart");
     }
   };

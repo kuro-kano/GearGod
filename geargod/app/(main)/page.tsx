@@ -4,7 +4,7 @@ import { Button } from "@heroui/react";
 import ProductCardGrid from "@/components/ProductCardGrid";
 import "@/styles/globals.css";
 import Image from "next/image";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
@@ -25,17 +25,17 @@ export default function Home() {
                 not the price.
               </span>
             </p>
-            <p className="mt-4 md:mt-6 text-lg sm:text-xl font-figtree-regular text-neutral-300">
-              Top-tier gaming gear and custom PC cases designed for ultimate
-              performance and style.
+            <p className="mt-4 md:mt-6 text-lg sm:text-xl text-neutral-300 font-kanit-regular">
+              อุปกรณ์เกมมิ่งระดับโปร
+              ไปจนถึงเคสพีซีประสิทธิภาพสูง—ทุกอย่างที่คุณต้องการเพื่อครองสนามรบ
             </p>
             <div className="mt-6 md:mt-9 flex justify-center md:justify-start gap-4 pb-6 md:pb-10">
               <Button
-                className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
+                className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2 font-kanit-regular"
                 radius="full"
-                onPress={() => handleButtonPress('/shop')}
+                onPress={() => handleButtonPress("/shop")}
               >
-                Shop Now
+                ช็อปเลย
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -73,11 +73,26 @@ export default function Home() {
             <div className="flex flex-wrap justify-center sm:justify-evenly items-center gap-6 sm:gap-4">
               {[
                 { src: "/images/partnerships/hyperx.png", alt: "HyperX Logo" },
-                { src: "/images/partnerships/Logitech-Logo.png", alt: "Logitech Logo" },
-                { src: "/images/partnerships/Beyerdynamic_logo.png", alt: "Beyerdynamic Logo" },
-                { src: "/images/partnerships/Logo_Razer_2017.png", alt: "Razer Logo" },
-                { src: "/images/partnerships/Cooler-Master-Logo.png", alt: "Cooler Master Logo" },
-                { src: "/images/partnerships/Steelseries-logo.png", alt: "SteelSeries Logo" }
+                {
+                  src: "/images/partnerships/Logitech-Logo.png",
+                  alt: "Logitech Logo",
+                },
+                {
+                  src: "/images/partnerships/Beyerdynamic_logo.png",
+                  alt: "Beyerdynamic Logo",
+                },
+                {
+                  src: "/images/partnerships/Logo_Razer_2017.png",
+                  alt: "Razer Logo",
+                },
+                {
+                  src: "/images/partnerships/Cooler-Master-Logo.png",
+                  alt: "Cooler Master Logo",
+                },
+                {
+                  src: "/images/partnerships/Steelseries-logo.png",
+                  alt: "SteelSeries Logo",
+                },
               ].map((logo) => (
                 <Image
                   key={logo.alt}
@@ -105,11 +120,13 @@ export default function Home() {
               Victory.
             </span>
           </p>
-          <p className="mt-4 md:mt-6 text-lg sm:text-xl font-figtree-regular text-neutral-300">
-            From pro-level peripherals to high-performance PC cases—everything
+          <p className="mt-4 md:mt-6 text-lg sm:text-xl font-kanit-regular text-neutral-300">
+            เคสเดิมๆ มันน่าเบื่อ ออกแบบเคสพีซีในฝันของคุณ
             {/* Only show line break on larger screens */}
-            <span className="hidden md:inline"><br /></span>
-            you need to dominate the battlefield.
+            <span className="hidden md:inline">
+              <br />
+            </span>
+            และโดดเด่นไม่เหมือนใคร
           </p>
         </div>
       </div>
@@ -123,11 +140,12 @@ export default function Home() {
               Your Style.
             </span>
           </p>
-          <p className="mt-4 text-lg sm:text-xl font-figtree-regular text-neutral-300">
-            Boring cases are history. Customize your dream PC case 
+          <p className="mt-4 text-lg sm:text-xl font-kanit-regular text-neutral-300">
+          ออกแบบและปรับแต่งได้ตามใจ ให้ทุกดีเทลสะท้อนตัวตนของคุณ
             {/* Only show line break on larger screens */}
-            <span className="hidden md:inline"><br /></span>
-            and stand out from the crowd.
+            <span className="hidden md:inline">
+              <br />
+            </span>
           </p>
         </div>
 
@@ -152,12 +170,13 @@ export default function Home() {
               By Gamers
             </span>
           </p>
-          <p className="mt-4 text-lg sm:text-xl font-figtree-regular text-center text-neutral-300">
-            Expertly crafted gear, premium materials, and designs that scream
-            power. 
+          <p className="mt-4 text-lg sm:text-xl font-kanit-regular text-center text-neutral-300">
+            เกียร์เกมมิ่งที่สร้างขึ้นอย่างพิถีพิถัน วัสดุระดับพรีเมียม
             {/* Only show line break on larger screens */}
-            <span className="hidden md:inline"><br /></span>
-            We know what gamers want.
+            <span className="hidden md:inline">
+              <br />
+            </span>
+            และดีไซน์ที่เต็มไปด้วยพลัง เรารู้ดีว่าคอเกมต้องการอะไร!
           </p>
         </div>
 
@@ -183,16 +202,16 @@ export default function Home() {
               Level Up?
             </span>
           </p>
-          <p className="mt-4 text-lg sm:text-xl font-figtree-regular text-center text-neutral-300">
-            Get the best gaming gear and custom PC cases today.
+          <p className="mt-4 text-lg sm:text-xl font-kanit-regular text-center text-neutral-300">
+            สัมผัสสุดยอดอุปกรณ์เกมมิ่งและเคสพีซีสุดล้ำได้แล้ววันนี้
           </p>
           <div className="mt-8 flex justify-center">
             <Button
-              className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2"
+              className="px-6 w-40 h-10 bg-blue-600 text-white flex items-center gap-2 font-kanit-regular"
               radius="full"
-              onPress={() => handleButtonPress('/shop')}
+              onPress={() => handleButtonPress("/shop")}
             >
-              Shop Now
+              ช็อปเลย
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

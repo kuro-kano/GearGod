@@ -8,7 +8,6 @@ import ProductInfoForm from "@/components/admin/ProductInfoForm";
 import ColorVariantsSection from "@/components/admin/ColorVariantsSection";
 import TagsInputSection from "@/components/admin/TagsInputSection";
 
-// Define product interface matching your database schema
 interface Product {
   product_id: string;
   product_name: string;
@@ -25,13 +24,11 @@ interface Product {
   [key: string]: string | number | null | undefined;
 }
 
-// Define category interface for dropdown
 interface Category {
   category_id: number;
   category_name: string;
 }
 
-// Define color variant interface
 interface ColorVariant {
   color_id?: number;
   color_name: string;
@@ -40,7 +37,6 @@ interface ColorVariant {
   isSelected?: boolean;
 }
 
-// Define product image interface
 interface ProductImage {
   image_id?: number;
   product_id: string;
@@ -53,7 +49,6 @@ export default function EditProductPage() {
   const { id } = useParams();
   const router = useRouter();
 
-  // Form states
   const [product, setProduct] = useState<Product | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -61,17 +56,13 @@ export default function EditProductPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Image states
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
 
-  // Color variant states
   const [availableColors, setAvailableColors] = useState<ColorVariant[]>([]);
   const [selectedColors, setSelectedColors] = useState<ColorVariant[]>([]);
 
-  // Tags state management
   const [tagsList, setTagsList] = useState<string[]>([]);
 
-  // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -86,11 +77,9 @@ export default function EditProductPage() {
 
         setProduct(data);
 
-        // Handle multiple images if available
         if (data.images && data.images.length > 0) {
           console.log("Product has multiple images:", data.images.length);
 
-          // Process the first (primary) image for display
           const mainImage =
             data.images.find(
               (img: { is_primary: number }) => img.is_primary === 1
@@ -108,21 +97,16 @@ export default function EditProductPage() {
           console.log("Setting primary image URL to:", finalImageUrl);
           setImageUrl(finalImageUrl);
 
-          // Store all images for potential gallery/carousel
           setProductImages(data.images);
         }
-        // Fallback to single image_url (for backward compatibility)
         else if (data.image_url) {
-          // Process the image URL
           let finalImageUrl;
 
           if (data.image_url.startsWith("/images/")) {
             finalImageUrl = data.image_url;
           } else if (data.image_url.includes("/")) {
-            // Already contains path information
             finalImageUrl = `/images/${data.image_url}`;
           } else {
-            // Just filename, use legacy format
             finalImageUrl = `/images/products/${data.product_id}/${data.image_url}`;
           }
 
@@ -133,12 +117,10 @@ export default function EditProductPage() {
           setImageUrl("");
         }
 
-        // Fetch product colors if is_customizable is true
         if (data.is_customizable === 1) {
           fetchProductColors(data.product_id);
         }
 
-        // Set tags list from product tags
         if (data.tags) {
           setTagsList(data.tags.split(",").map((tag: string) => tag.trim()));
         }
@@ -148,7 +130,6 @@ export default function EditProductPage() {
       }
     };
 
-    // Fetch categories for dropdown
     const fetchCategories = async () => {
       try {
         const response = await fetch("/api/categories");
@@ -163,7 +144,6 @@ export default function EditProductPage() {
       }
     };
 
-    // Fetch all available colors
     const fetchAvailableColors = async () => {
       try {
         const response = await fetch("/api/colors");
@@ -177,7 +157,6 @@ export default function EditProductPage() {
       }
     };
 
-    // Fetch colors selected for this product
     const fetchProductColors = async (productId: string) => {
       try {
         const response = await fetch(`/api/products/${productId}/colors`);
@@ -201,9 +180,7 @@ export default function EditProductPage() {
   const handleImageSuccess = (newImageUrl: string, colorId?: number) => {
     console.log("Image uploaded successfully:", newImageUrl);
 
-    // If colorId is provided, this is a color variant image
     if (colorId) {
-      // Create a new image object for the specific color
       const newImage = {
         image_url: newImageUrl,
         product_id: product?.product_id || "",
@@ -211,33 +188,27 @@ export default function EditProductPage() {
         color_id: colorId,
       };
 
-      // Add to productImages state
       setProductImages((prev) => [...prev, newImage]);
     } else {
-      // Set the main image URL
       setImageUrl(newImageUrl);
 
-      // Create a new image object for main product image
       const newImage = {
         image_url: newImageUrl,
         product_id: product?.product_id || "",
         is_primary: 1,
       };
 
-      // Update productImages state - new image becomes primary
       setProductImages((prev) => {
         if (prev.length === 0) {
           return [newImage];
         }
 
-        // Make the new image primary and demote others
         return [
           { ...newImage, is_primary: 1 },
           ...prev.filter((img) => img.is_primary !== 1),
         ];
       });
 
-      // Update product state
       if (product) {
         setProduct({
           ...product,
@@ -246,17 +217,14 @@ export default function EditProductPage() {
       }
     }
 
-    // Show success message
     setSuccessMessage("Product image updated successfully!");
     setTimeout(() => setSuccessMessage(null), 3000);
   };
 
-  // Handle product data changes from ProductInfoForm
   const handleProductChange = (updatedProduct: Product) => {
     setProduct(updatedProduct);
   };
 
-  // Handle tags changes from TagsInputSection
   const handleTagsChange = (newTags: string[]) => {
     if (product) {
       setProduct({
@@ -267,12 +235,10 @@ export default function EditProductPage() {
     setTagsList(newTags);
   };
 
-  // Handle color changes from ColorVariantsSection
   const handleColorsChange = (colors: ColorVariant[]) => {
     setSelectedColors(colors);
   };
 
-  // Handle form submission
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -282,14 +248,12 @@ export default function EditProductPage() {
       setIsSubmitting(true);
       setFormError(null);
 
-      // Basic validation
       if (!product.product_name || product.price <= 0) {
         setFormError("Product name and valid price are required");
         setIsSubmitting(false);
         return;
       }
 
-      // Prepare product data
       const productData = {
         product_name: product.product_name,
         description: product.description,
@@ -305,7 +269,6 @@ export default function EditProductPage() {
 
       console.log("Submitting product update:", productData);
 
-      // Submit product update
       const response = await fetch(`/api/products/${id}`, {
         method: "PUT",
         headers: {
@@ -320,10 +283,8 @@ export default function EditProductPage() {
         throw new Error(responseData.message || "Failed to update product");
       }
 
-      // Show success message
       setSuccessMessage("Product updated successfully!");
 
-      // Navigate back to products list after short delay
       setTimeout(() => {
         router.push("/admin/products");
       }, 2000);

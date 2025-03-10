@@ -1,13 +1,10 @@
-//app/(main)/page.tsx
 "use client";
 
 import "@/styles/globals.css";
-// import { useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
-// import AdminNavbar from "@/components/admin/Navbar";
 import React from "react";
 import OrderReportBlock from "@/components/admin/report/SummaryReportBlock";
-// import TopProductReport from "@/components/admin/report/OrderReport";
 import CouponReport from "@/components/admin/report/CouponReport";
 import RecentOrderReport from "@/components/admin/report/OrderReport";
 
@@ -33,7 +30,6 @@ interface Using_Coupon {
 }
 
 export default function Home() {
-  // const router = useRouter();
   const [recentOrders, setOrders] = useState<Orders[]>([]);
   const [total, setTotal] = useState<Total[]>([{ all_order: 0, all_sales: 0, all_shipped: 0 }]);
   const [using_Coupons, setUsing_Coupon] = useState<Using_Coupon[]>([]);

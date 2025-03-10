@@ -251,7 +251,6 @@ export default function OrderPage() {
   );
 }
 
-// Helper function to get status color
 function getStatusColor(status: string) {
   switch (status) {
     case "สำเร็จ":
