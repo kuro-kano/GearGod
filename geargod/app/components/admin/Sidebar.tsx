@@ -11,7 +11,7 @@ interface SidebarProps {
   setIsSearchVisible: (visible: boolean) => void;
   isExpanded: boolean;
   setIsExpanded: (expanded: boolean) => void;
-  session: any; // Add session prop
+  session: any;
 }
 
 const AdminSidebar = ({
