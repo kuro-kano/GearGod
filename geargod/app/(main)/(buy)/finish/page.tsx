@@ -115,7 +115,7 @@ export default function FinishPage() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 variant="bordered"
-                className="w-full border border-gray-700 hover:bg-gray-800 transition-colors"
+                className="text-white w-full border border-gray-700 hover:bg-gray-800 transition-colors"
                 onPress={() => router.push("/orders")}
               >
                 ดูรายการสั่งซื้อ

@@ -88,16 +88,16 @@ export default function ColorVariantsSection({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-4">Color Variants</h2>
+    <div className="bg-gray-800 rounded-lg p-6 font-kanit-regular">
+      <h2 className="text-xl font-semibold mb-4">ตัวเลือกสี</h2>
 
       {/* Replace color grid with dropdown selector */}
       <div className="mb-6">
-        <h3 className="text-md font-semibold mb-2">Add Color Variants</h3>
+        <h3 className="text-md font-semibold mb-2">เพิ่มตัวเลือกสี</h3>
         <div className="flex gap-2">
           <Select
-            label="Select a color"
-            placeholder="Choose a color variant"
+            label="เลือกสี"
+
             className="min-w-[240px]"
             selectedKeys={selectedColorId ? [selectedColorId] : []}
             onChange={(e) => setSelectedColorId(e.target.value)}
@@ -127,7 +127,7 @@ export default function ColorVariantsSection({
             isDisabled={!selectedColorId}
             onPress={addColorFromDropdown}
           >
-            Add Color
+            เพิ่มสี
           </Button>
         </div>
       </div>
@@ -135,15 +135,15 @@ export default function ColorVariantsSection({
       {/* Selected colors table with image upload option */}
       {selectedColors.length > 0 && (
         <div>
-          <h3 className="text-md font-semibold mb-2">
-            Selected Color Variants
+          <h3 className="text-md font-semibold mb-2 font-kanit-regular">
+            ตัวเลือกสีที่มีอยู่
           </h3>
           <Table aria-label="Selected color variants">
             <TableHeader>
-              <TableColumn>COLOR</TableColumn>
-              <TableColumn>NAME</TableColumn>
-              <TableColumn>ADDITIONAL PRICE</TableColumn>
-              <TableColumn>IMAGES</TableColumn>
+              <TableColumn>สี</TableColumn>
+              <TableColumn>ชื่อ</TableColumn>
+              <TableColumn>ราคาเพิ่มเติม</TableColumn>
+              <TableColumn>รูปภาพ</TableColumn>
               <TableColumn>ACTIONS</TableColumn>
             </TableHeader>
             <TableBody>

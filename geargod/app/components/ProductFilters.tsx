@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import PriceSlider from "./PriceSlider";
 import "@/styles/globals.css";
 
-
 interface ProductFiltersProps {
   selectedTypes: string[];
   selectedBrands: string[];
@@ -140,19 +139,25 @@ export default function ProductFilters({
 
       <CheckboxGroup
         size="sm"
-        className="font-kanit-regular dark"
+        className="font-kanit-regular"
         value={selectedTypes}
         onChange={handleTypeChange}
-        classNames={{
-          label: "text-white",
-          wrapper: "text-white",
-        }}
       >
-        <Checkbox value="Computer-Cases">เคสคอมพิวเตอร์</Checkbox>
-        <Checkbox value="headset">หูฟัง</Checkbox>
-        <Checkbox value="mouse">เมาส์</Checkbox>
-        <Checkbox value="keyboard">คีย์บอร์ด</Checkbox>
-        <Checkbox value="mousepad">แผ่นรองเมาส์</Checkbox>
+        <Checkbox value="Computer-Cases" className="!text-white">
+          <span className="!text-white">เคสคอมพิวเตอร์</span>
+        </Checkbox>
+        <Checkbox value="headset" className="!text-white">
+          <span className="!text-white">หูฟัง</span>
+        </Checkbox>
+        <Checkbox value="mouse" className="!text-white">
+          <span className="!text-white">เมาส์</span>
+        </Checkbox>
+        <Checkbox value="keyboard" className="!text-white">
+          <span className="!text-white">คีย์บอร์ด</span>
+        </Checkbox>
+        <Checkbox value="mousepad" className="!text-white">
+          <span className="!text-white">แผ่นรองเมาส์</span>
+        </Checkbox>
       </CheckboxGroup>
 
       <Divider className="my-4" />
@@ -164,20 +169,34 @@ export default function ProductFilters({
         className="font-kanit-regular dark"
         value={selectedBrands}
         onChange={handleBrandChange}
-        classNames={{
-          label: "text-white",
-          wrapper: "text-white",
-        }}
       >
-        <Checkbox value="steelseries">Steelseries</Checkbox>
-        <Checkbox value="hyperx">HyperX</Checkbox>
-        <Checkbox value="beyerdynamics">BeyerDynamics</Checkbox>
-        <Checkbox value="Cooler Master">Cooler Master</Checkbox>
-        <Checkbox value="aerocool">Aerocool</Checkbox>
-        <Checkbox value="razer">Razer</Checkbox>
-        <Checkbox value="logitech">Logitech</Checkbox>
-        <Checkbox value="nzxt">NZXT</Checkbox>
-        <Checkbox value="loga">Loga</Checkbox>
+        <Checkbox value="steelseries" className="!text-white">
+          <span className="!text-white">Steelseries</span>
+        </Checkbox>
+        <Checkbox value="hyperx" className="!text-white">
+          <span className="!text-white">HyperX</span>
+        </Checkbox>
+        <Checkbox value="beyerdynamics" className="!text-white">
+          <span className="!text-white">BeyerDynamics</span>
+        </Checkbox>
+        <Checkbox value="Cooler Master" className="!text-white">
+          <span className="!text-white">Cooler Master</span>
+        </Checkbox>
+        <Checkbox value="aerocool" className="!text-white">
+          <span className="!text-white">Aerocool</span>
+        </Checkbox>
+        <Checkbox value="razer" className="!text-white">
+          <span className="!text-white">Razer</span>
+        </Checkbox>
+        <Checkbox value="logitech" className="!text-white">
+          <span className="!text-white">Logitech</span>
+        </Checkbox>
+        <Checkbox value="nzxt" className="!text-white">
+          <span className="!text-white">NZXT</span>
+        </Checkbox>
+        <Checkbox value="loga" className="!text-white">
+          <span className="!text-white">Loga</span>
+        </Checkbox>
       </CheckboxGroup>
 
       <Divider className="my-4" />

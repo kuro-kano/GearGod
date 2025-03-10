@@ -22,6 +22,7 @@ interface Product {
   image_url?: string;
   created_at?: string;
   updated_at?: string;
+  [key: string]: string | number | null | undefined;
 }
 
 // Define category interface for dropdown
@@ -350,7 +351,7 @@ export default function EditProductPage() {
     <main className="ambient-bg">
       <div className="p-6 max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">
-          Edit Product: {product.product_name}
+          แก้ไขสินค้า: {product.product_name}
         </h1>
 
         {formError && (
@@ -396,16 +397,16 @@ export default function EditProductPage() {
             onTagsChange={handleTagsChange}
           />
 
-          <div className="flex justify-end space-x-4 pt-4">
+          <div className="flex justify-end space-x-4 pt-4 font-kanit-regular">
             <Button
               type="button"
               color="secondary"
               onPress={() => router.push("/admin/products")}
             >
-              Cancel
+              ยกเลิก
             </Button>
             <Button type="submit" color="primary" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save Changes"}
+              {isSubmitting ? "กำลังบันทึก..." : "บันทึก"}
             </Button>
           </div>
         </form>

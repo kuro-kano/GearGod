@@ -562,7 +562,7 @@ export default function ProductPage() {
               {/* Add to cart button */}
               <div className="flex flex-row md:flex-row-2 gap-4 justify-evenly">
                 <Button
-                  className="w-full mt-auto py-3 px-6 border-2 border-purple-600 rounded-md transition duration-300 font-kanit-regular"
+                  className="text-white w-full mt-auto py-3 px-6 border-2 border-purple-600 rounded-md transition duration-300 font-kanit-regular"
                   variant="bordered"
                   disabled={product.stock_quantity <= 0}
                   onPress={addToCart}
@@ -576,7 +576,7 @@ export default function ProductPage() {
                     if (product.colors && product.colors.length > 0 && !selectedColor) {
                       showToast({
                         title: "Error",
-                        description: "Please select a color",
+                        description: "กรุณาเลือกสี",
                         color: "danger"
                       });
                       return;
