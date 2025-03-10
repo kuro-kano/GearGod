@@ -22,6 +22,7 @@ interface Product {
   image_url?: string;
   created_at?: string;
   updated_at?: string;
+  [key: string]: string | number | null | undefined; // Add this li
 }
 
 // Define category interface for dropdown
@@ -256,9 +257,9 @@ export default function NewProductPage() {
   };
 
   return (
-    <main className="ambient-bg">
+    <main className="dark ambient-bg text-white font-kanit-regular">
       <div className="p-6 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Add New Product</h1>
+        <h1 className="text-2xl font-bold mb-6">เพิ่มสินค้าใหม่</h1>
 
         {formError && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">

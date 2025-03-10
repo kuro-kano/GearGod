@@ -39,7 +39,7 @@ export default function Shop() {
   const [filters, setFilters] = useState<FilterState>({
     types: [],
     brands: [],
-    priceRange: { min: 0, max: 50000 },
+    priceRange: { min: 0, max: 5000 },
   });
 
   // Fetch products when component mounts

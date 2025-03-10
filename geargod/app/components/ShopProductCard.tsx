@@ -118,7 +118,7 @@ export default function ShopProductCard({
         style={{ transform: isHovered ? "translateY(-5px)" : "none" }}
       >
         <Card
-          className="w-full sm:w-[250px] max-w-[250px] space-y-4 p-3 sm:p-4"
+          className="dark w-full sm:w-[250px] max-w-[250px] space-y-4 p-3 sm:p-4"
           radius="lg"
           style={{
             boxShadow: isHovered
@@ -149,12 +149,12 @@ export default function ShopProductCard({
           </div>
 
           {/* Product name */}
-          <div className="font-bold text-sm sm:text-base line-clamp-2">
+          <div className="text-white font-bold text-sm sm:text-base line-clamp-2">
             {product.product_name}
           </div>
 
           {/* Product price */}
-          <div className="text-xs sm:text-sm font-medium">
+          <div className="text-white text-xs sm:text-sm font-medium">
             ฿{product.price.toLocaleString()}
           </div>
         </Card>

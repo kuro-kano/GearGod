@@ -273,7 +273,7 @@ export default function ProductPage() {
   }
 
   return (
-    <main className="ambient-bg">
+    <main className="text-white ambient-bg">
       <div className="container mx-auto px-4 py-8 pt-40">
         <Link href="/shop">
           <Button>Back to Shop</Button>
