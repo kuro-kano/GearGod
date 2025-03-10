@@ -77,7 +77,7 @@ import { motion } from "framer-motion";
 export default function FinishPage() {
   const router = useRouter();
 
-  const steps = [
+  const steps: { name: string; href: string; status: "complete" | "current" | "upcoming" }[] = [
     { name: "SHOPPING CART", href: "/cart", status: "complete" },
     { name: "CHECKOUT", href: "/checkout", status: "complete" },
     { name: "FINISH", href: "/finish", status: "current" },
@@ -114,7 +114,7 @@ export default function FinishPage() {
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
-                variant="outline"
+                variant="bordered"
                 className="w-full border border-gray-700 hover:bg-gray-800 transition-colors"
                 onPress={() => router.push("/orders")}
               >
