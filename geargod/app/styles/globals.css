@@ -171,3 +171,18 @@ html, body {
   overflow-x: hidden !important;
 }
 
+
+@media (max-width: 640px) {
+  .products-grid {
+    row-gap: 20px;
+  }
+}
+
+.product-card-wrapper {
+  display: flex;
+  height: 100%;
+}
+
+.heroui-text-foreground {
+  color: white !important;
+}

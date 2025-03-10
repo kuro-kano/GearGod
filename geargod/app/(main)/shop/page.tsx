@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import ProductFilters from "@/components/ProductFilters";
 import ShopProductCard from "@/components/ShopProductCard";
+import { Button } from "@heroui/react";
+import { FilterX, FilterIcon, X } from "lucide-react";
+import "@/styles/globals.css";
 
 // Define the Product interface to match your API response
 interface Product {
@@ -34,6 +37,7 @@ export default function Shop() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   // State for filters
   const [filters, setFilters] = useState<FilterState>({
@@ -133,16 +137,67 @@ export default function Shop() {
     }));
   };
 
+  // Toggle filters panel for mobile view
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
+
   return (
-    <main className="ambient-bg">
-      <div className="pt-40 pl-48">
+    <main className="ambient-bg min-h-screen">
+      <div className="pt-20 sm:pt-28 lg:pt-40 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-48">
         <BreadCrumbs />
       </div>
 
+      {/* Mobile filter button */}
+      <div className="lg:hidden flex justify-between items-center px-4 sm:px-6 md:px-8 mt-4">
+        <h2 className="text-lg font-medium text-white">Products</h2>
+        <Button
+          size="sm"
+          className="flex items-center gap-2 bg-purple-700 text-white"
+          onPress={toggleFilters}
+        >
+          <FilterIcon size={16} />
+          Filters
+          {(filters.types.length > 0 || filters.brands.length > 0) && (
+            <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs bg-white text-purple-700 rounded-full">
+              {filters.types.length + filters.brands.length}
+            </span>
+          )}
+        </Button>
+      </div>
+
       {/* Create a flex container to hold filters and products side by side */}
-      <div className="flex gap-8 px-48 py-8">
-        {/* Left sidebar with filters */}
-        <div className="w-64 shrink-0">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 px-4 sm:px-6 md:px-8 lg:px-16 xl:px-48 py-4 lg:py-8">
+        {/* Mobile filters drawer */}
+        {showFilters && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex lg:hidden">
+            <div className="pt-32 ml-auto w-[280px] max-w-full h-full bg-[#1D1C21] p-4 overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-medium text-white">Filters</h2>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="light"
+                  className="text-white"
+                  onPress={toggleFilters}
+                >
+                  <X size={20} />
+                </Button>
+              </div>
+              <ProductFilters
+                onTypeChange={handleTypeChange}
+                onBrandChange={handleBrandChange}
+                onPriceChange={handlePriceChange}
+                selectedTypes={filters.types}
+                selectedBrands={filters.brands}
+                initialPriceRange={filters.priceRange}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Desktop filters sidebar */}
+        <div className="hidden lg:block w-64 shrink-0">
           <ProductFilters
             onTypeChange={handleTypeChange}
             onBrandChange={handleBrandChange}
@@ -154,11 +209,9 @@ export default function Shop() {
         </div>
 
         {/* Main content area with products */}
-        <div
-          className="flex-1 bg-[#1D1C21] rounded-md border-[#1D1C21] p-5 shadow-foreground-700 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-60 products-container"
-        >
+        <div className="flex-1 bg-[#1D1C21] rounded-md border-[#1D1C21] p-4 lg:p-5 shadow-foreground-700 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-60 products-container">
           {/* Results summary */}
-          <div className="mb-6 flex justify-between items-center">
+          <div className="mb-4 lg:mb-6 flex justify-between items-center">
             <div>
               {!loading && (
                 <p className="text-sm text-gray-300">
@@ -178,18 +231,19 @@ export default function Shop() {
               <div className="text-lg text-red-500">{error}</div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
               {filteredProducts.length === 0 ? (
-                <div className="col-span-3 text-center py-10">
+                <div className="col-span-full text-center py-10">
                   No products found matching the selected filters
                 </div>
               ) : (
                 filteredProducts.map((product, index) => (
-                  <ShopProductCard
+                  <div
                     key={product.product_id}
-                    product={product}
-                    isPriority={index < 4} // Set priority for first 4 products that will be above the fold
-                  />
+                    className="flex justify-center w-full"
+                  >
+                    <ShopProductCard product={product} isPriority={index < 4} />
+                  </div>
                 ))
               )}
             </div>

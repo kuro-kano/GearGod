@@ -25,6 +25,7 @@ export default {
         "urbanist-bold": ["Urbanist-bold", "sans-serif"],
         "kanit-regular": ["Kanit", "sans-serif"],
       },
+      
     },
   },
   darkMode: "class",
@@ -32,14 +33,10 @@ export default {
     heroui({
       prefix: "heroui", // prefix for themes variables
       addCommonColors: false, // override common colors (e.g. "blue", "green", "pink").
-      defaultTheme: "light", // default theme from the themes object
-      defaultExtendTheme: "light", // default theme to extend on custom themes
+      defaultTheme: "dark", // default theme from the themes object
+      defaultExtendTheme: "dark", // default theme to extend on custom themes
       layout: {}, // common layout tokens (applied to all themes)
       themes: {
-        light: {
-          layout: {}, // light theme layout tokens
-          colors: {}, // light theme colors
-        },
         dark: {
           layout: {}, // dark theme layout tokens
           colors: {}, // dark theme colors

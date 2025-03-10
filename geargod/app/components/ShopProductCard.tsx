@@ -31,7 +31,8 @@ export default function ShopProductCard({
 }: ShopProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [currentImageUrl, setCurrentImageUrl] = useState<string>(PLACEHOLDER_IMAGE);
+  const [currentImageUrl, setCurrentImageUrl] =
+    useState<string>(PLACEHOLDER_IMAGE);
 
   // Process image URL when component mounts or when product/imageError changes
   useEffect(() => {
@@ -47,8 +48,9 @@ export default function ShopProductCard({
         try {
           // Find primary image or use first one
           const mainImage =
-            product.images.find((img) => img.is_primary === 1) || product.images[0];
-          
+            product.images.find((img) => img.is_primary === 1) ||
+            product.images[0];
+
           if (!mainImage || !mainImage.image_url) {
             throw new Error("Invalid image data in images array");
           }
@@ -91,7 +93,7 @@ export default function ShopProductCard({
 
     try {
       const url = determineImageUrl();
-      
+
       // Make sure we never set an empty string as the URL
       if (!url || url === "") {
         setCurrentImageUrl(PLACEHOLDER_IMAGE);
@@ -118,7 +120,7 @@ export default function ShopProductCard({
         style={{ transform: isHovered ? "translateY(-5px)" : "none" }}
       >
         <Card
-          className="dark w-full sm:w-[250px] max-w-[250px] space-y-4 p-3 sm:p-4"
+          className="dark w-full max-w-[250px] space-y-4 p-3 sm:p-4"
           radius="lg"
           style={{
             boxShadow: isHovered
